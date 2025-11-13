@@ -1,0 +1,24 @@
+{
+  "name": "stack-mastery",
+  "version": "1.0.0",
+  "description": "Learning path and hands-on exercises to elevate full-stack technical expertise.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sathsure/Stack-Mastery.git"
+  },
+  "keywords": [
+    "full-stack"
+  ],
+  "author": "sathsure",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sathsure/Stack-Mastery/issues"
+  },
+  "homepage": "https://github.com/sathsure/Stack-Mastery#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
