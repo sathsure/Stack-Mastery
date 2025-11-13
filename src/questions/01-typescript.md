@@ -10,7 +10,7 @@
 ### ❓2. How does TypeScript’s type inference work?
 **Answer:**
 TypeScript's type inference is the ability of the compiler to automatically determine and assign types to variables, functions, objects, arrays.  
-**Code Example:**
+**Code Example:**  
 Variable Initialization:  
 ```ts
 let myString = "hello"; // Inferred as string
