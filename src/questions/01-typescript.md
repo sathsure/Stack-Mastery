@@ -54,3 +54,23 @@ type Status = "success" | "error" | "loading"; // Union type
 type Product = { name: string; }; // Object type
 type DetailedProduct = Product & { price: number; }; // Intersection (combine types)
 ```
+Key Difference:
+```ts
+// Declaration Merging (Interface only)
+interface Config {
+  apiUrl: string;
+}
+
+interface Config {
+  timeout: number;
+}
+
+const appConfig: Config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+};
+
+// This would cause an error with type aliases:
+// type MyType = { a: string };
+// type MyType = { b: number }; // Error: Duplicate identifier 'MyType'.
+```
