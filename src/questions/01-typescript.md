@@ -98,7 +98,7 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 ### ❓7. What is declaration merging?
 **📝 Answer:**  
 `Declaration merging` combines multiple declarations of the same name into a single definition  
-**💻 Code Example:** [types-vs-interfaces.ts][types-vs-interfaces]
+**💻 Code Example:** [declaration-merging][types-vs-interfaces]
 
 ### ❓8. Explain structural typing in TS? 
 **📝 Answer:**  
@@ -154,7 +154,7 @@ function log(msg: string): void { console.log(msg); } // returns nothing
 
 ### ❓12. What are decorators and how are they applied?
 **📝 Answer:**  
-Decorators are annotations that modify classes, methods, or properties at runtime; enabled via `experimentalDecorators`.
+Decorators are annotations that modify classes, methods, or properties at runtime; enabled via `experimentalDecorators`.  
 **💻 Code Example:**  
 ```ts
 function Logger(target: Function) { console.log("Class loaded"); }
