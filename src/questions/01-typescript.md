@@ -54,7 +54,7 @@ type Status = "success" | "error" | "loading"; // Union type
 type Product = { name: string; }; // Object type
 type DetailedProduct = Product & { price: number; }; // Intersection (combine types)
 ```
-Key Difference:
+🔑 Key Difference:
 ```ts
 // Declaration Merging (Interface only)
 interface Config {
@@ -73,4 +73,54 @@ const appConfig: Config = {
 // This would cause an error with type aliases:
 // type MyType = { a: string };
 // type MyType = { b: number }; // Error: Duplicate identifier 'MyType'.
+```
+
+### ❓4. What are mapped types? Examples.
+**📝 Answer:**  
+Mapped types apply transformations to each property of an existing type to produce a new type.  
+**💻 Code Example:**  
+```ts
+type Person = { name: string; age: number };
+// A new type where both `name` and `age` are optional
+type PartialPerson = { [P in keyof Person]?: Person[P] };
+
+const person1: PartialPerson = { name: "Alice" }; // Valid
+const person2: PartialPerson = { age: 30 }; // Valid
+const person3: PartialPerson = {}; // Valid
+```
+
+### ❓5. Explain Generics with constraints.
+**📝 Answer:**  
+Generic: A placeholder type that makes code reusable for many types.
+Constraint: A rule that limits what types the generic can accept to ensure safety (like requiring a length property).  
+**💻 Code Example:**  
+```ts
+// T must have a 'length' property
+function getLength<T extends { length: number }>(value: T) {
+  return value.length;
+}
+
+getLength("hello");   // ✔ works (string has length)
+getLength([1, 2, 3]); // ✔ works (array has length)
+// getLength(10);     // ❌ error (number has no length)
+```
+### ❓6. What are utility types like Partial, Pick, Omit, ReturnType?
+**📝 Answer:**  
+1. Partial<Type>: The Partial utility type makes all properties in Type optional.
+**💻 Code Example:**
+```ts
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// type PartialUser = { id?: number; name?: string; email?: string; }
+type PartialUser = Partial<User>;
+
+const updateProfile = (fields: PartialUser) => {
+  // function that can accept an object with any subset of User properties
+};
+
+updateProfile({ name: 'Jane Doe' }); // Valid
 ```
