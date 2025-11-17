@@ -4,43 +4,43 @@
 Angular lifecycle hooks are special methods called by Angular at specific points in a component's life, allowing you to perform actions during creation, updating, and destruction.
 Main Hooks:  
 
-`constructor:`  
+**`constructor:`**  
 Runs first when the component is created; used for dependency injection and basic setup but not for accessing inputs or the view.  
 
-`ngOnChanges:`  
+**`ngOnChanges:`**  
 Triggers whenever input-bound properties change, providing a SimpleChanges object with previous and current values.  
 
-`ngOnInit:`  
+**`ngOnInit:`**  
 Runs once after the first change detection, ideal for one-time initialization like data fetching.  
 
-`ngDoCheck:`  
+**`ngDoCheck:`**  
 Executes on every change detection cycle, allowing custom change-tracking logic beyond Angular's default checks.  
 
-`ngAfterContentInit:`  
+**`ngAfterContentInit:`**  
 Called once after Angular projects external content (<ng-content>) into the component.  
 
-`ngAfterContentChecked:`  
+**`ngAfterContentChecked:`**  
 Runs after content initialization and then after every change detection to re-check projected content.  
 
-`ngAfterViewInit:`  
+**`ngAfterViewInit:`**  
 Called once when the component’s own view and all child views finish initializing.  
 
-`ngAfterViewChecked:`  
+**`ngAfterViewChecked:`**  
 Runs after view initialization and on every subsequent change detection to verify the component and child views.  
 
-`ngOnDestroy:`  
+**`ngOnDestroy:`**  
 Called just before the component is removed; used to clean up subscriptions, listeners, and resources to prevent memory leaks.  
 
 **💻 Code Example:** : [lifecycle-hooks.ts][lifecycle-hooks]
 
 ### ❓ 2. Difference between template-driven and reactive forms.
 
-**📝 Answer:**
-Template-Driven Forms:  
+**📝 Answer:**  
+**`Template-Driven Forms:`**  
 Use directives and two-way binding in the template; best for simple, small forms with minimal logic.  
 Logic mainly in HTML  
 
-Reactive Forms:  
+**`Reactive Forms:`**  
 Use a model-driven, TypeScript-based approach; ideal for complex forms requiring full control, validation, and scalability.  
 Logic mainly in TypeScript.  
 
@@ -54,11 +54,11 @@ Logic mainly in TypeScript.
 Whenever any **asynchronous operation** occurs—like a click, input update, HTTP response, setTimeout, setInterval, or Promise, the **Zone.js** monitors all async operations and detects when an async event finishes.  
 **👉 Zone.js → “Hey, something async happened.”**
 
-NgZone is a bridge between Zone.js and Angular’s change detection system, where when Zone.js reports an async event, NgZone decides whether Angular should run change detection.
+**NgZone** is a bridge between Zone.js and Angular’s change detection system, where when Zone.js reports an async event, NgZone decides whether Angular should run change detection.
 
-✔ NgZone triggers change detection
-✔ NgZone can suppress change detection (runOutsideAngular)
-✔ NgZone can re-enter Angular (run) to re-enable change detection
+✔ NgZone triggers change detection  
+✔ NgZone can suppress change detection (runOutsideAngular)  
+✔ NgZone can re-enter Angular (run) to re-enable change detection  
 
 **👉 NgZone → “Start change detection NOW.”**
 
