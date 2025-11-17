@@ -1,0 +1,34 @@
+<!-- template-driven-example.component.html -->
+
+<!-- 
+✔ Form structure & validation defined directly in the HTML.
+✔ Angular automatically creates the form model behind the scenes.
+✔ Best for simple forms.
+-->
+
+<form #loginForm="ngForm" (ngSubmit)="submit(loginForm.value)">
+  <!-- ngModel automatically registers the control -->
+  <input
+    type="text"
+    name="username"
+    ngModel
+    required
+    minlength="3"
+    placeholder="Username"
+  />
+
+  <!-- Shows validation errors based on HTML rules -->
+  <div *ngIf="loginForm.controls['username']?.invalid && loginForm.submitted">
+    Username is required (min 3 chars)
+  </div>
+
+  <input
+    type="password"
+    name="password"
+    ngModel
+    required
+    placeholder="Password"
+  />
+
+  <button type="submit">Login</button>
+</form>

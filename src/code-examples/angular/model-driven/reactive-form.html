@@ -1,0 +1,19 @@
+<!-- reactive-example.component.html -->
+
+<!-- 
+✔ HTML only binds to a FormGroup defined in TypeScript.
+✔ Full control, dynamic validation, programmatic updates.
+✔ Best for complex, scalable forms.
+-->
+
+<form [formGroup]="loginForm" (ngSubmit)="submit()">
+  <input type="text" formControlName="username" placeholder="Username" />
+
+  <div *ngIf="loginForm.get('username')?.invalid && loginForm.touched">
+    Username is required (min 3 chars)
+  </div>
+
+  <input type="password" formControlName="password" placeholder="Password" />
+
+  <button type="submit">Login</button>
+</form>

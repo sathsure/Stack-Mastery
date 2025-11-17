@@ -11,4 +11,4 @@ const updateProfile = (fields: PartialUser) => {
   // function that can accept an object with any subset of User properties
 };
 
-updateProfile({ name: 'Jane Doe' }); // Valid
+updateProfile({ name: "Jane Doe" }); // Valid

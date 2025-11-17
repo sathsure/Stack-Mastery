@@ -6,10 +6,10 @@ interface UserDetails {
 }
 
 // type PublicUserDetails = { id: number; username: string; email: string; }
-type PublicUserDetails = Omit<UserDetails, 'passwordHash'>;
+type PublicUserDetails = Omit<UserDetails, "passwordHash">;
 
 const publicData: PublicUserDetails = {
   id: 1,
-  username: 'johndoe',
-  email: 'john@example.com',
+  username: "johndoe",
+  email: "john@example.com",
 };

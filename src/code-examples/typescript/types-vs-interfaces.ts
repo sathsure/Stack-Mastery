@@ -8,7 +8,7 @@ interface Config {
 }
 
 const appConfig: Config = {
-  apiUrl: 'https://api.example.com',
+  apiUrl: "https://api.example.com",
   timeout: 5000,
 };
 
