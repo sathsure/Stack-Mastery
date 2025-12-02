@@ -2,34 +2,34 @@
 
 **📝 Answer:**
 Angular lifecycle hooks are special methods called by Angular at specific points in a component's life, allowing you to perform actions during creation, updating, and destruction.
-Main Hooks:  
+Main Hooks:
 
 **`constructor:`**  
-Runs first when the component is created; used for dependency injection and basic setup but not for accessing inputs or the view.  
+Runs first when the component is created; used for dependency injection and basic setup but not for accessing inputs or the view.
 
 **`ngOnChanges:`**  
-Triggers whenever input-bound properties change, providing a SimpleChanges object with previous and current values.  
+Triggers whenever input-bound properties change, providing a SimpleChanges object with previous and current values.
 
 **`ngOnInit:`**  
-Runs once after the first change detection, ideal for one-time initialization like data fetching.  
+Runs once after the first change detection, ideal for one-time initialization like data fetching.
 
 **`ngDoCheck:`**  
-Executes on every change detection cycle, allowing custom change-tracking logic beyond Angular's default checks.  
+Executes on every change detection cycle, allowing custom change-tracking logic beyond Angular's default checks.
 
 **`ngAfterContentInit:`**  
-Called once after Angular projects external content (<ng-content>) into the component.  
+Called once after Angular projects external content (<ng-content>) into the component.
 
 **`ngAfterContentChecked:`**  
-Runs after content initialization and then after every change detection to re-check projected content.  
+Runs after content initialization and then after every change detection to re-check projected content.
 
 **`ngAfterViewInit:`**  
-Called once when the component’s own view and all child views finish initializing.  
+Called once when the component’s own view and all child views finish initializing.
 
 **`ngAfterViewChecked:`**  
-Runs after view initialization and on every subsequent change detection to verify the component and child views.  
+Runs after view initialization and on every subsequent change detection to verify the component and child views.
 
 **`ngOnDestroy:`**  
-Called just before the component is removed; used to clean up subscriptions, listeners, and resources to prevent memory leaks.  
+Called just before the component is removed; used to clean up subscriptions, listeners, and resources to prevent memory leaks.
 
 **💻 Code Example:** : [lifecycle-hooks.ts][lifecycle-hooks]
 
@@ -38,15 +38,15 @@ Called just before the component is removed; used to clean up subscriptions, lis
 **📝 Answer:**  
 **`Template-Driven Forms:`**  
 Use directives and two-way binding in the template; best for simple, small forms with minimal logic.  
-Logic mainly in HTML  
+Logic mainly in HTML
 
 **`Reactive Forms:`**  
 Use a model-driven, TypeScript-based approach; ideal for complex forms requiring full control, validation, and scalability.  
-Logic mainly in TypeScript.  
+Logic mainly in TypeScript.
 
 **💻 Code Example:**  
 [template-driven][template-driven]  
-[model-driven][model-driven]  
+[model-driven][model-driven]
 
 ### ❓ 3. How change detection works in Angular.
 
@@ -58,51 +58,61 @@ Whenever any **asynchronous operation** occurs—like a click, input update, HTT
 
 ✔ NgZone triggers change detection  
 ✔ NgZone can suppress change detection (runOutsideAngular)  
-✔ NgZone can re-enter Angular (run) to re-enable change detection  
+✔ NgZone can re-enter Angular (run) to re-enable change detection
 
 **👉 NgZone → “Start change detection NOW.”**
 
-Once NgZone notifies Angular, **change detection** runs through the component tree, checks all bindings, and updates the affected DOM nodes. 
+Once NgZone notifies Angular, **change detection** runs through the component tree, checks all bindings, and updates the affected DOM nodes.
 
 **👉 Change Detection → checks component tree → updates DOM**
 
 Developers can also manually start change detection when using OnPush or external callbacks:  
 `markForCheck()` → mark component + ancestors to run in the next cycle  
-`detectChanges()` → run change detection immediately on the component subtree  
+`detectChanges()` → run change detection immediately on the component subtree
 
 With **Signals**, every piece of state is tracked with fine-grained reactivity.  
-So instead of scanning the entire component tree:  
+So instead of scanning the entire component tree:
 
 👉 Only the component whose signal changed gets updated.  
 👉 No global tree walk, no unnecessary checks.  
-👉 DOM updates become faster, more granular, and more predictable.  
+👉 DOM updates become faster, more granular, and more predictable.
 
-This enables zoneless Angular (no Zone.js needed).  
+This enables zoneless Angular (no Zone.js needed).
 
 ### ❓ 4. What is Ahead-of-Time (AOT) compilation and Just-in-Time compilation?
 
 **📝 Answer:**
 **AOT (Ahead-of-Time)**
-- Templates compiled **at build time**  
-- **Faster startup**, **smaller bundle**  
-- Template errors caught **early** during build  
+
+- Templates compiled **at build time**
+- **Faster startup**, **smaller bundle**
+- Template errors caught **early** during build
 - Used primarily for **production**
 
 **JIT (Just-in-Time)**
-- Templates compiled **in the browser at runtime**  
-- **Slower initial load**, **larger bundle**  
-- Useful for **quick development** or debugging template compilation  
+
+- Templates compiled **in the browser at runtime**
+- **Slower initial load**, **larger bundle**
+- Useful for **quick development** or debugging template compilation
 - **Not recommended** for production
 
-During a build, Webpack triggers Angular’s compiler (**ngc**) to run either:  
-  - **AOT compilation** (production builds)  
-  - **JIT compilation** (development builds)
+During a build, Webpack triggers Angular’s compiler (**ngc**) to run either:
+
+- **AOT compilation** (production builds)
+- **JIT compilation** (development builds)
 
 ### ❓ 5. Explain Dependency Injection hierarchy.
 
 **📝 Answer:**
+When a component/service requests a dependency, Angular checks its own injector first, then walks up the tree until it finds a provider.
 
-**💻 Code Example:**
+- **Root injector:** Services with providedIn: 'root' are true singletons for the whole app.
+- **Component injector:** Adding providers: [] on a component creates a new instance for that component + its children.
+- Lookup: DI checks current injector → parent → root.
+- Override: A child component can override a parent/root service provider.
+- Lazy modules: Have their own injector → services become module-scoped.
+
+**💻 Code Example:** : [dependency-injection][dependency-injection]
 
 ### ❓ 6. What is Content Projection and ng-content?
 
@@ -188,7 +198,7 @@ During a build, Webpack triggers Angular’s compiler (**ngc**) to run either:
 
 **💻 Code Example:**
 
-
 [lifecycle-hooks]: ../../code-examples/angular/lifecycle-hooks.ts
 [template-driven]: ../../code-examples/angular/template-driven/template-driven.html
 [model-driven]: ../../code-examples/angular/model-driven/reactive-form.ts
+[dependency-injection]: ../../code-examples/angular/dependency-injection.ts
