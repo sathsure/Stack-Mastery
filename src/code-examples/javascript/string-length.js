@@ -3,9 +3,16 @@ const aa = "asdadssdas kskdaskjk";
 let count = 0;
 
 for (const char of aa) {
-  // iterates each character
   count++;
 }
+
+// Alternative approach
+// while (str[count] !== undefined) {
+//   count++;
+// }
+
+// Example
+console.log(getLength("hello")); // 5
 
 console.log(count);
 
