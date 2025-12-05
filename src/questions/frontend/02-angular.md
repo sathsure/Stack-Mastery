@@ -1,392 +1,459 @@
 ## 1. Architecture & Core Concepts
 
-**1. What is Angular, and how is it different from AngularJS?**
+### ❓ 1. What is Angular, and how is it different from AngularJS?
 
-**Answer:**  
+📝 **Answer:**
+
 Angular is a TypeScript-based framework (2+) with component-based architecture, ahead-of-time compilation, RxJS, and modern tooling; AngularJS (1.x) is JavaScript-based, uses scopes/controllers, and a different change detection mechanism (dirty checking).
 
-**2. Explain the role of NgModules vs Components.**
+### ❓ 2. Explain the role of NgModules vs Components.
 
-**Answer:**  
+📝 **Answer:**
+
 NgModules group related code (components, directives, pipes, services) into cohesive blocks; components control views and handle UI logic. With standalone APIs, modules are optional for many scenarios, but still exist for features like `RouterModule`.
 
-**3. What are standalone components? Why were they introduced?**
+### ❓ 3. What are standalone components? Why were they introduced?
 
-**Answer:**  
+📝 **Answer:**
+
 Standalone components can be used without declaring them in an NgModule. They reduce boilerplate and make lazy-loading, code-splitting, and feature isolation easier.
 
-**4. What is a feature module and why would you use it?**
+### ❓ 4. What is a feature module and why would you use it
 
-**Answer:**  
+📝 **Answer:**
+
 A feature module encapsulates a specific domain/feature (e.g. `UserModule`). It helps with organization, reusability, and lazy loading.
 
-**5. What are the main building blocks of an Angular application?**
+### ❓ 5. What are the main building blocks of an Angular application
 
-**Answer:**  
+📝 **Answer:**
+
 Modules, components, templates, metadata, services, dependency injection, directives, pipes, and routing.
 
 ---
 
 ## 2. Components, Templates & Data Binding
 
-**6. What are the different types of data binding in Angular?**
+### ❓ 6. What are the different types of data binding in Angular
 
-**Answer:**  
+📝 **Answer:**
+
 Interpolation (`{{ }}`), property binding (`[prop]`), event binding (`(event)`), and two-way binding (`[(ngModel)]`, or custom via `@Input` + `@Output`).
 
-**7. How do you implement a custom two-way binding for a component?**
+### ❓ 7. How do you implement a custom two-way binding for a component
 
-**Answer:**  
+📝 **Answer:**
+
 Use an `@Input()` property like `value` and an `@Output()` EventEmitter like `valueChange`. The parent uses `[(value)]="someVar"`.
 
-**8. What is the difference between `ngOnInit` and the constructor in a component?**
+### ❓ 8. What is the difference between `ngOnInit` and the constructor in a component
 
-**Answer:**  
+📝 **Answer:**
+
 Constructor is for basic initialization and DI. `ngOnInit` is part of Angular’s lifecycle and is called after inputs are resolved and the first `ngOnChanges` runs.
 
-**9. How do you pass data from parent to child and child to parent?**
+### ❓ 9. How do you pass data from parent to child and child to parent?
 
-**Answer:**  
+📝 **Answer:**
+
 Parent to child: `@Input()` properties. Child to parent: `@Output()` EventEmitters.
 
-**10. What is `ViewChild` and when would you use it?**
+### ❓ 10. What is `ViewChild` and when would you use it?
 
-**Answer:**  
+📝 **Answer:**
+
 `@ViewChild` gives you a reference to a child component/directive or template element in the same view. You use it to interact with child APIs directly (e.g. focus, call methods).
 
-**11. Trick: Can you access a `@ViewChild` in the constructor?**
+### ❓ 11. Trick: Can you access a `@ViewChild` in the constructor?
 
-**Answer:**  
+📝 **Answer:**
+
 No. It’s only reliably available in `ngAfterViewInit` (or later), not in the constructor.
 
 ---
 
 ## 3. Directives & Pipes
 
-**12. Difference between components and directives?**
+### ❓ 12. Difference between components and directives?
 
-**Answer:**  
+📝 **Answer:**
+
 A component is a directive with a template. Directives without templates are used to modify behavior/appearance of existing elements.
 
-**13. What’s the difference between structural and attribute directives?**
+### ❓ 13. What’s the difference between structural and attribute directives?
 
-**Answer:**  
+📝 **Answer:**
+
 Structural directives change the DOM layout (`*ngIf`, `*ngFor`). Attribute directives change appearance/behavior of an existing element (`ngClass`, `ngStyle`, custom ones).
 
-**14. Why is there an asterisk in `*ngIf` or `*ngFor`?**
+### ❓ 14. Why is there an asterisk in `*ngIf` or `*ngFor`?
 
-**Answer:**  
+📝 **Answer:**
+
 It’s syntactic sugar for using `<ng-template>`; Angular desugars it into an underlying template structure.
 
-**15. What is a pure pipe vs impure pipe?**
+### ❓ 15. What is a pure pipe vs impure pipe?
 
-**Answer:**  
+📝 **Answer:**
+
 Pure pipes run only when input references change. Impure pipes run on every change detection cycle; they can handle mutable data but impact performance.
 
-**16. Trick: Why is using an impure pipe on large lists risky?**
+### ❓ 16. Trick: Why is using an impure pipe on large lists risky?
 
-**Answer:**  
+📝 **Answer:**
+
 Because it executes on every change detection run and can dramatically slow rendering.
 
 ---
 
 ## 4. Change Detection, Zones & Signals
 
-**17. Explain Angular’s change detection mechanism.**
+### ❓ 17. Explain Angular’s change detection mechanism.
 
-**Answer:**  
+📝 **Answer:**
+
 Angular walks the component tree and checks bindings. By default, `Zone.js` patches async APIs to know when to trigger change detection.
 
-**18. What is the difference between `ChangeDetectionStrategy.Default` and `OnPush`?**
+### ❓ 18. What is the difference between `ChangeDetectionStrategy.Default` and `OnPush`?
 
-**Answer:**  
+📝 **Answer:**
+
 `Default` runs change detection for a component whenever any ancestor runs. `OnPush` only checks when input references change, an event originates in the component, or Observable/Promise emits via async pipe, etc.
 
-**19. Trick: In an `OnPush` component, will mutating an array (e.g. `arr.push()`) trigger a view update?**
+### ❓ 19. Trick: In an `OnPush` component, will mutating an array (e.g. `arr.push()`) trigger a view update?
 
-**Answer:**  
+📝 **Answer:**
+
 Not automatically. You must provide a new reference (e.g. `arr = [...arr, newItem]`) or manually mark for check.
 
-**20. What is `ChangeDetectorRef` and when do you use it?**
+### ❓ 20. What is `ChangeDetectorRef` and when do you use it?
 
-**Answer:**  
+📝 **Answer:**
+
 It allows fine-grained control over change detection (marking views for check, detaching, reattaching). Useful in performance-sensitive components or when integrating with non-Angular APIs.
 
-**21. What are Angular signals (if you’ve used them)?**
+### ❓ 21. What are Angular signals (if you’ve used them)?
 
-**Answer:**  
+📝 **Answer:**
+
 Signals are reactive primitives that hold a value and notify dependents when the value changes, offering a more explicit and fine-grained reactivity model than Zone-based change detection.
 
-**22. Trick: Does changing a signal value in a service automatically update all consuming components?**
+### ❓ 22. Trick: Does changing a signal value in a service automatically update all consuming components?
 
-**Answer:**  
+📝 **Answer:**
+
 Yes, any computed views or effects using that signal re-run, updating the UI where it’s read.
 
 ---
 
 ## 5. Dependency Injection & Providers
 
-**23. How does Angular’s DI hierarchy work?**
+### ❓ 23. How does Angular’s DI hierarchy work?
 
-**Answer:**  
+📝 **Answer:**
+
 Providers can be registered in modules, components, or via `providedIn`. The injector tree mirrors the component/module tree; a child injector falls back to parent injectors when resolving dependencies.
 
-**24. Difference between `providedIn: 'root'` and `providedIn: 'any'`?**
+### ❓ 24. Difference between `providedIn: 'root'` and `providedIn: 'any'`?
 
-**Answer:**  
+📝 **Answer:**
+
 `'root'` creates a singleton service in the root injector. `'any'` creates a new instance in each lazy-loaded module or component injector where it’s requested.
 
-**25. What’s a multi-provider and when would you use it?**
+### ❓ 25. What’s a multi-provider and when would you use it?
 
-**Answer:**  
+📝 **Answer:**
+
 A multi-provider allows multiple values for the same token (e.g. multiple `HTTP_INTERCEPTORS`). You declare `multi: true` in the provider.
 
-**26. Trick: If you provide the same service in a lazy-loaded module and in root, how many instances exist?**
+### ❓ 26. Trick: If you provide the same service in a lazy-loaded module and in root, how many instances exist?
 
-**Answer:**  
+📝 **Answer:**
+
 Two: one in the root injector, and a separate one in the lazy module’s injector.
 
-**27. What are injection tokens and why are they needed?**
+### ❓ 27. What are injection tokens and why are they needed?
 
-**Answer:**  
+📝 **Answer:**
+
 `InjectionToken` is used to inject values that don’t have a class type (e.g. config objects, interfaces). It provides a DI key for non-class dependencies.
 
 ---
 
 ## 6. Routing & Navigation
 
-**28. Core concepts of Angular routing?**
+### ❓ 28. Core concepts of Angular routing?
 
-**Answer:**  
+📝 **Answer:**
+
 Routes config, router outlet, routerLink/routerLinkActive, route guards, lazy loading, resolvers, `ActivatedRoute`.
 
-**29. What are route guards and types available?**
+### ❓ 29. What are route guards and types available?
 
-**Answer:**  
+📝 **Answer:**
+
 Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `CanLoad` / `CanMatch`, etc.
 
-**30. Difference between `CanLoad`/`CanMatch` and `CanActivate`?**
+### ❓ 30. Difference between `CanLoad`/`CanMatch` and `CanActivate`?
 
-**Answer:**  
+📝 **Answer:**
+
 `CanActivate` runs after module is loaded to allow/deny activation. `CanLoad`/`CanMatch` runs before loading, preventing the lazy module bundle from being loaded if not allowed.
 
-**31. Explain lazy loading modules / routes.**
+### ❓ 31. Explain lazy loading modules / routes.
 
-**Answer:**  
+📝 **Answer:**
+
 Lazy-loaded routes use dynamic imports in route config (e.g. `loadChildren:` or standalone `loadComponent`), so code is loaded on demand.
 
-**32. Trick: If you have a service provided in a lazy-loaded module, is it shared with the rest of the app?**
+### ❓ 32. Trick: If you have a service provided in a lazy-loaded module, is it shared with the rest of the app?
 
-**Answer:**  
+📝 **Answer:**
+
 No. That service instance is scoped to that lazy module’s injector (unless explicitly provided at root).
 
-**33. How do you access route params and query params?**
+### ❓ 33. How do you access route params and query params?
 
-**Answer:**  
+📝 **Answer:**
+
 Using `ActivatedRoute`: `route.paramMap`, `route.snapshot.paramMap`, `route.queryParamMap`, etc.
 
 ---
 
 ## 7. Forms (Template-Driven & Reactive)
 
-**34. Differences between template-driven and reactive forms?**
+### ❓ 34. Differences between template-driven and reactive forms?
 
-**Answer:**  
+📝 **Answer:**
+
 Template-driven: form logic in template, simpler, uses `ngModel`. Reactive: form model in TypeScript, more explicit, scalable, and testable using `FormGroup`, `FormControl`, `FormArray`.
 
-**35. What is a `FormGroup` and `FormControl`?**
+### ❓ 35. What is a `FormGroup` and `FormControl`?
 
-**Answer:**  
+📝 **Answer:**
+
 `FormControl` represents a single value and validation state. `FormGroup` is a collection of controls, acting like an object model.
 
-**36. How do you create a custom form control compatible with Angular forms?**
+### ❓ 36. How do you create a custom form control compatible with Angular forms?
 
-**Answer:**  
+📝 **Answer:**
+
 Implement `ControlValueAccessor` and optionally `Validator` to integrate with the forms API and be used with `formControlName`/`ngModel`.
 
-**37. Trick: Why is using `[(ngModel)]` with reactive forms generally discouraged?**
+### ❓ 37. Trick: Why is using `[(ngModel)]` with reactive forms generally discouraged?
 
-**Answer:**  
+📝 **Answer:**
+
 It mixes paradigms and can cause confusion and unexpected behavior. You should stick to one approach, usually reactive forms for complex forms.
 
 ---
 
 ## 8. HTTP, Interceptors & Error Handling
 
-**38. What is `HttpClient` and advantages over old `Http` module?**
+### ❓ 38. What is `HttpClient` and advantages over old `Http` module?
 
-**Answer:**  
+📝 **Answer:**
+
 `HttpClient` returns typed, observable responses, handles JSON automatically, supports interceptors, easier configuration.
 
-**39. What are HTTP interceptors used for?**
+### ❓ 39. What are HTTP interceptors used for?
 
-**Answer:**  
+📝 **Answer:**
+
 To inspect/modify requests and responses globally (e.g. auth headers, logging, error handling, retries).
 
-**40. Trick: In what order do multiple interceptors execute?**
+### ❓ 40. Trick: In what order do multiple interceptors execute?
 
-**Answer:**  
+📝 **Answer:**
+
 They execute in the order they are provided for outgoing requests, and in reverse order for incoming responses.
 
-**41. How do you handle global HTTP errors?**
+### ❓ 41. How do you handle global HTTP errors?
 
-**Answer:**  
+📝 **Answer:**
+
 Use an interceptor to catch errors in `catchError`, and possibly a global error handler (`ErrorHandler`) for non-HTTP errors.
 
 ---
 
 ## 9. State Management & RxJS Integration
 
-**42. How do you usually handle application-wide state in Angular?**
+### ❓ 42. How do you usually handle application-wide state in Angular?
 
-**Answer:**  
+📝 **Answer:**
+
 Options: services with RxJS (BehaviorSubject, signals), NgRx, Akita, NGXS, or custom state management patterns.
 
-**43. When would you prefer NgRx over simple services with subjects/signals?**
+### ❓ 43. When would you prefer NgRx over simple services with subjects/signals?
 
-**Answer:**  
+📝 **Answer:**
+
 For large, complex apps that need predictable, testable state changes, time-travel debugging, and strict one-way data flow.
 
-**44. Trick: Is `async` pipe unsubscribing automatically a replacement for manual unsubscribe in all cases?**
+### ❓ 44. Trick: Is `async` pipe unsubscribing automatically a replacement for manual unsubscribe in all cases?
 
-**Answer:**  
+📝 **Answer:**
+
 Only in templates. Subscriptions created in code (e.g. in `ngOnInit`) must still be manually managed/unsubscribed.
 
-**45. How do you avoid multiple HTTP calls when multiple subscribers listen to the same Observable?**
+### ❓ 45. How do you avoid multiple HTTP calls when multiple subscribers listen to the same Observable?
 
-**Answer:**  
+📝 **Answer:**
+
 Use sharing operators like `shareReplay` or convert to a signal/store, or cache results in services.
 
 ---
 
 ## 10. Performance & Optimization
 
-**46. What techniques do you use for Angular performance optimization?**
+### ❓ 46. What techniques do you use for Angular performance optimization?
 
-**Answer:**  
+📝 **Answer:**
+
 `OnPush` change detection, trackBy in `*ngFor`, lazy loading routes/components, preloading strategies, pure pipes, avoiding heavy work in templates, memoization, CDRef control.
 
-**47. Why is `trackBy` important for `*ngFor`?**
+### ❓ 47. Why is `trackBy` important for `*ngFor`?
 
-**Answer:**  
+📝 **Answer:**
+
 It helps Angular identify items uniquely, so it reuses DOM elements instead of destroying/recreating them, improving performance on large lists.
 
-**48. Trick: What happens if you mutate the array used in `*ngFor` without a `trackBy`?**
+### ❓ 48. Trick: What happens if you mutate the array used in `*ngFor` without a `trackBy`?
 
-**Answer:**  
+📝 **Answer:**
+
 Angular may re-render many list items unnecessarily, causing poor performance.
 
-**49. How would you analyze performance issues in an Angular app?**
+### ❓ 49. How would you analyze performance issues in an Angular app?
 
-**Answer:**  
+📝 **Answer:**
+
 Use Angular DevTools, browser performance profiler, change detection profiling, logging of lifecycle hooks, and analyzing network/bundle size.
 
-**50. What is AOT compilation and why is it useful?**
+### ❓ 50. What is AOT compilation and why is it useful?
 
-**Answer:**  
+📝 **Answer:**
+
 Ahead-of-time compiles Angular templates during build, reducing bundle size, catching template errors early, and improving startup time.
 
 ---
 
 ## 11. SSR, Hydration & SEO
 
-**51. What is Angular Universal?**
+### ❓ 51. What is Angular Universal?
 
-**Answer:**  
+📝 **Answer:**
+
 A solution for server-side rendering (SSR) Angular apps to improve first paint and SEO for crawlers.
 
-**52. What is hydration in Angular?**
+### ❓ 52. What is hydration in Angular?
 
-**Answer:**  
+📝 **Answer:**
+
 The process of reusing server-rendered DOM on the client and “wiring it up” to Angular, reducing re-rendering on startup.
 
-**53. Trick: Why might you still need `meta` tags service even with SSR?**
+### ❓ 53. Trick: Why might you still need `meta` tags service even with SSR?
 
-**Answer:**  
+📝 **Answer:**
+
 Dynamic pages or client-side navigation need meta tags updated after initial load for social previews and some crawlers.
 
 ---
 
 ## 12. Security
 
-**54. How does Angular help protect against XSS?**
+### ❓ 54. How does Angular help protect against XSS?
 
-**Answer:**  
+📝 **Answer:**
+
 By default, it sanitizes values in templates and escapes interpolated strings; it also has `DomSanitizer` for safe bypass in controlled situations.
 
-**55. What is `DomSanitizer` and when should you use it?**
+### ❓ 55. What is `DomSanitizer` and when should you use it?
 
-**Answer:**  
+📝 **Answer:**
+
 Service to mark trusted HTML/URLs/styles as safe. Use sparingly when you’re certain data is safe, e.g. from trusted sources.
 
-**56. Trick: Is binding to `[innerHTML]` always safe?**
+### ❓ 56. Trick: Is binding to `[innerHTML]` always safe?
 
-**Answer:**  
+📝 **Answer:**
+
 No. It’s a common XSS vector if you bind untrusted input. Only use with sanitized/trusted content.
 
 ---
 
 ## 13. Testing (Unit, Integration, E2E)
 
-**57. How do you test components in Angular?**
+### ❓ 57. How do you test components in Angular?
 
-**Answer:**  
+📝 **Answer:**
+
 With TestBed to configure testing module, create component fixture, interact with DOM, and assert outputs.
 
-**58. What’s the difference between shallow tests and integrated tests in Angular?**
+### ❓ 58. What’s the difference between shallow tests and integrated tests in Angular?
 
-**Answer:**  
+📝 **Answer:**
+
 Shallow: test component in isolation with mocked child components/services. Integrated: include real child components, services, and possibly routing.
 
-**59. How do you test an Angular service that uses HttpClient?**
+### ❓ 59. How do you test an Angular service that uses HttpClient?
 
-**Answer:**  
+📝 **Answer:**
+
 Use `HttpClientTestingModule` and `HttpTestingController` to mock and assert HTTP calls.
 
-**60. Trick: Why is it a bad idea to rely heavily on `fakeAsync` for all async testing?**
+### ❓ 60. Trick: Why is it a bad idea to rely heavily on `fakeAsync` for all async testing?
 
-**Answer:**  
+📝 **Answer:**
+
 It can hide real timing issues and doesn’t handle all async sources gracefully (e.g. some timers or external APIs). Use `async`/`waitForAsync` or Observables where appropriate.
 
 ---
 
 ## 14. Build, Tooling & Versioning
 
-**61. What role does the Angular CLI play?**
+### ❓ 61. What role does the Angular CLI play?
 
-**Answer:**  
+📝 **Answer:**
+
 It scaffolds projects, generates code, builds/serves apps, runs tests and linting, and manages configurations.
 
-**62. How do you configure different environments (dev, QA, prod)?**
+### ❓ 62. How do you configure different environments (dev, QA, prod)?
 
-**Answer:**  
+📝 **Answer:**
+
 Through environment files and build configurations; or via runtime configuration (e.g. loading JSON config on startup).
 
-**63. What is `ngZone: 'noop'` mode and when might you use it?**
+### ❓ 63. What is `ngZone: 'noop'` mode and when might you use it?
 
-**Answer:**  
+📝 **Answer:**
+
 It disables Zone.js-based auto change detection. You then trigger detection manually; useful for high-performance use cases or integrating with other reactive systems.
 
 ---
 
 ## 15. Design, Patterns & Best Practices
 
-**64. How do you structure a large Angular project?**
+### ❓ 64. How do you structure a large Angular project?
 
-**Answer:**  
+📝 **Answer:**
+
 By domain/feature modules or feature folders, shared/core modules, clear layering (components → services → data layer), consistent naming, and enforcing boundaries.
 
-**65. How do smart vs dumb (container vs presentational) components help?**
+### ❓ 65. How do smart vs dumb (container vs presentational) components help?
 
-**Answer:**  
+📝 **Answer:**
+
 Smart components handle data fetching and state; dumb components focus on UI and inputs/outputs. This improves reusability and testability.
 
-**66. Trick: When is a service NOT a singleton in Angular?**
+### ❓ 66. Trick: When is a service NOT a singleton in Angular?
 
-**Answer:**  
+📝 **Answer:**
+
 When it’s provided in a component or in a lazy-loaded module, rather than in root; then each component/module gets its own instance.
 
-**67. What are some anti-patterns you watch out for in Angular code?**
+### ❓ 67. What are some anti-patterns you watch out for in Angular code?
 
-**Answer:**  
+📝 **Answer:**
+
 Business logic in components instead of services, massive god components, heavy logic in templates, subscriptions without unsubscribe, using `any` everywhere, too many global singletons.

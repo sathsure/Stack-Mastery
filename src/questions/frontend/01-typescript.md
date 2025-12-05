@@ -1,15 +1,22 @@
 ### ❓ 1. What is the difference between `const` and `as const` in TypeScript?
 
-**📝 Answer:**  
+📝 **Answer:**
+
 `const` The variable cannot be reassigned, but the contents inside the object can still change.  
-`as const` The value becomes completely locked — its contents cannot change, and the types stay exact.  
-**💻 Code Example:** [const-as-const.ts][const-as-const]
+`as const` The value becomes completely locked — its contents cannot change, and the types stay exact.
 
-### ❓2. How does TypeScript’s type inference work?
+💻 **Code Example:**
 
-**📝 Answer:**  
-TypeScript's type inference is the ability of the compiler to automatically determine and assign types to variables, functions, objects, arrays.  
-**💻 Code Example:**  
+[const-as-const.ts][const-as-const]
+
+### ❓ 2. How does TypeScript’s type inference work?
+
+📝 **Answer:**
+
+TypeScript's type inference is the ability of the compiler to automatically determine and assign types to variables, functions, objects, arrays.
+
+💻 **Code Example:**
+
 Variable Initialization:
 
 ```ts
@@ -35,10 +42,13 @@ let user = { name: "Alice", age: 30 }; // Inferred as { name: string; age: numbe
 
 ### ❓3. Explain the difference between types vs interfaces. When do you use each?
 
-**📝 Answer:**  
+📝 **Answer:**
+
 `Interface` is mainly for describing object shapes and is extendable (can be merged).  
-`Type` is more flexible — can represent unions, primitives, tuples, and complex compositions.  
-**💻 Code Example:**  
+`Type` is more flexible — can represent unions, primitives, tuples, and complex compositions.
+
+💻 **Code Example:**
+
 Interface:
 
 ```ts
@@ -68,9 +78,11 @@ type DetailedProduct = Product & { price: number }; // Intersection (combine typ
 
 ### ❓4. What are mapped types? Examples.
 
-**📝 Answer:**  
-`Mapped types` apply transformations to each property of an existing type to produce a new type.  
-**💻 Code Example:**
+📝 **Answer:**
+
+`Mapped types` apply transformations to each property of an existing type to produce a new type.
+
+💻 **Code Example:**
 
 ```ts
 type Person = { name: string; age: number };
@@ -84,10 +96,12 @@ const person3: PartialPerson = {}; // Valid
 
 ### ❓5. Explain Generics with constraints.
 
-**📝 Answer:**  
+📝 **Answer:**
+
 `Generic:` A placeholder type that makes code reusable for many types.
-`Constraint:` A rule that limits what types the generic can accept to ensure safety (like requiring a length property).  
-**💻 Code Example:**
+`Constraint:` A rule that limits what types the generic can accept to ensure safety (like requiring a length property).
+
+💻 **Code Example:**
 
 ```ts
 // T must have a 'length' property
@@ -104,33 +118,58 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 **📝 Answer:**
 
-1. `Partial<Type>:` The Partial utility type makes all properties in Type optional.  
-   **💻 Code Example:** [utility-type-partial.ts][utility-type-partial]
-2. `Pick<Type, Keys>:` Pick creates a new type that contains only the selected properties from an existing type.  
-   **💻 Code Example:** [utility-type-pick.ts][utility-type-pick]
-3. `Omit<Type, Keys>:` Omit creates a new type by removing specific properties from an existing type.  
-   **💻 Code Example:** [utility-type-omit.ts][utility-type-omit]
-4. `ReturnType<Type>:` ReturnType extracts the type of a function’s return value without repeating the function’s definition.  
-   **💻 Code Example:** [utility-type-returntype.ts][utility-type-returntype]
+1. `Partial<Type>:` The Partial utility type makes all properties in Type optional.
+
+   💻 **Code Example:**
+
+   [utility-type-partial.ts][utility-type-partial]
+
+2. `Pick<Type, Keys>:` Pick creates a new type that contains only the selected properties from an existing type.
+
+   💻 **Code Example:**
+
+   [utility-type-pick.ts][utility-type-pick]
+
+3. `Omit<Type, Keys>:` Omit creates a new type by removing specific properties from an existing type.
+
+   💻 **Code Example:**
+
+   [utility-type-omit.ts][utility-type-omit]
+
+4. `ReturnType<Type>:` ReturnType extracts the type of a function’s return value without repeating the function’s definition.
+
+   💻 **Code Example:**
+
+   [utility-type-returntype.ts][utility-type-returntype]
 
 ### ❓7. What is declaration merging?
 
-**📝 Answer:**  
-`Declaration merging` combines multiple declarations of the same name into a single definition  
-**💻 Code Example:** [declaration-merging][types-vs-interfaces]
+📝 **Answer:**
+
+`Declaration merging` combines multiple declarations of the same name into a single definition
+
+💻 **Code Example:**
+
+[declaration-merging][types-vs-interfaces]
 
 ### ❓8. Explain structural typing in TS?
 
-**📝 Answer:**  
+📝 **Answer:**
+
 `Structural typing` in TypeScript means two types are compatible if their shape (properties and methods) matches, regardless of their names.  
-In short: If the structure fits, the type fits.  
-**💻 Code Example:** [structural-typing.ts][structural-typing]
+In short: If the structure fits, the type fits.
+
+💻 **Code Example:**
+
+[structural-typing.ts][structural-typing]
 
 ### ❓9. What are discriminated unions?
 
-**📝 Answer:**  
-`Discriminated unions` allow grouping related types using a common discriminant property, enabling TypeScript to narrow types safely.  
-**💻 Code Example:**
+📝 **Answer:**
+
+`Discriminated unions` allow grouping related types using a common discriminant property, enabling TypeScript to narrow types safely.
+
+💻 **Code Example:**
 
 ```ts
 type Shape =
@@ -146,9 +185,11 @@ function area(shape: Shape) {
 
 ### ❓10. How do you create and use custom type guards?
 
-**📝 Answer:**  
-A `custom type guard` is a function that returns `x is Type` to help TypeScript narrow types at runtime.  
-**💻 Code Example:**
+📝 **Answer:**
+
+A `custom type guard` is a function that returns `x is Type` to help TypeScript narrow types at runtime.
+
+💻 **Code Example:**
 
 ```ts
 // Custom type guard: checks if val is a number
@@ -166,11 +207,13 @@ if (isNumber(input)) {
 
 ### ❓11. What is never, unknown, void? When to use each?
 
-**📝 Answer:**  
+📝 **Answer:**
+
 `never:` A type that never occurs, used for unreachable code or exhaustive checks.  
 `unknown:`A safe alternative to `any`, requires type-checking before use.  
-`void:` Represents no return value, typically in functions.  
-**💻 Code Example:**
+`void:` Represents no return value, typically in functions.
+
+💻 **Code Example:**
 
 ```ts
 // never returns because it throws an error
@@ -188,9 +231,11 @@ function log(msg: string): void {
 
 ### ❓12. What are decorators and how are they applied?
 
-**📝 Answer:**  
-Decorators are annotations that modify classes, methods, or properties at runtime; enabled via `experimentalDecorators`.  
-**💻 Code Example:**
+📝 **Answer:**
+
+Decorators are annotations that modify classes, methods, or properties at runtime; enabled via `experimentalDecorators`.
+
+💻 **Code Example:**
 
 ```ts
 function Logger(target: Function) {
