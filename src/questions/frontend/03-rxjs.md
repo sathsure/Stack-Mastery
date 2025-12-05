@@ -127,6 +127,9 @@
 
 **Answer:** Ignores new source values while an inner Observable is active; resumes listening after inner completes.
 
+<img width="600" height="500" alt="map" src="https://github.com/user-attachments/assets/d6d60383-01c6-4dd1-b9de-f3d0b7e490f6" />
+
+
 ### 28. **Trick:** For an autocomplete search, which is best: `switchMap`, `mergeMap`, `concatMap`, or `exhaustMap`?
 
 **Answer:** `switchMap`, because it cancels previous HTTP requests when new input arrives.
