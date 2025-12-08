@@ -39,7 +39,7 @@ export function App() {
       style={{
         height: "400px", // 👈 make it scrollable
         overflowY: "auto",
-        border: "1px solid #ccc",
+        border: "1px solid white",
       }}
     >
       <ul>
