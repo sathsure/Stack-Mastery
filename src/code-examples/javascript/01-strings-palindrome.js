@@ -10,6 +10,12 @@ function isPalindrome(str) {
   return true;
 }
 
+//Alternative using built-in methods
+// function isPalindromeBuiltIn(str) {
+//   const reversed = str.split("").reverse().join("");
+//   return str === reversed;
+// }
+
 // Example
 console.log(isPalindrome("racecar")); // true
 console.log(isPalindrome("hello")); // false
