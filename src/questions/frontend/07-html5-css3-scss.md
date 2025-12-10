@@ -187,23 +187,35 @@ Key points:
 
 ---
 
-### ❓ 6. How browser paints, composites, and reflows CSS?
+### ❓ 6. How browser renders a webpage?
 
 📝 **Answer:**
 
-Rough pipeline:
+**1. Browser downloads HTML:** Starts receiving the document.
 
-1. **DOM + CSSOM → Render Tree**
-2. **Layout (Reflow)**: calculate size & position.
-3. **Paint**: fill pixels (colors, borders, text).
-4. **Composite**: merge layers (e.g. for transforms, fixed elements).
+**2. HTML gets parsed:** Browser begins building the **DOM**.
 
-Expensive:
+**3. During parsing, browser finds CSS `<link>`:** Starts downloading CSS **in parallel**, and continues parsing HTML.
 
-- **Layout/reflow**: changes to geometry (width, height, font-size).
-- **Paint**: changes to colors, shadows, borders.
-  Cheaper:
-- **Compositor-only**: `transform`, `opacity`.
+**4. CSSOM starts only _after_ CSS finishes downloading:** CSSOM is built **in parallel with DOM building** (it does _NOT_ wait for DOM to finish).
+
+**5. During parsing, browser finds JS `<script>`:** Starts downloading JS.
+
+**6. If JS is not `defer` or `async`: ** DOM creation is **paused**, JS is **executed**, then parsing continues.
+
+**7. JavaScript can manipulate the DOM only after the DOM parts exist:** (i.e., after those nodes are parsed and created).
+
+**8. Once DOM + CSSOM are both ready:** Browser builds the **Render Tree** (visible elements + applied styles).
+
+**9. Layout (Reflow):** Browser computes **size**, **position**, **geometry** of each visible element.
+
+**10. Paint:** Browser **draws pixels** for text, colors, borders, images, and everything visible.
+
+---
+
+# 🎯 **One-line summary**
+
+**HTML → DOM, CSS → CSSOM, JS can block DOM, then DOM+CSSOM → Render Tree → Layout → Paint.**
 
 💻 **Code Example:**
 
