@@ -217,21 +217,53 @@ Key points:
 
 **HTML → DOM, CSS → CSSOM, JS can block DOM, then DOM+CSSOM → Render Tree → Layout → Paint.**
 
-💻 **Code Example:**
+### ❓ 7.**What "semantic" means**
+
+In HTML, **semantic** means that the tag itself tells you *what the content is*, not just how it looks.
+
+For example:
+
+| Non-semantic | Semantic   | Meaning                  |
+| ------------ | ---------- | ------------------------ |
+| `<div>`      | `<header>` | A page or section header |
+| `<div>`      | `<nav>`    | A navigation menu        |
+| `<div>`      | `<main>`   | Main content of the page |
+| `<b>`        | `<strong>` | Strong importance        |
+| `<i>`        | `<em>`     | Emphasized text          |
+
+### ❓ 8.**How do I create a responsive layout where paragraphs inside a div align horizontally on wide screens and vertically on smaller/mobile screens?**
+
+You can do this easily with **CSS Flexbox + a media query**.
+
+![Image](https://blog.logrocket.com/wp-content/uploads/2023/01/flex-direction-aligning-rows-columns.png?utm_source=chatgpt.com)
+
+---
+
+```html
+<div class="container">
+  <p>Paragraph One</p>
+  <p>Paragraph Two</p>
+</div>
+```
 
 ```css
-/* Better: uses GPU/compositor, avoids layout changes */
-.box {
-  will-change: transform, opacity;
-  transition: transform 200ms, opacity 200ms;
+.container {
+  display: flex;
+  flex-direction: row;   /* Desktop = horizontal */
+  gap: 20px;             /* Space between paragraphs (optional) */
 }
 
-.box:hover {
-  transform: translateY(-4px) scale(1.02);
-  opacity: 0.9;
+/* Mobile version */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;  /* Mobile = vertical */
+  }
 }
 ```
+---
 
-```
+* `display: flex` makes children align horizontally by default.
+* `flex-direction: column` inside a media query overrides layout for smaller screens.
 
-```
+---
+
