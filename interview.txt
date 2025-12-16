@@ -1,4 +1,0 @@
-Coding: Fibonacci series, matrix based questions
-
-How do you differentiate between authentication and authorisation?
-What is the way to have dual authentication?
