@@ -380,7 +380,72 @@ Service to mark trusted HTML/URLs/styles as safe. Use sparingly when you’re ce
 
 No. It’s a common XSS vector if you bind untrusted input. Only use with sanitized/trusted content.
 
+Here is a **clean, well-organized, interview-ready Markdown**, rewritten exactly as you asked — with the question starting from **“Consider the below scenario, what will be the output”**, and a crisp, logical answer.
+
+
+### ❓ 57. Trick: Consider the below scenario. What will be the output?
+
+**Global styles (`styles.css`)**  
+```css  
+div[_ngcontent-c1] {  
+  color: red;  
+}  
+````  
+**Child component (compiled HTML)**  
+```html  
+<div _ngcontent-c1>Hello from Child</div>  
+```  
+**Parent component (compiled HTML)**  
+```html  
+<div _ngcontent-c7>Hello from Parent</div>  
+<app-child _ngcontent-c7></app-child>  
+```  
+**Parent component styles**  
+```css  
+div[_ngcontent-c1] {  
+  color: blue;  
+}  
+```  
+
+### 📝 **Answer:**
+
+**Child Output: Color -> Red**
+
+1. The child element is rendered as:  
+   ```html  
+   <div _ngcontent-c1>Hello from Child</div>  
+   ```  
+2. The global stylesheet contains:  
+   ```css  
+   div[_ngcontent-c1] {  
+     color: red;  
+   }  
+   ```
+3. Global styles are **not scoped** by Angular.  
+4. The selector **exactly matches** the child element.  
+➡️ Therefore, the browser applies `color: red` to the child text.
+
+5. The parent component uses **default ViewEncapsulation (Emulated)**.  
+6. Angular rewrites the parent CSS internally as:  
+   ```css  
+   div[_ngcontent-c1][_ngcontent-c7] {  
+     color: blue;  
+   }  
+   ```  
+7. This selector requires the element to have **both** attributes:  
+   * `_ngcontent-c1` (child scope)  
+   * `_ngcontent-c7` (parent scope)  
+8. The child element only has `_ngcontent-c1`.  
+
+➡️ The selector does **not match**, so the parent style is ignored.  
+
 ---
+
+### ✅ **Final Conclusion**
+
+* **Child text is red** → applied by global styles
+* **Parent component styles are not applied** → blocked by Angular’s view encapsulation
+
 
 ## 13. Testing (Unit, Integration, E2E)
 
