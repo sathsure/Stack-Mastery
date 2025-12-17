@@ -1,10 +1,8 @@
 // event-loop.js
 // Run with: node event-loop.js
 
-console.log("script-start");
-
 // 1. Synchronous code
-console.log("sync-log");
+console.log("script-start");
 
 // 2. Synchronous: default params + IIFE
 (function (y = 10, x = y) {
@@ -21,30 +19,43 @@ Promise.resolve().then(() => {
   console.log("promise-then");
 });
 
-// 5. queueMicrotask (microtask, after nextTick / promises)
+// 5. Promise constructor
+new Promise((resolve, reject) => {
+  resolve(console.log("Promise constructor"));
+});
+
+
+// 6. Promise microtask that schedules a macrotask
+Promise.resolve().then(() => {
+  setTimeout(() => {
+    console.log("Promise microtask that schedules a macrotask");
+  }, 0);
+});
+
+// 7. queueMicrotask (microtask, after nextTick / promises)
 queueMicrotask(() => {
   console.log("queueMicrotask");
 });
 
-// 6. async/await (await continuation is a microtask)
+// 8. async/await (await continuation is a microtask)
 (async function asyncFn() {
-  console.log("asyncFn-sync-part");
+  console.log("asyncFn-before-await");
   await null; // queues a microtask
   console.log("asyncFn-after-await");
 })();
 
-// 7. timers phase: setTimeout
+// 9. timers phase: setTimeout
 setTimeout(() => {
   console.log("setTimeout-0ms");
 }, 0);
 
-// 8. timers phase: setInterval (single tick)
+// 10. timers phase: setInterval (single tick)
 const intervalId = setInterval(() => {
   console.log("setInterval-tick");
   clearInterval(intervalId);
 }, 0);
 
-// 9. check phase: setImmediate
+// 11. check phase: setImmediate
 setImmediate(() => {
   console.log("setImmediate");
 });
@@ -53,8 +64,8 @@ console.log("script-end");
 
 // Expected Output Order:
 // script-start
-// sync-log
 // default-params: 10 10
+// Promise constructor
 // asyncFn-sync-part
 // script-end
 // nextTick
@@ -63,4 +74,5 @@ console.log("script-end");
 // asyncFn-after-await
 // setTimeout-0ms
 // setInterval-tick
+// Promise microtask that schedules a macrotask
 // setImmediate
