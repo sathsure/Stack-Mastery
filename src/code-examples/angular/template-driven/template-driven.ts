@@ -4,7 +4,7 @@ import { Component } from "@angular/core";
 
 @Component({
   selector: "app-template-driven-example",
-  templateUrl: "./template-driven-example.component.html",
+  templateUrl: "./template-driven.html",
 })
 export class TemplateDrivenExampleComponent {
   submit(formValue: any) {

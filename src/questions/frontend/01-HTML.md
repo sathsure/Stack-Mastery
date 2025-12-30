@@ -235,7 +235,7 @@ For example:
 
 You can do this easily with **CSS Flexbox + a media query**.
 
-![Image](https://blog.logrocket.com/wp-content/uploads/2023/01/flex-direction-aligning-rows-columns.png?utm_source=chatgpt.com)
+![FlexDirection Image](/src/assets/flex-direction.png)
 
 ---
 
