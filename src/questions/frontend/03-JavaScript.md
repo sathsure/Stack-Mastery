@@ -832,8 +832,6 @@ console.log(arr.myMap((v) => v * 2)); // [2, 4, 6]
 
 Here’s a **short, interview-ready explanation** focused exactly on your three questions, using the given `myMap` / `myFilter` code.
 
----
-
 #### 1️⃣ Why does the callback receive **3 parameters**?
 
 **`callback(value, index, array)`**
@@ -1027,7 +1025,6 @@ null instanceof Object; // false
 📝 **Answer:**
 
 ![EventLoop Image](/src/assets/event-loop.png)
-![EventLoop GIF](/src/assets/event-loop-gif.gif)
 
 #### 1️⃣ Call Stack (Executes First)
 
@@ -1079,3 +1076,5 @@ null instanceof Object; // false
 👉 `setTimeout(0)` still waits
 
 #### Call Stack → nextTick → Microtasks → previous Macrotasks.
+
+![EventLoop GIF](/src/assets/event-loop-gif.gif)

@@ -7,7 +7,20 @@
 
 💻 **Code Example:**
 
-[const-as-const.ts][const-as-const]
+```ts
+const mutableobject = { a: 1, b: 2, c: 3 };
+mutableobject.a = 100; // Allowed
+// mutableobject = { a: 10, b: 20, c: 30 }; // Error: Cannot assign to 'mutableobject' because it is a constant.
+
+const immutableobject = { x: 10, y: 20, z: 30 } as const;
+// immutableobject.x = 200; // Error: Cannot assign to 'x' because it is a read-only property.
+// immutableobject = { x: 100, y: 200, z: 300 }; // Error: Cannot assign to 'immutableobject' because it is a constant.
+
+console.log("mutableobject:", mutableobject);
+console.log("immutableobject:", immutableobject);
+```
+
+---
 
 ### ❓ 2. How does TypeScript’s type inference work?
 
@@ -39,6 +52,8 @@ Arrays and Objects:
 let numbers = [1, 2, 3]; // Inferred as number[]
 let user = { name: "Alice", age: 30 }; // Inferred as { name: string; age: number; }
 ```
+
+---
 
 ### ❓3. Explain the difference between types vs interfaces. When do you use each?
 
@@ -74,7 +89,29 @@ type Product = { name: string }; // Object type
 type DetailedProduct = Product & { price: number }; // Intersection (combine types)
 ```
 
-🔑 Key Difference: [types-vs-interfaces.ts][types-vs-interfaces]
+🔑 Key Difference:
+
+```ts
+// Declaration Merging (Interface only)
+interface Config {
+  apiUrl: string;
+}
+
+interface Config {
+  timeout: number;
+}
+
+const appConfig: Config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+};
+
+// This would cause an error with type aliases:
+// type MyType = { a: string };
+// type MyType = { b: number }; // Error: Duplicate identifier 'MyType'.
+```
+
+---
 
 ### ❓4. What are mapped types? Examples.
 
@@ -93,6 +130,8 @@ const person1: PartialPerson = { name: "Alice" }; // Valid
 const person2: PartialPerson = { age: 30 }; // Valid
 const person3: PartialPerson = {}; // Valid
 ```
+
+---
 
 ### ❓5. Explain Generics with constraints.
 
@@ -114,6 +153,8 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 // getLength(10);     // ❌ error (number has no length)
 ```
 
+---
+
 ### ❓6. What are utility types like Partial, Pick, Omit, ReturnType?
 
 **📝 Answer:**
@@ -122,25 +163,85 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
    💻 **Code Example:**
 
-   [utility-type-partial.ts][utility-type-partial]
+   ```ts
+   interface User {
+     id: number;
+     name: string;
+     email: string;
+   }
+
+   type PartialUser = Partial<User>;
+   // type PartialUser = { id?: number; name?: string; email?: string; }
+
+   const updateProfile = (fields: PartialUser) => {
+     // function that can accept an object with any subset of User properties
+   };
+   updateProfile({ name: "Jane Doe" }); // Valid
+   ```
 
 2. `Pick<Type, Keys>:` Pick creates a new type that contains only the selected properties from an existing type.
 
    💻 **Code Example:**
 
-   [utility-type-pick.ts][utility-type-pick]
+   ```ts
+   interface Product {
+     id: number;
+     name: string;
+     price: number;
+     description: string;
+   }
+
+   // type ProductSummary = { id: number; name: string; }
+   type ProductSummary = Pick<Product, "id" | "name">;
+
+   const displaySummary: ProductSummary = {
+     id: 101,
+     name: "Laptop",
+   };
+   ```
 
 3. `Omit<Type, Keys>:` Omit creates a new type by removing specific properties from an existing type.
 
    💻 **Code Example:**
 
-   [utility-type-omit.ts][utility-type-omit]
+   ```ts
+   interface UserDetails {
+     id: number;
+     username: string;
+     email: string;
+     passwordHash: string;
+   }
+
+   // type PublicUserDetails = { id: number; username: string; email: string; }
+   type PublicUserDetails = Omit<UserDetails, "passwordHash">;
+
+   const publicData: PublicUserDetails = {
+     id: 1,
+     username: "johndoe",
+     email: "john@example.com",
+   };
+   ```
 
 4. `ReturnType<Type>:` ReturnType extracts the type of a function’s return value without repeating the function’s definition.
 
    💻 **Code Example:**
 
-   [utility-type-returntype.ts][utility-type-returntype]
+   ```ts
+   const getUserData = () => {
+     return { id: 1, name: "Alice", role: "admin" };
+   };
+
+   // type UserDataType = { id: number; name: string; role: string; }
+   type UserDataType = ReturnType<typeof getUserData>;
+
+   const currentUser: UserDataType = {
+     id: 2,
+     name: "Bob",
+     role: "user",
+   };
+   ```
+
+---
 
 ### ❓7. What is declaration merging?
 
@@ -150,18 +251,52 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 💻 **Code Example:**
 
-[declaration-merging][types-vs-interfaces]
+    ```ts
+    // Declaration Merging (Interface only)
+    interface Config {
+      apiUrl: string;
+    }
+
+    interface Config {
+      timeout: number;
+    }
+
+    const appConfig: Config = {
+      apiUrl: "https://api.example.com",
+      timeout: 5000,
+    };
+
+    // This would cause an error with type aliases:
+    // type MyType = { a: string };
+    // type MyType = { b: number }; // Error: Duplicate identifier 'MyType'.
+    ```
+
+---
 
 ### ❓8. Explain structural typing in TS?
 
 📝 **Answer:**
 
-`Structural typing` in TypeScript means two types are compatible if their shape (properties and methods) matches, regardless of their names.  
+`Structural typing` in TypeScript means two types are compatible if their shape (properties and methods) matches, regardless of their names.
 In short: If the structure fits, the type fits.
 
 💻 **Code Example:**
 
-[structural-typing.ts][structural-typing]
+    ```ts
+    interface Point {
+      x: number;
+      y: number;
+    }
+
+    function printPoint(p: Point) {
+      console.log(`x: ${p.x}, y: ${p.y}`);
+    }
+
+    const myCoords = { x: 10, y: 20 };
+    printPoint(myCoords); // Valid, because myCoords structurally matches Point
+    ```
+
+---
 
 ### ❓9. What are discriminated unions?
 
@@ -182,6 +317,8 @@ function area(shape: Shape) {
   }
 }
 ```
+
+---
 
 ### ❓10. How do you create and use custom type guards?
 
@@ -204,6 +341,8 @@ if (isNumber(input)) {
   console.log(input.toFixed(2)); // safe: 'input' is now definitely a number
 }
 ```
+
+---
 
 ### ❓11. What is never, unknown, void? When to use each?
 
@@ -229,6 +368,8 @@ function log(msg: string): void {
 }
 ```
 
+---
+
 ### ❓12. What are decorators and how are they applied?
 
 📝 **Answer:**
@@ -245,11 +386,3 @@ function Logger(target: Function) {
 @Logger
 class User {}
 ```
-
-[const-as-const]: ../../code-examples/typescript/const-as-const.ts
-[types-vs-interfaces]: ../../code-examples/typescript/types-vs-interfaces.ts
-[utility-type-partial]: ../../code-examples/typescript/utility-type-partial.ts
-[utility-type-pick]: ../../code-examples/typescript/utility-type-pick.ts
-[utility-type-omit]: ../../code-examples/typescript/utility-type-omit.ts
-[utility-type-returntype]: ../../code-examples/typescript/utility-type-returntype.ts
-[structural-typing]: ../../code-examples/typescript/structural-typing.ts

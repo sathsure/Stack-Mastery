@@ -976,6 +976,8 @@ Yes. Signals update only the views that explicitly depend on them.
 
 Signals are reactive primitives that hold a value and notify dependents when the value changes, offering a more explicit and fine-grained reactivity model than Zone-based change detection.
 
+---
+
 ### ❓ 37. Trick: Does changing a signal value in a service automatically update all consuming components?
 
 📝 **Answer:**
@@ -990,11 +992,15 @@ Yes, any computed views or effects using that signal re-run, updating the UI whe
 
 Providers can be registered in modules, components, or via `providedIn`. The injector tree mirrors the component/module tree; a child injector falls back to parent injectors when resolving dependencies.
 
+---
+
 ### ❓ 39. Difference between `providedIn: 'root'` and `providedIn: 'any'`?
 
 📝 **Answer:**
 
 `'root'` creates a singleton service in the root injector. `'any'` creates a new instance in each lazy-loaded module or component injector where it’s requested.
+
+---
 
 ### ❓ 40. What’s a multi-provider and when would you use it?
 
@@ -1002,11 +1008,15 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 
 A multi-provider allows multiple values for the same token (e.g. multiple `HTTP_INTERCEPTORS`). You declare `multi: true` in the provider.
 
+---
+
 ### ❓ 41. Trick: If you provide the same service in a lazy-loaded module and in root, how many instances exist?
 
 📝 **Answer:**
 
 Two: one in the root injector, and a separate one in the lazy module’s injector.
+
+---
 
 ### ❓ 42. What are injection tokens and why are they needed?
 
@@ -1022,11 +1032,15 @@ Two: one in the root injector, and a separate one in the lazy module’s injecto
 
 Routes config, router outlet, routerLink/routerLinkActive, route guards, lazy loading, resolvers, `ActivatedRoute`.
 
+---
+
 ### ❓ 44. What are route guards and types available?
 
 📝 **Answer:**
 
 Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `CanLoad` / `CanMatch`, etc.
+
+---
 
 ### ❓ 45. Difference between `CanLoad`/`CanMatch` and `CanActivate`?
 
@@ -1034,17 +1048,23 @@ Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `Ca
 
 `CanActivate` runs after module is loaded to allow/deny activation. `CanLoad`/`CanMatch` runs before loading, preventing the lazy module bundle from being loaded if not allowed.
 
+---
+
 ### ❓ 46. Explain lazy loading modules / routes.
 
 📝 **Answer:**
 
 Lazy-loaded routes use dynamic imports in route config (e.g. `loadChildren:` or standalone `loadComponent`), so code is loaded on demand.
 
+---
+
 ### ❓ 47. Trick: If you have a service provided in a lazy-loaded module, is it shared with the rest of the app?
 
 📝 **Answer:**
 
 No. That service instance is scoped to that lazy module’s injector (unless explicitly provided at root).
+
+---
 
 ### ❓ 48. How do you access route params and query params?
 
@@ -1060,17 +1080,23 @@ Using `ActivatedRoute`: `route.paramMap`, `route.snapshot.paramMap`, `route.quer
 
 Template-driven: form logic in template, simpler, uses `ngModel`. Reactive: form model in TypeScript, more explicit, scalable, and testable using `FormGroup`, `FormControl`, `FormArray`.
 
+---
+
 ### ❓ 50. What is a `FormGroup` and `FormControl`?
 
 📝 **Answer:**
 
 `FormControl` represents a single value and validation state. `FormGroup` is a collection of controls, acting like an object model.
 
+---
+
 ### ❓ 51. How do you create a custom form control compatible with Angular forms?
 
 📝 **Answer:**
 
 Implement `ControlValueAccessor` and optionally `Validator` to integrate with the forms API and be used with `formControlName`/`ngModel`.
+
+---
 
 ### ❓ 52. Trick: Why is using `[(ngModel)]` with reactive forms generally discouraged?
 
@@ -1086,17 +1112,23 @@ It mixes paradigms and can cause confusion and unexpected behavior. You should s
 
 `HttpClient` returns typed, observable responses, handles JSON automatically, supports interceptors, easier configuration.
 
+---
+
 ### ❓ 54. What are HTTP interceptors used for?
 
 📝 **Answer:**
 
 To inspect/modify requests and responses globally (e.g. auth headers, logging, error handling, retries).
 
+---
+
 ### ❓ 55. Trick: In what order do multiple interceptors execute?
 
 📝 **Answer:**
 
 They execute in the order they are provided for outgoing requests, and in reverse order for incoming responses.
+
+---
 
 ### ❓ 56. How do you handle global HTTP errors?
 
@@ -1112,17 +1144,23 @@ Use an interceptor to catch errors in `catchError`, and possibly a global error 
 
 Options: services with RxJS (BehaviorSubject, signals), NgRx, Akita, NGXS, or custom state management patterns.
 
+---
+
 ### ❓ 58. When would you prefer NgRx over simple services with subjects/signals?
 
 📝 **Answer:**
 
 For large, complex apps that need predictable, testable state changes, time-travel debugging, and strict one-way data flow.
 
+---
+
 ### ❓ 59. Trick: Is `async` pipe unsubscribing automatically a replacement for manual unsubscribe in all cases?
 
 📝 **Answer:**
 
 Only in templates. Subscriptions created in code (e.g. in `ngOnInit`) must still be manually managed/unsubscribed.
+
+---
 
 ### ❓ 60. How do you avoid multiple HTTP calls when multiple subscribers listen to the same Observable?
 
@@ -1138,11 +1176,15 @@ Use sharing operators like `shareReplay` or convert to a signal/store, or cache 
 
 `OnPush` change detection, trackBy in `*ngFor`, lazy loading routes/components, preloading strategies, pure pipes, avoiding heavy work in templates, memoization, CDRef control.
 
+---
+
 ### ❓ 62. Why is `trackBy` important for `*ngFor`?
 
 📝 **Answer:**
 
 It helps Angular identify items uniquely, so it reuses DOM elements instead of destroying/recreating them, improving performance on large lists.
+
+---
 
 ### ❓ 63. Trick: What happens if you mutate the array used in `*ngFor` without a `trackBy`?
 
@@ -1150,11 +1192,15 @@ It helps Angular identify items uniquely, so it reuses DOM elements instead of d
 
 Angular may re-render many list items unnecessarily, causing poor performance.
 
+---
+
 ### ❓ 64. How would you analyze performance issues in an Angular app?
 
 📝 **Answer:**
 
 Use Angular DevTools, browser performance profiler, change detection profiling, logging of lifecycle hooks, and analyzing network/bundle size.
+
+---
 
 ### ❓ 65. What is AOT compilation and why is it useful?
 
@@ -1292,11 +1338,15 @@ It disables Zone.js-based auto change detection. You then trigger detection manu
 
 By domain/feature modules or feature folders, shared/core modules, clear layering (components → services → data layer), consistent naming, and enforcing boundaries.
 
+---
+
 ### ❓ 75. How do smart vs dumb (container vs presentational) components help?
 
 📝 **Answer:**
 
 Smart components handle data fetching and state; dumb components focus on UI and inputs/outputs. This improves reusability and testability.
+
+---
 
 ### ❓ 76. Trick: When is a service NOT a singleton in Angular?
 
@@ -1304,11 +1354,15 @@ Smart components handle data fetching and state; dumb components focus on UI and
 
 When it’s provided in a component or in a lazy-loaded module, rather than in root; then each component/module gets its own instance.
 
+---
+
 ### ❓ 77. What are some anti-patterns you watch out for in Angular code?
 
 📝 **Answer:**
 
 Business logic in components instead of services, massive god components, heavy logic in templates, subscriptions without unsubscribe, using `any` everywhere, too many global singletons.
+
+---
 
 ### ❓ 78. Why can subscribing to a hot observable (e.g. `Subject`) in a non-Angular callback fail to trigger change detection, and how do you fix it?
 
