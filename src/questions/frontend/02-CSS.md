@@ -435,20 +435,47 @@ Misunderstanding this causes layout bugs.
 
 ---
 
-### ❓ 10. `content-box` vs `border-box`
+### ❓ 10. What is the difference between `content-box` and `border-box`?
 
-📝 **Answer:**
+`content-box` and `border-box` define **how the browser calculates an element’s width and height**.
 
-```css
-box-sizing: border-box;
-```
+- **`content-box`** → width/height apply to **content only**
+- **`border-box`** → width/height include **content + padding + border**
 
-content-box and border-box define how the browser calculates an element’s width and height.
-- content-box → width/height apply to content only
-- border-box → width/height include content + padding + borde
+#### 1️⃣ `box-sizing: content-box` (Default)
+
+The browser treats width as **content-only**.
+This often causes layouts to grow larger than expected.
+
+#### 2️⃣ `box-sizing: border-box`
+
+The browser adjusts content size so the **overall element size stays fixed**.
+This makes layouts predictable and easier to reason about.
+
+#### Side-by-Side Summary
+
+| Property               | content-box | border-box       |
+| ---------------------- | ----------- | ---------------- |
+| Default behavior       | ✅ Yes      | ❌ No            |
+| Width includes padding | ❌ No       | ✅ Yes           |
+| Width includes border  | ❌ No       | ✅ Yes           |
+| Easy layout math       | ❌ No       | ✅ Yes           |
+| Preferred in real apps | ❌ Rarely   | ✅ Almost always |
+
+#### ❓ Why does adding padding break my layout?
+
+Because you are using `content-box`, and padding increases the total size.
+
+#### ❓ Why doesn’t width change when I add padding?
+
+Because you are using `border-box`, and padding is absorbed inside.
+
+#### One-Line Mental Model
+
+> **`content-box`: width means content only
+> `border-box`: width means the whole box**
 
 ![BorderContent Image](/src/assets/border-content.png)
----
 
 ### ❓ 11. What are the different CSS display types, and how do they impact layout and element behavior?
 
