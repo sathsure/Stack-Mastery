@@ -443,9 +443,11 @@ Misunderstanding this causes layout bugs.
 box-sizing: border-box;
 ```
 
-`border-box` includes padding and border in width/height.
-This makes layouts predictable and is widely used.
+content-box and border-box define how the browser calculates an element’s width and height.
+- content-box → width/height apply to content only
+- border-box → width/height include content + padding + borde
 
+![BorderContent Image](/src/assets/border-content.png)
 ---
 
 ### ❓ 11. What are the different CSS display types, and how do they impact layout and element behavior?
