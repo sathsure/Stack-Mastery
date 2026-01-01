@@ -13,6 +13,8 @@
 - Layout (Reflow):** Browser computes **size**, **position**, **geometry\*\* of each visible element.
 - Paint:** Browser **draws pixels\*\* for text, colors, borders, images, and everything visible.
 
+![BrowserRender Image](/src/assets/browser-render.png)
+
 #### 🎯 **One-line summary**
 
 **HTML → DOM, CSS → CSSOM, JS can block DOM, then DOM+CSSOM → Render Tree → Layout → Paint.**
