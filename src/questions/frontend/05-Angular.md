@@ -237,8 +237,6 @@ ngOnChanges
 → ngOnDestroy
 ```
 
----
-
 **child.component.ts**
 
 ```ts
@@ -350,8 +348,6 @@ export class ChildComponent
 </app-child>
 ```
 
----
-
 > DOM access should be done only in `ngAfterViewInit` because the view and child components are fully initialized at that stage.
 
 ---
@@ -442,8 +438,6 @@ Changes the DOM structure by adding or removing elements.
 
 ➡️ `*ngIf` removes or adds elements to the DOM.
 
----
-
 **Key Differences**
 
 | Component            | Directive                   |
@@ -453,8 +447,6 @@ Changes the DOM structure by adding or removing elements.
 | Uses `@Component`    | Uses `@Directive`           |
 | Can use `ng-content` | Cannot use `ng-content`     |
 | Always has selector  | Applied as attribute or `*` |
-
----
 
 **Q: Is every component a directive?**
 ✅ Yes — every component is a directive with a template.
@@ -483,8 +475,6 @@ Changes the DOM structure by adding or removing elements.
 
 👉 `*` is **syntactic sugar** for `ng-template`.
 
----
-
 **Internal Logic of `NgIf` (Simplified)**
 
 ```ts
@@ -508,8 +498,6 @@ export class NgIf {
 }
 ```
 
----
-
 **What `*ngFor` looks like**
 
 ```html
@@ -523,8 +511,6 @@ export class NgIf {
   <li>{{ i }} - {{ user.name }}</li>
 </ng-template>
 ```
-
----
 
 **Internal Logic of `NgForOf` (Simplified)**
 
@@ -551,8 +537,6 @@ export class NgForOf<T> {
   }
 }
 ```
-
----
 
 **TrackBy**
 
@@ -617,8 +601,6 @@ export class HighlightDirective {
   }
 }
 ```
-
----
 
 **`ngClass` (Simplified Logic)**
 
@@ -757,8 +739,6 @@ Async logic should be handled in services or Observables using the `async` pipe.
 
 ---
 
----
-
 ### ❓ 18. Is the async pipe pure or impure and why is it safe?
 
 📝 **Answer:**
@@ -787,8 +767,6 @@ This makes it reactive without being impure.
 
 ---
 
----
-
 ### ❓ 19. Name a default impure pipe in Angular.
 
 📝 **Answer:**
@@ -808,6 +786,8 @@ are impure.
 
 Angular will never mark a pipe impure by default.
 
+---
+
 ### ❓ 20. Explain Angular’s change detection mechanism and how it evolved from AngularJS to modern Angular.
 
 📝 **Answer:**
@@ -816,8 +796,6 @@ Angular’s change detection is responsible for keeping the UI synchronized with
 In **AngularJS**, this was done using a **digest cycle** that relied on dirty checking and repeatedly compared old and new values until the system stabilized. This approach worked but became slow as applications grew.
 
 Modern Angular replaced this with a **unidirectional, tree-based change detection system**, which checks components from the root downward and updates only what is necessary.
-
----
 
 ---
 
@@ -1224,6 +1202,8 @@ A solution for server-side rendering (SSR) Angular apps to improve first paint a
 
 The process of reusing server-rendered DOM on the client and “wiring it up” to Angular, reducing re-rendering on startup.
 
+---
+
 ### ❓ 68. Trick: Why might you still need `meta` tags service even with SSR?
 
 📝 **Answer:**
@@ -1318,11 +1298,15 @@ div[_ngcontent-c1] {
 
 It scaffolds projects, generates code, builds/serves apps, runs tests and linting, and manages configurations.
 
+---
+
 ### ❓ 72. How do you configure different environments (dev, QA, prod)?
 
 📝 **Answer:**
 
 Through environment files and build configurations; or via runtime configuration (e.g. loading JSON config on startup).
+
+---
 
 ### ❓ 73. What is `ngZone: 'noop'` mode and when might you use it?
 
@@ -1584,4 +1568,6 @@ It treats _all_ errors as “deny access”:
 
 - Hides backend / network failures
 - Makes debugging harder
-  Better: log properly, show an error page, and return meaningful navigation decisions.
+- Better: log properly, show an error page, and return meaningful navigation decisions.
+
+---
