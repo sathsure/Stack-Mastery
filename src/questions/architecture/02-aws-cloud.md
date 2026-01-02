@@ -1,423 +1,417 @@
-## 1. Cloud Fundamentals & Shared Responsibility Model
+## ☁️ DOMAIN 1: CLOUD CONCEPTS – MODEL ANSWERS
 
-### ❓ 1. What does the AWS Shared Responsibility Model mean?
+![Image](https://k21academy.com/wp-content/uploads/2024/05/AWS.png)
 
-📝 **Answer**
+![Image](https://k21academy.com/wp-content/uploads/2023/07/8.webp)
 
-AWS handles **infrastructure security** (data centers, hardware), while customers handle **application-level security**, IAM, encryption, and patching OS. Use this model whenever deciding **what your app code must secure** vs what AWS already secures.
+![Image](https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/product-categories/networking/approved/images/02b790d3d6b773afdea29a2483c46cd0.4c2a53c7c0d445df26718987c0b6a4ff3a05510c.jpeg)
 
----
+### ❓ 1. What is Cloud Computing?
 
-### ❓ 2. Who is responsible for patching EC2 instances?
-
-📝 **Answer**
-
-Customer patches the OS and app runtime (Node.js, Java, Nginx). Use OS patching during backend deployments or when hosting APIs/services on EC2.
+**Answer**
+Cloud computing is the on-demand delivery of computing resources like servers, storage, and databases over the internet with pay-as-you-go pricing, without owning physical infrastructure.
 
 ---
 
-### ❓ 3. Is AWS responsible for encrypting your data by default?
+### ❓ 2. Why AWS Cloud instead of On-Prem?
 
-📝 **Answer**
-
-No. You must enable encryption (KMS/SSE) for S3 buckets, RDS, EBS. Use encryption whenever storing sensitive user data (auth tokens, logs, environment configs).
-
----
+**Answer**
+AWS reduces upfront cost, provides global scalability, high availability, faster deployment, and managed services so companies can focus on business instead of infrastructure.
 
 ---
 
-## 2. IAM, Security & Access Control
+### ❓ 3. What is Elasticity?
 
-### ❓ 4. What is the difference between IAM User vs Role?
-
-📝 **Answer**
-
-Users have long-term credentials; roles provide **temporary auth** for apps, Lambda, EC2, or API calls. Use roles when a **backend/API** needs AWS access—never store keys in frontend code.
+**Answer**
+Elasticity is the ability to automatically increase or decrease resources based on real-time demand.
 
 ---
 
-### ❓ 5. How does an Angular SPA hosted in S3 access AWS APIs securely?
+### ❓ 4. Elasticity vs Scalability?
 
-📝 **Answer**
+**Answer**
 
-Through **Cognito** (authenticate users → receive JWT) → call API Gateway → Lambda. Use this when your frontend requires secure API calls without exposing secrets.
-Includes **frontend code (Cognito login)** + **backend (Lambda)** + **REST API (API Gateway)**.
-
-💻 Example (Angular calling API with JWT):
-
-```ts
-this.http.get(apiUrl, {
-  headers: { Authorization: userSession.getIdToken().getJwtToken() },
-});
-```
+- **Scalability:** Ability to grow capacity (manual or planned).
+- **Elasticity:** Automatic scaling based on demand.
 
 ---
 
-### ❓ 6. What is the principle of least privilege?
+### ❓ 5. What is High Availability?
 
-📝 **Answer**
-
-Give only required permissions for the task. Use minimal IAM role permissions for Lambda, EC2, API Gateway, or backend code accessing S3/KMS.
-
----
+**Answer**
+Designing systems to remain operational even if components fail, typically using Multi-AZ deployments and load balancing.
 
 ---
 
-## 3. Compute (EC2, Lambda, Containers)
+### ❓ 6. What is Durability?
 
-### ❓ 7. When should you choose Lambda vs EC2?
-
-📝 **Answer**
-
-Use **Lambda** for event-driven, pay-per-use tasks like REST API backends or cron jobs (frontend → API Gateway → Lambda).
-Use **EC2** for long-running apps (Node, Angular SSR) requiring OS-level control or background workers.
+**Answer**
+Durability ensures data is not lost, even during failures. Example: Amazon S3 stores multiple copies across AZs.
 
 ---
 
-### ❓ 8. What is EC2 Auto Scaling?
+### ❓ 7. Public vs Private vs Hybrid Cloud?
 
-📝 **Answer**
+**Answer**
 
-Adds/removes EC2 instances based on load. Use during traffic spikes (e-commerce, dashboards) where backend API or Angular SSR server must scale.
-
----
-
-### ❓ 9. What is serverless?
-
-📝 **Answer**
-
-No server management; AWS handles scaling. Use for **API backends (Lambda)**, **file uploads (S3 triggers)**, or **NoSQL workloads (DynamoDB)**.
+- **Public:** AWS-managed, internet accessible
+- **Private:** Dedicated infra for one org
+- **Hybrid:** Combination of on-prem + AWS
 
 ---
 
----
+### ❓ 8. IaaS vs PaaS vs SaaS?
 
-## 4. Storage (S3, EBS, EFS)
+**Answer**
 
-### ❓ 10. Difference: S3 vs EBS vs EFS?
-
-📝 **Answer**
-
-Use **S3** for static Angular hosting or images; **EBS** for EC2 OS disks; **EFS** for shared storage between multiple EC2/Lambdas (e.g., shared app configs).
+- **IaaS:** You manage OS & apps (EC2)
+- **PaaS:** AWS manages infra, you deploy code (Elastic Beanstalk)
+- **SaaS:** Fully managed software (WorkDocs)
 
 ---
 
-### ❓ 11. What is S3 versioning and why enable it?
+### ❓ 9. What is Pay-As-You-Go?
 
-📝 **Answer**
-
-Retains every version of a file. Use when deploying Angular builds (rollback), or storing logs/configs where accidental deletion must be avoided.
-
----
-
-### ❓ 12. What is S3 Intelligent-Tiering?
-
-📝 **Answer**
-
-Auto-moves objects to cheaper tiers based on usage. Use for user-uploaded files, logs, backups where access patterns are unpredictable.
+**Answer**
+You pay only for what you use, without long-term commitment or upfront cost.
 
 ---
 
----
+### ❓ 10. AWS Pricing Models?
 
-## 5. Database Services
+**Answer**
 
-### ❓ 13. When use DynamoDB vs RDS?
-
-📝 **Answer**
-
-Use **DynamoDB** for scalable NoSQL (chat apps, user sessions).
-Use **RDS** for relational needs (transactions, multi-table joins). Backend code integrates using AWS SDK/ORM.
+- On-Demand – flexible
+- Reserved – long-term savings
+- Spot – low cost, interruptible
+- Savings Plans – flexible commitment
 
 ---
 
-### ❓ 14. What is the benefit of Aurora over standard RDS?
+### ❓ 11. Shared Responsibility Model?
 
-📝 **Answer**
-
-Higher performance + auto-failover. Use Aurora when backend requires high-read or high-write throughput (e.g., analytics, dashboards).
-
----
+**Answer**
+AWS secures the **cloud**, customers secure **what’s in the cloud** (data, access, OS configs).
 
 ---
 
-## 6. Networking & VPC
+### ❓ 12. What is an AWS Region and AZ?
 
-### ❓ 15. Difference between Public Subnet and Private Subnet?
+**Answer**
 
-📝 **Answer**
-
-Public subnet exposes internet-facing apps (Angular SSR, API LB).
-Private subnet hosts DBs, backend services accessible only via NAT or VPC links.
+- **Region:** Geographic location
+- **AZ:** Isolated data centers within a region
 
 ---
 
-### ❓ 16. What is a Security Group?
+### ❓ 13. What is CloudFront?
 
-📝 **Answer**
-
-Stateful firewall controlling inbound/outbound rules. Use to allow API traffic from CloudFront, or lock down DB access to only backend EC2/Lambda.
-
----
-
-### ❓ 17. What is a NAT Gateway used for?
-
-📝 **Answer**
-
-Allows private-subnet instances outbound access (API updates, NPM install). Use when backend servers need internet but must remain private.
+**Answer**
+A CDN that caches content at edge locations for low-latency delivery.
 
 ---
 
----
+### ❓ 14. AWS Well-Architected Framework?
 
-## 7. Serverless + API Integration (Useful for Angular Developers)
-
-### ❓ 18. What AWS services are typically used to host Angular apps?
-
-📝 **Answer**
-
-**S3 + CloudFront** for hosting; **Route 53** for DNS; **API Gateway + Lambda** for backend; **Cognito** for authentication. Combined use supports full-stack Angular deployments.
+**Answer**
+A best-practice framework with 6 pillars: Operational Excellence, Security, Reliability, Performance, Cost Optimization, Sustainability.
 
 ---
 
-### ❓ 19. Why CloudFront improves Angular SPA performance?
+## 🔐 DOMAIN 2: SECURITY, IDENTITY & GOVERNANCE
 
-📝 **Answer**
+![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-risk-and-compliance/images/image2.png)
 
-Caches assets globally, reduces latency, protects via AWS Shield. Use when SPA loads slowly or serves global users.
+![Image](https://docs.aws.amazon.com/images/IAM/latest/UserGuide/images/intro-diagram%20_policies_800.png)
 
----
+![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-overview/images/security-identity-governance-services.png)
 
-### ❓ 20. Can CloudFront cache API responses?
+### ❓ 15. What is IAM?
 
-📝 **Answer**
-
-Yes when headers allow. Use for GET-heavy APIs (product lists, blogs) to improve frontend performance.
-
----
+**Answer**
+IAM controls who can access AWS resources and what actions they can perform.
 
 ---
 
-## 8. Billing, Pricing & Cost Optimization
+### ❓ 16. IAM User vs Role?
 
-### ❓ 21. What is the AWS pricing model?
+**Answer**
 
-📝 **Answer**
-
-Pay for compute, storage, and data transfer used. Useful when estimating backend/API cost based on traffic.
-
----
-
-### ❓ 22. How do you reduce EC2 cost?
-
-📝 **Answer**
-
-Right-size instances; use Savings Plans or Spot for non-critical tasks like background jobs or batch processing.
+- **User:** Permanent identity
+- **Role:** Temporary access, more secure, no credentials
 
 ---
 
-### ❓ 23. What is the AWS Free Tier trap?
+### ❓ 17. What is IAM Policy?
 
-📝 **Answer**
-
-Free limits vary by region/service. Use billing alarms to avoid accidental charges when deploying dev/test apps.
-
----
+**Answer**
+A JSON document defining permissions (Allow/Deny).
 
 ---
 
-## 9. Monitoring & Logging
+### ❓ 18. Why use IAM Roles?
 
-### ❓ 24. How does CloudWatch differ from CloudTrail?
-
-📝 **Answer**
-
-CloudWatch monitors logs/metrics for apps and backend APIs; CloudTrail logs IAM/API activity for audits.
+**Answer**
+They avoid hard-coded credentials and are safer for services and cross-account access.
 
 ---
 
-### ❓ 25. How do you debug production Lambda errors?
+### ❓ 19. What is AWS Organizations?
 
-📝 **Answer**
-
-Using CloudWatch Logs + X-Ray traces. Include backend logging code (`console.log`, structured logs).
-
----
+**Answer**
+Used to manage multiple AWS accounts centrally with billing and security policies.
 
 ---
 
-## 10. High Availability & Fault Tolerance
+### ❓ 20. What is GuardDuty?
 
-### ❓ 26. What is the difference between Multi-AZ vs Multi-Region?
-
-📝 **Answer**
-
-Multi-AZ for automatic failover inside region; Multi-Region for DR or global low-latency (CloudFront + S3 replication).
+**Answer**
+Threat detection service using ML to detect suspicious activity.
 
 ---
 
-### ❓ 27. What is an Availability Zone?
+### ❓ 21. What is AWS Config?
 
-📝 **Answer**
-
-Physically independent DC inside region. Use AZ spreading when designing VPC, load balancers, RDS.
-
----
-
-### ❓ 28. Why use Load Balancers?
-
-📝 **Answer**
-
-Distribute traffic, SSL termination, health checks. Use ALB for API traffic; NLB for high-performance TCP.
+**Answer**
+Tracks resource configuration changes for compliance auditing.
 
 ---
 
----
+### ❓ 22. KMS vs CloudHSM?
 
-## 11. Cloud Practitioner–Level “Mock Tricky” Questions
+**Answer**
 
-### ❓ 29. Is S3 a global or regional service?
-
-📝 **Answer**
-
-Regional data but globally unique bucket names. Use region selection for latency and compliance.
+- **KMS:** Managed key service
+- **CloudHSM:** Customer-controlled hardware keys
 
 ---
 
-### ❓ 30. Can you store Angular environment variables securely in S3?
+### ❓ 23. Secrets Manager vs Parameter Store?
 
-📝 **Answer**
-
-No. Environment files are public. Use **Secrets Manager** or **SSM** in backend Lambda/EC2 APIs.
-
----
-
-### ❓ 31. Can Lambda run longer than 15 minutes?
-
-📝 **Answer**
-
-No. Use Step Functions or ECS for long-running backend jobs.
+**Answer**
+Secrets Manager supports automatic rotation; Parameter Store is cheaper and simpler.
 
 ---
 
-### ❓ 32. Which AWS service helps estimate costs before deployment?
+### ❓ 24. AWS Shield vs WAF?
 
-📝 **Answer**
+**Answer**
 
-AWS Pricing Calculator.
-
----
-
-### ❓ 33. Which AWS service provides organization-wide cost control?
-
-📝 **Answer**
-
-AWS Organizations + SCP + AWS Budgets.
+- **Shield:** DDoS protection
+- **WAF:** Protects web apps from attacks like SQL injection
 
 ---
 
----
+## 🚚 DOMAIN 3: MIGRATION & DATA TRANSFER
 
-## 12. Scenario-Based Mock Questions
+![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-overview/images/data-migration-services.png)
 
-### ❓ 34. Your Angular app loads slowly from S3. What helps?
+![Image](https://d2908q01vomqb2.cloudfront.net/e1822db470e60d090affd0956d743cb0e7cdf113/2020/12/08/Summary-comparison-of-the-AWS-Snow-Family.png)
 
-📝 **Answer**
+![Image](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2021/09/29/Figure2-Access.png)
 
-Use CloudFront for caching + gzip/brotli compression. Deploy using S3 Transfer Acceleration for faster uploads.
+### ❓ 25. What is AWS Migration Hub?
 
----
-
-### ❓ 35. You need authentication for your Angular SPA. Which service?
-
-📝 **Answer**
-
-Cognito User Pools (login, JWT) + Identity Pools (temporary AWS credentials). Use when frontend needs secure API calls.
+**Answer**
+Central dashboard to track migration progress.
 
 ---
 
-### ❓ 36. You need backend without servers. Which architecture?
+### ❓ 26. DataSync vs Snowball?
 
-📝 **Answer**
+**Answer**
 
-API Gateway → Lambda → DynamoDB. Use in microservices, event-driven systems, or CRUD APIs.
-
----
-
-### ❓ 37. You need real-time logs from Lambda. How?
-
-📝 **Answer**
-
-CloudWatch Logs with log groups + filters. Use structured JSON logs for better debugging.
+- **DataSync:** Online transfer
+- **Snowball:** Offline large data transfer
 
 ---
 
-### ❓ 38. How to prevent accidental S3 exposure?
+### ❓ 27. Snowball vs Snowmobile?
 
-📝 **Answer**
-
-Enable Block Public Access + correct bucket policy. Use IAM roles in backend to read private files.
-
----
-
-### ❓ 39. Need DR for static Angular site?
-
-📝 **Answer**
-
-Cross-region replication + CloudFront origin failover. Use for global applications.
+**Answer**
+Snowmobile is used for exabyte-scale data using a shipping container.
 
 ---
 
-### ❓ 40. Need WebSockets for real-time updates?
+### ❓ 28. AWS Storage Gateway?
 
-📝 **Answer**
-
-API Gateway WebSocket API or AppSync subscriptions. Use for chat, live dashboards.
-
----
+**Answer**
+Hybrid service connecting on-prem storage to AWS cloud storage.
 
 ---
 
-## 🔥 **NEW SECTION — Combinations of AWS Services and When to Use Them**
+### ❓ 29. What are the 6 Migration Strategies?
 
-### ❓ 41. Which AWS service combinations are commonly used for full-stack web apps?
-
-📝 **Answer**
-
-A typical setup uses **S3 + CloudFront** (frontend), **API Gateway + Lambda** (backend), **DynamoDB/RDS** (database), **Cognito** (authentication). Use this for fully serverless Angular/React/Vue apps.
+**Answer**
+Rehost, Replatform, Refactor, Repurchase, Retire, Retain (+ Relocate).
 
 ---
 
-### ❓ 42. What services combine well for secure file uploads?
+## 🤖 DOMAIN 4: CORE SERVICES
 
-📝 **Answer**
+![Image](https://miro.medium.com/1%2Akt3-ZdHERuDfwXP33dhMww.jpeg)
 
-Use **S3 (bucket)** + **pre-signed URLs (backend Lambda)** + **Cognito** for auth.
-Angular → GET pre-signed URL → PUT file to S3.
+![Image](https://docs.aws.amazon.com/images/vpc/latest/userguide/images/how-it-works.png)
 
----
+![Image](https://cdn.prod.website-files.com/6340354625974824cde2e195/65f0dd2ea5d885014b1a6840_GIF1.gif)
 
-### ❓ 43. What combination is used for real-time analytics dashboards?
+### ❓ 30. What is EC2?
 
-📝 **Answer**
-
-AppSync/WebSockets + DynamoDB Streams + Lambda.
-Use when a frontend dashboard needs live updates.
+**Answer**
+Scalable virtual servers with full OS control.
 
 ---
 
-### ❓ 44. What combination supports CI/CD for Angular builds?
+### ❓ 31. What is an AMI?
 
-📝 **Answer**
-
-CodePipeline → CodeBuild → S3 → CloudFront invalidation.
-Use to automate deploys on every git commit.
+**Answer**
+A template containing OS, software, and configuration for EC2.
 
 ---
 
-### ❓ 45. What combination ensures secure private APIs?
+### ❓ 32. What is Auto Scaling?
 
-📝 **Answer**
+**Answer**
+Automatically adjusts EC2 capacity based on demand.
 
-API Gateway Private Endpoints + VPC Link + ALB/ECS.
-Use when frontend should access backend only through controlled VPC traffic.
+---
+
+### ❓ 33. ALB vs NLB?
+
+**Answer**
+
+- **ALB:** HTTP/HTTPS, layer 7
+- **NLB:** TCP, ultra-low latency
+
+---
+
+### ❓ 34. What is Lambda?
+
+**Answer**
+Serverless compute that runs code without managing servers.
+
+---
+
+### ❓ 35. S3 vs EBS?
+
+**Answer**
+
+- **S3:** Object storage
+- **EBS:** Block storage for EC2
+
+---
+
+### ❓ 36. RDS vs DynamoDB?
+
+**Answer**
+
+- **RDS:** Relational, SQL
+- **DynamoDB:** NoSQL, serverless
+
+---
+
+### ❓ 37. What is VPC?
+
+**Answer**
+A logically isolated virtual network in AWS.
+
+---
+
+### ❓ 38. Security Group vs NACL?
+
+**Answer**
+
+- **SG:** Instance-level, stateful
+- **NACL:** Subnet-level, stateless
+
+---
+
+## 🚀 DOMAIN 5: DEPLOYMENT, MONITORING & COST
+
+![Image](https://k21academy.com/wp-content/uploads/2021/02/difference.png)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/7719a1c782a1ba91c031a682a0a2f8658209adbf/2020/10/11/Single-tenant-SaaS-CICD-Pipeline-1024x492.png)
+
+![Image](https://www.cloudzero.com/wp-content/uploads/2024/01/aws-cost-explorer.webp)
+
+### ❓ 39. CloudWatch vs CloudTrail?
+
+**Answer**
+
+- **CloudWatch:** Metrics & logs
+- **CloudTrail:** API activity audit
+
+---
+
+### ❓ 40. What is CloudFormation?
+
+**Answer**
+Infrastructure as Code service to automate resource creation.
+
+---
+
+### ❓ 41. What is Trusted Advisor?
+
+**Answer**
+Provides best-practice recommendations for cost, security, performance.
+
+---
+
+### ❓ 42. What is Cost Explorer?
+
+**Answer**
+Visual tool to analyze AWS spending trends.
+
+---
+
+### ❓ 43. AWS Support Plans?
+
+**Answer**
+Basic, Developer, Business, Enterprise (TAM included).
+
+---
+
+# PART 2 – MOCK INTERVIEW Q&A ROLE-PLAY
+
+---
+
+### ❓ 44. Explain AWS Shared Responsibility Model.
+
+**Answer**
+
+AWS is responsible for securing the infrastructure like physical data centers, networking, and virtualization.
+The customer is responsible for securing data, access control, OS patching, and application security.
+
+---
+
+### ❓ 45. Which pricing model will you use for a batch job?
+
+**Answer**
+
+Spot Instances, because batch jobs can tolerate interruptions and offer up to 90% cost savings.
+
+---
+
+### ❓ 46. How do you design a highly available application?
+
+**Answer**
+
+By deploying across multiple AZs, using load balancers, auto scaling, backups, and monitoring.
+
+---
+
+### ❓ 47. Is S3 highly available or highly durable?
+
+**Answer**
+
+S3 is **both** highly durable and highly available, but durability is higher (11 9’s).
+
+---
+
+### ❓ 48. How do you reduce AWS costs?
+
+**Answer**
+
+By right-sizing resources, using Reserved or Spot instances, deleting unused services, and monitoring with Cost Explorer.
+
+---
