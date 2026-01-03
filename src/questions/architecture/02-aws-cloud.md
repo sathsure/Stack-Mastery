@@ -1,11 +1,5 @@
 ## ☁️ DOMAIN 1: CLOUD CONCEPTS – MODEL ANSWERS
 
-![Image](https://k21academy.com/wp-content/uploads/2024/05/AWS.png)
-
-![Image](https://k21academy.com/wp-content/uploads/2023/07/8.webp)
-
-![Image](https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/product-categories/networking/approved/images/02b790d3d6b773afdea29a2483c46cd0.4c2a53c7c0d445df26718987c0b6a4ff3a05510c.jpeg)
-
 ### ❓ 1. What is Cloud Computing?
 
 **Answer**
@@ -120,11 +114,7 @@ A best-practice framework with 6 pillars: Operational Excellence, Security, Reli
 
 ## 🔐 DOMAIN 2: SECURITY, IDENTITY & GOVERNANCE
 
-![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-risk-and-compliance/images/image2.png)
-
-![Image](https://docs.aws.amazon.com/images/IAM/latest/UserGuide/images/intro-diagram%20_policies_800.png)
-
-![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-overview/images/security-identity-governance-services.png)
+![AWSSecurityGovernance Image](/src/assets/aws-security-governance.png)
 
 ### ❓ 15. What is IAM?
 
@@ -202,13 +192,14 @@ Secrets Manager supports automatic rotation; Parameter Store is cheaper and simp
 
 ---
 
+![alt text](image.png)
 ## 🚚 DOMAIN 3: MIGRATION & DATA TRANSFER
 
-![Image](https://docs.aws.amazon.com/images/whitepapers/latest/aws-overview/images/data-migration-services.png)
+![AWSMigration Image](/src/assets/aws-migration.png)
 
-![Image](https://d2908q01vomqb2.cloudfront.net/e1822db470e60d090affd0956d743cb0e7cdf113/2020/12/08/Summary-comparison-of-the-AWS-Snow-Family.png)
+![AWSSnowFamily Image](/src/assets/aws-snowfamily.png)
 
-![Image](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2021/09/29/Figure2-Access.png)
+![AWSCorporateDataCenter Image](/src/assets/aws-corporate-datacenter.png)
 
 ### ❓ 25. What is AWS Migration Hub?
 
