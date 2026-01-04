@@ -1,408 +1,276 @@
-## ☁️ DOMAIN 1: CLOUD CONCEPTS – MODEL ANSWERS
+### ☁️ WHAT IS AWS CLOUD COMPUTING
 
-### ❓ 1. What is Cloud Computing?
+![Image](https://miro.medium.com/1%2A7V_TnalAMFoQS1TfXTbqxA.png)
 
-**Answer**
-Cloud computing is the on-demand delivery of computing resources like servers, storage, and databases over the internet with pay-as-you-go pricing, without owning physical infrastructure.
+![Image](https://ars.els-cdn.com/content/image/1-s2.0-S1084804519303662-gr2.jpg)
 
----
+- AWS provides computing services like servers, storage, databases, and networking over the internet.
+  These resources are available instantly without owning or maintaining physical hardware.
 
-### ❓ 2. Why AWS Cloud instead of On-Prem?
+- Cloud resources are provisioned on demand and released when no longer needed.
+  This allows faster innovation and eliminates long infrastructure planning cycles.
 
-**Answer**
-AWS reduces upfront cost, provides global scalability, high availability, faster deployment, and managed services so companies can focus on business instead of infrastructure.
-
----
-
-### ❓ 3. What is Elasticity?
-
-**Answer**
-Elasticity is the ability to automatically increase or decrease resources based on real-time demand.
+- AWS follows a pay-as-you-go pricing model.
+  Customers pay only for the resources they consume, improving cost efficiency.
 
 ---
 
-### ❓ 4. Elasticity vs Scalability?
+### 🌍 AWS GLOBAL INFRASTRUCTURE
 
-**Answer**
+![Image](https://res.cloudinary.com/hy4kyit2a/f_auto%2Cfl_lossy%2Cq_70/learn/modules/aws-cloud/explore-the-aws-global-infrastructure/images/c72a7ac57ffc2469619e66dc74dfea24_kix.q8rtdmc6bgiq.png)
 
-- **Scalability:** Ability to grow capacity (manual or planned).
-- **Elasticity:** Automatic scaling based on demand.
+![Image](https://docs.aws.amazon.com/images/AWSEC2/latest/UserGuide/images/region-with-wavelength-zones.png)
 
----
+- **Regions** are geographically separate locations that contain AWS data centers.
+  Each Region is isolated to ensure fault tolerance and regulatory compliance.
 
-### ❓ 5. What is High Availability?
+- **Availability Zones (AZs)** are physically separate data centers within a Region.
+  Running applications across multiple AZs increases availability and reliability.
 
-**Answer**
-Designing systems to remain operational even if components fail, typically using Multi-AZ deployments and load balancing.
-
----
-
-### ❓ 6. What is Durability?
-
-**Answer**
-Durability ensures data is not lost, even during failures. Example: Amazon S3 stores multiple copies across AZs.
+- **Edge Locations** cache content closer to users.
+  This reduces latency and improves performance for global applications.
 
 ---
 
-### ❓ 7. Public vs Private vs Hybrid Cloud?
+### 💻 COMPUTE SERVICES
 
-**Answer**
-
-- **Public:** AWS-managed, internet accessible
-- **Private:** Dedicated infra for one org
-- **Hybrid:** Combination of on-prem + AWS
-
----
-
-### ❓ 8. IaaS vs PaaS vs SaaS?
-
-**Answer**
-
-- **IaaS:** You manage OS & apps (EC2)
-- **PaaS:** AWS manages infra, you deploy code (Elastic Beanstalk)
-- **SaaS:** Fully managed software (WorkDocs)
-
----
-
-### ❓ 9. What is Pay-As-You-Go?
-
-**Answer**
-You pay only for what you use, without long-term commitment or upfront cost.
-
----
-
-### ❓ 10. AWS Pricing Models?
-
-**Answer**
-
-- On-Demand – flexible
-- Reserved – long-term savings
-- Spot – low cost, interruptible
-- Savings Plans – flexible commitment
-
----
-
-### ❓ 11. Shared Responsibility Model?
-
-**Answer**
-AWS secures the **cloud**, customers secure **what’s in the cloud** (data, access, OS configs).
-
----
-
-### ❓ 12. What is an AWS Region and AZ?
-
-**Answer**
-
-- **Region:** Geographic location
-- **AZ:** Isolated data centers within a region
-
----
-
-### ❓ 13. What is CloudFront?
-
-**Answer**
-A CDN that caches content at edge locations for low-latency delivery.
-
----
-
-### ❓ 14. AWS Well-Architected Framework?
-
-**Answer**
-A best-practice framework with 6 pillars: Operational Excellence, Security, Reliability, Performance, Cost Optimization, Sustainability.
-
----
-
-## 🔐 DOMAIN 2: SECURITY, IDENTITY & GOVERNANCE
-
-![AWSSecurityGovernance Image](/src/assets/aws-security-governance.png)
-
-### ❓ 15. What is IAM?
-
-**Answer**
-IAM controls who can access AWS resources and what actions they can perform.
-
----
-
-### ❓ 16. IAM User vs Role?
-
-**Answer**
-
-- **User:** Permanent identity
-- **Role:** Temporary access, more secure, no credentials
-
----
-
-### ❓ 17. What is IAM Policy?
-
-**Answer**
-A JSON document defining permissions (Allow/Deny).
-
----
-
-### ❓ 18. Why use IAM Roles?
-
-**Answer**
-They avoid hard-coded credentials and are safer for services and cross-account access.
-
----
-
-### ❓ 19. What is AWS Organizations?
-
-**Answer**
-Used to manage multiple AWS accounts centrally with billing and security policies.
-
----
-
-### ❓ 20. What is GuardDuty?
-
-**Answer**
-Threat detection service using ML to detect suspicious activity.
-
----
-
-### ❓ 21. What is AWS Config?
-
-**Answer**
-Tracks resource configuration changes for compliance auditing.
-
----
-
-### ❓ 22. KMS vs CloudHSM?
-
-**Answer**
-
-- **KMS:** Managed key service
-- **CloudHSM:** Customer-controlled hardware keys
-
----
-
-### ❓ 23. Secrets Manager vs Parameter Store?
-
-**Answer**
-Secrets Manager supports automatic rotation; Parameter Store is cheaper and simpler.
-
----
-
-### ❓ 24. AWS Shield vs WAF?
-
-**Answer**
-
-- **Shield:** DDoS protection
-- **WAF:** Protects web apps from attacks like SQL injection
-
----
-
-![alt text](image.png)
-## 🚚 DOMAIN 3: MIGRATION & DATA TRANSFER
-
-![AWSMigration Image](/src/assets/aws-migration.png)
-
-![AWSSnowFamily Image](/src/assets/aws-snowfamily.png)
-
-![AWSCorporateDataCenter Image](/src/assets/aws-corporate-datacenter.png)
-
-### ❓ 25. What is AWS Migration Hub?
-
-**Answer**
-Central dashboard to track migration progress.
-
----
-
-### ❓ 26. DataSync vs Snowball?
-
-**Answer**
-
-- **DataSync:** Online transfer
-- **Snowball:** Offline large data transfer
-
----
-
-### ❓ 27. Snowball vs Snowmobile?
-
-**Answer**
-Snowmobile is used for exabyte-scale data using a shipping container.
-
----
-
-### ❓ 28. AWS Storage Gateway?
-
-**Answer**
-Hybrid service connecting on-prem storage to AWS cloud storage.
-
----
-
-### ❓ 29. What are the 6 Migration Strategies?
-
-**Answer**
-Rehost, Replatform, Refactor, Repurchase, Retire, Retain (+ Relocate).
-
----
-
-## 🤖 DOMAIN 4: CORE SERVICES
-
-![Image](https://miro.medium.com/1%2Akt3-ZdHERuDfwXP33dhMww.jpeg)
-
-![Image](https://docs.aws.amazon.com/images/vpc/latest/userguide/images/how-it-works.png)
+![Image](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2021/11/02/Fig1-app2cont.png)
 
 ![Image](https://cdn.prod.website-files.com/6340354625974824cde2e195/65f0dd2ea5d885014b1a6840_GIF1.gif)
 
-### ❓ 30. What is EC2?
+![Image](https://docs.aws.amazon.com/images/elasticloadbalancing/latest/userguide/images/cross_zone_load_balancing_enabled.png)
 
-**Answer**
-Scalable virtual servers with full OS control.
+- **Amazon EC2** provides virtual machines where customers control the operating system.
+  It supports flexible instance sizes and is suitable for most compute workloads.
 
----
+- **AWS Lambda** runs code automatically in response to events.
+  There are no servers to manage, and billing is based on execution time only.
 
-### ❓ 31. What is an AMI?
-
-**Answer**
-A template containing OS, software, and configuration for EC2.
-
----
-
-### ❓ 32. What is Auto Scaling?
-
-**Answer**
-Automatically adjusts EC2 capacity based on demand.
+- **Elastic Load Balancing** distributes incoming traffic across multiple resources.
+  This ensures high availability and prevents any single resource from overloading.
 
 ---
 
-### ❓ 33. ALB vs NLB?
+### 🗄️ STORAGE SERVICES
 
-**Answer**
+![Image](https://www.cloudkeeper.com/cms-assets/s3fs-public/2023-07/diagram%203.png)
 
-- **ALB:** HTTP/HTTPS, layer 7
-- **NLB:** TCP, ultra-low latency
+![Image](https://docs.aws.amazon.com/images/ebs/latest/userguide/images/volume-lifecycle.png)
 
----
+![Image](https://docs.aws.amazon.com/images/efs/latest/ug/images/efs-ec2-how-it-works-Regional_china-world.png)
 
-### ❓ 34. What is Lambda?
+![Image](https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/product-categories/storage/approved/images/9217cf0d435e86882bb9211d9af8eb1e.a9a0c99d2a08a7df38c0d8e0592e04c61a26210e.png)
 
-**Answer**
-Serverless compute that runs code without managing servers.
+- **Amazon S3** stores data as objects with extremely high durability.
+  It is commonly used for backups, static websites, and data lakes.
 
----
+- **Amazon EBS** provides block storage for EC2 instances.
+  Data persists even when an EC2 instance is stopped or restarted.
 
-### ❓ 35. S3 vs EBS?
-
-**Answer**
-
-- **S3:** Object storage
-- **EBS:** Block storage for EC2
+- **Amazon S3 Glacier** is designed for long-term archival data.
+  It offers very low storage costs with slower retrieval times.
 
 ---
 
-### ❓ 36. RDS vs DynamoDB?
+### 🧠 DATABASE SERVICES
 
-**Answer**
+![Image](https://docs.aws.amazon.com/images/AmazonRDS/latest/UserGuide/images/aws-cloud-deployment-architecture.png)
 
-- **RDS:** Relational, SQL
-- **DynamoDB:** NoSQL, serverless
+![Image](https://docs.aws.amazon.com/images/AmazonRDS/latest/AuroraUserGuide/images/aurora_architecture.png)
 
----
+![Image](https://docs.aws.amazon.com/images/serverless/latest/devguide/images/workshop-m1-infra-complete.png)
 
-### ❓ 37. What is VPC?
+- **Amazon RDS** manages relational databases like MySQL and PostgreSQL.
+  AWS handles backups, patching, and high availability automatically.
 
-**Answer**
-A logically isolated virtual network in AWS.
+- **Amazon Aurora** is a high-performance relational database.
+  It is compatible with MySQL and PostgreSQL and offers better scalability.
 
----
-
-### ❓ 38. Security Group vs NACL?
-
-**Answer**
-
-- **SG:** Instance-level, stateful
-- **NACL:** Subnet-level, stateless
+- **Amazon DynamoDB** is a serverless NoSQL database.
+  It automatically scales and delivers single-digit millisecond performance.
 
 ---
 
-## 🚀 DOMAIN 5: DEPLOYMENT, MONITORING & COST
+### 🌐 NETWORKING & CONTENT DELIVERY
 
-![Image](https://k21academy.com/wp-content/uploads/2021/02/difference.png)
+![Image](https://docs.aws.amazon.com/images/vpc/latest/userguide/images/how-it-works.png)
 
-![Image](https://d2908q01vomqb2.cloudfront.net/7719a1c782a1ba91c031a682a0a2f8658209adbf/2020/10/11/Single-tenant-SaaS-CICD-Pipeline-1024x492.png)
+![Image](https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png)
 
-![Image](https://www.cloudzero.com/wp-content/uploads/2024/01/aws-cost-explorer.webp)
+![Image](https://docs.aws.amazon.com/images/Route53/latest/DeveloperGuide/images/how-route-53-routes-traffic.png)
 
-### ❓ 39. CloudWatch vs CloudTrail?
+- **Amazon VPC** allows customers to create isolated virtual networks.
+  Users control IP ranges, subnets, routing, and security settings.
 
-**Answer**
+- **Amazon CloudFront** is a content delivery network (CDN).
+  It caches content globally to deliver data faster to users.
 
-- **CloudWatch:** Metrics & logs
-- **CloudTrail:** API activity audit
-
----
-
-### ❓ 40. What is CloudFormation?
-
-**Answer**
-Infrastructure as Code service to automate resource creation.
+- **Amazon Route 53** is a scalable Domain Name System (DNS) service.
+  It routes user traffic based on latency, health checks, and policies.
 
 ---
 
-### ❓ 41. What is Trusted Advisor?
+### 🔐 SECURITY, IDENTITY & COMPLIANCE
 
-**Answer**
-Provides best-practice recommendations for cost, security, performance.
+![Image](https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/product-categories/security-identity-compliance/compliance/approved/images/7a404923-5572-409c-b30e-6d44706bcd89.094727e5c591e9a96edf10578d0bc1172d9e4553.jpeg)
 
----
+![Image](https://docs.aws.amazon.com/images/IAM/latest/UserGuide/images/policies-aws-managed-policies.diagram.png)
 
-### ❓ 42. What is Cost Explorer?
+![Image](https://d1tcczg8b21j1t.cloudfront.net/strapi-assets/14_AWS_shield_2_73de4f1d16.png)
 
-**Answer**
-Visual tool to analyze AWS spending trends.
+- **AWS IAM** controls access to AWS services and resources.
+  Users, roles, and policies define what actions are allowed.
 
----
+- AWS follows the **Shared Responsibility Model**.
+  AWS secures the infrastructure, while customers secure data and access.
 
-### ❓ 43. AWS Support Plans?
-
-**Answer**
-Basic, Developer, Business, Enterprise (TAM included).
+- **AWS Shield** and **AWS WAF** protect applications from attacks.
+  They defend against DDoS and malicious web traffic.
 
 ---
 
-# PART 2 – MOCK INTERVIEW Q&A ROLE-PLAY
+### 🛠️ MANAGEMENT & MONITORING
+
+![Image](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2022/06/09/EBS-Free-Monitoring-Console.png)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2021/11/16/CloudTrail-unexpected-behaviors-1.jpg)
+
+![Image](https://docs.aws.amazon.com/images/awssupport/latest/user/images/ta_recs_updated.png)
+
+- **Amazon CloudWatch** monitors resource performance and logs.
+  It provides metrics, alarms, and dashboards for operational visibility.
+
+- **AWS CloudTrail** records all API activity in an AWS account.
+  This helps with auditing, compliance, and security investigations.
+
+- **AWS Trusted Advisor** analyzes the AWS environment.
+  It provides recommendations for cost, security, and performance.
 
 ---
 
-### ❓ 44. Explain AWS Shared Responsibility Model.
+### 💰 PRICING & COST MANAGEMENT
 
-**Answer**
+![Image](https://miro.medium.com/0%2Aeeg5qtvxRnrq4voQ)
 
-AWS is responsible for securing the infrastructure like physical data centers, networking, and virtualization.
-The customer is responsible for securing data, access control, OS patching, and application security.
+![Image](https://d1.awsstatic.com/AWSCostManagement/aws-cost-explorer-amazon-ec2-instance-costs.0cc44d7944b0b240011917d5c8e83885c3ba5303.png)
 
----
+![Image](https://ecstech.com/wp-content/uploads/2020/02/Blog-AWS-Savings-plan-chart-01.png)
 
-### ❓ 45. Which pricing model will you use for a batch job?
+- AWS pricing is based on **pay-as-you-go** usage.
+  There are no upfront costs or long-term contracts required.
 
-**Answer**
+- **AWS Free Tier** allows limited usage for learning and testing.
+  It is ideal for beginners and new AWS accounts.
 
-Spot Instances, because batch jobs can tolerate interruptions and offer up to 90% cost savings.
-
----
-
-### ❓ 46. How do you design a highly available application?
-
-**Answer**
-
-By deploying across multiple AZs, using load balancers, auto scaling, backups, and monitoring.
+- **Savings Plans and Reserved Instances** reduce costs.
+  They offer discounts in exchange for long-term usage commitments.
 
 ---
 
-### ❓ 47. Is S3 highly available or highly durable?
+### 🚀 DEPLOYMENT & MIGRATION
 
-**Answer**
+![Image](https://docs.aws.amazon.com/images/elasticbeanstalk/latest/dg/images/aeb-overview.png)
 
-S3 is **both** highly durable and highly available, but durability is higher (11 9’s).
+![Image](https://docs.aws.amazon.com/images/AWSCloudFormation/latest/UserGuide/images/stack_set_conceptual_sv.png)
+
+![Image](https://cdn.inc42.com/wp-content/uploads/2016/12/awsnowball.jpg)
+
+- **AWS Elastic Beanstalk** deploys applications automatically.
+  Developers upload code while AWS manages the infrastructure.
+
+- **AWS CloudFormation** uses templates to create resources.
+  It ensures consistent and repeatable infrastructure deployment.
+
+- **AWS Snowball** transfers large amounts of data offline.
+  It is useful when network transfer is slow or expensive.
 
 ---
 
-### ❓ 48. How do you reduce AWS costs?
+### 📦 APPLICATION INTEGRATION
 
-**Answer**
+![Image](https://d1.awsstatic.com/product-page-diagram_Amazon-SQS%402x.8639596f10bfa6d7cdb2e83df728e789963dcc39.png)
 
-By right-sizing resources, using Reserved or Spot instances, deleting unused services, and monitoring with Cost Explorer.
+![Image](https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2017/11/20/introducing_sns_message_filtering_image_1.png)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2021/05/14/03_architecture_diagram.png)
+
+- **Amazon SQS** enables message queuing between applications.
+  It decouples components and improves system reliability.
+
+- **Amazon SNS** uses a publish-subscribe model.
+  Messages can be sent to multiple endpoints simultaneously.
+
+- **AWS Step Functions** coordinates multi-step workflows.
+  It simplifies complex application logic and error handling.
 
 ---
+
+### 📊 ANALYTICS (FOUNDATION LEVEL)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/e1822db470e60d090affd0956d743cb0e7cdf113/2019/12/17/Architecture-diagram-for-querying-S3-analytics-with-amazon-Athena-2.png)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/887309d048beef83ad3eabf2a79a64a389ab1c9f/2017/09/15/AWSArchitecture.jpg)
+
+![Image](https://docs.aws.amazon.com/images/glue/latest/dg/images/HowItWorks-overview.png)
+
+- **Amazon Athena** queries data stored in S3 using SQL.
+  It is serverless and requires no infrastructure management.
+
+- **Amazon Redshift** is a data warehouse service.
+  It processes large analytical workloads efficiently.
+
+- **AWS Glue** prepares and transforms data automatically.
+  It is commonly used for ETL and analytics pipelines.
+
+---
+
+### 🤖 AI & MACHINE LEARNING (AWARENESS)
+
+![Image](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2023/01/17/ml-blog-cm-video-img-1.png)
+
+![Image](https://media.amazonwebservices.com/blog/2016/polly_talk_1.png)
+
+![Image](https://d1.awsstatic.com/SageMaker/4_how_it_works_diagram_jan29-rev%402x.5387bf546e908574c995b3a1bc13709d18b5e81a.png)
+
+- **Amazon Rekognition** analyzes images and videos.
+  It can detect objects, faces, and text automatically.
+
+- **Amazon Polly** converts written text into speech.
+  It supports multiple languages and lifelike voices.
+
+- **Amazon SageMaker** builds and trains ML models.
+  Cloud Practitioner knowledge is mostly conceptual.
+
+---
+
+![Image](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2025/04/02/ARCHBLOG-1141-arch-diagr-964x630.png)
+
+![Image](https://k21academy.com/wp-content/uploads/2021/09/AWS-Architecture-HA-1024x496.png)
+
+![Image](https://mycloudwiki.com/wp-content/uploads/2024/06/AWS-global-infra-1.png)
+
+![Image](https://docs.aws.amazon.com/images/solutions/latest/data-transfer-hub/images/guidance-arch.png)
+
+- **User → Route 53 → DNS → Shield → WAF**
+  User traffic is routed using DNS, protected from DDoS attacks, and filtered by web application rules.
+
+- **Regions → Availability Zones → CloudFront → Edge Locations**
+  Requests are served globally with low latency using edge caching before reaching core infrastructure.
+
+- **VPC → Subnets → Internet Gateway / NAT Gateway**
+  Traffic enters isolated virtual networks with controlled public and private access.
+
+- **ELB → Auto Scaling → EC2 Instances**
+  Load balancers distribute traffic while Auto Scaling adjusts compute capacity automatically.
+
+- **S3 → S3 Glacier → RDS → Aurora → DynamoDB**
+  Data flows between object storage, archival storage, relational databases, and NoSQL databases.
+
+- **IAM → CloudWatch → CloudTrail → Trusted Advisor → Cost Explorer**
+  Access control, monitoring, auditing, best-practice checks, and cost analysis work together.
+
+- **Hybrid & Integration Layer**
+  On-Premises ↔ Snowball / Snowmobile (data transfer),
+  AppSync / API Gateway (APIs),
+  SQS / SNS (messaging),
+  Athena / Redshift (analytics).
