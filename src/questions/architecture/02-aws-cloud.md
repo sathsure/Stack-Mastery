@@ -2,17 +2,11 @@
 
 ![AWS_CLS_DIAGRAM Image](/src/assets/aws-cls-diagram.png)
 
-![AWS_Architecture Image](/src/assets/aws-architecture.png)
-
 ## 💻 COMPUTE SERVICES
-
-![AWS_Serverless Image](/src/assets/aws-serverless.png)
-
-![AWS_Compute Image](/src/assets/aws-compute.png)
 
 ### 🔹 Core Compute Services (VERY IMPORTANT)
 
-| Service                          | What you must know for CLF-C02                                                                                     |
+| Service                          | Explanation                                                                                                        |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Amazon EC2**                   | Virtual servers in the cloud. You choose instance type, OS, storage, and network. Used for full control workloads. |
 | **EC2 Auto Scaling**             | Automatically adds or removes EC2 instances based on demand to maintain performance and reduce cost.               |
@@ -23,7 +17,7 @@
 
 ### 🔹 Container & Modern Compute (High-Level Awareness)
 
-| Service            | What you must know                                                                     |
+| Service            | Explanation                                                                            |
 | ------------------ | -------------------------------------------------------------------------------------- |
 | **Amazon ECS**     | Managed container orchestration for Docker containers.                                 |
 | **Amazon EKS**     | Managed Kubernetes service.                                                            |
@@ -32,109 +26,123 @@
 
 ### 🔹 Batch & Specialized Compute (Basic Recognition Only)
 
-| Service               | What you must know                                               |
+| Service               | Explanation                                                      |
 | --------------------- | ---------------------------------------------------------------- |
 | **AWS Batch**         | Runs batch computing jobs at any scale without managing servers. |
 | **EC2 Image Builder** | Automates creation of secure VM images (AMI).                    |
 
 ### 🔹 Hybrid & Edge Compute (Conceptual Awareness)
 
-| Service                 | What you must know                                   |
+| Service                 | Explanation                                          |
 | ----------------------- | ---------------------------------------------------- |
 | **AWS Outposts**        | AWS infrastructure on-premises (hybrid cloud).       |
 | **AWS Wavelength**      | Ultra-low latency compute for 5G applications.       |
 | **VMware Cloud on AWS** | Run VMware workloads directly on AWS infrastructure. |
 
+![AWS_Compute Image](/src/assets/aws-compute.png)
+
 ---
 
 ### 🔹Trick Questions:
 
-1. Which AWS compute service requires **no server provisioning or management**? → **AWS Lambda / AWS Fargate**
+1. A company needs virtual servers in the cloud with full control over OS and software → **Amazon EC2**
 
-2. Which compute service provides **complete control over the operating system**? → **Amazon EC2**
+2. An application must automatically increase or decrease EC2 instances based on traffic → **Amazon EC2 Auto Scaling**
 
-3. Which service automatically **increases or decreases EC2 capacity** based on demand? → **EC2 Auto Scaling**
+3. Incoming traffic must be distributed across multiple EC2 instances → **Elastic Load Balancing (ELB)**
 
-4. Which AWS service **distributes incoming application traffic** across multiple targets? → **Elastic Load Balancing (ELB)**
+4. A developer wants to run code without provisioning or managing servers → **AWS Lambda**
 
-5. Which compute service is best for **quickly deploying applications without managing infrastructure**? → **AWS Elastic Beanstalk**
+5. A startup wants the easiest way to deploy a small web application with minimal configuration → **Amazon Lightsail**
 
-6. Which service is designed for **small websites with predictable monthly pricing**? → **Amazon Lightsail**
+6. A web application needs automatic deployment, scaling, and management without handling infrastructure → **AWS Elastic Beanstalk**
 
-7. Which compute service allows you to **run containers without managing EC2 instances**? → **AWS Fargate**
+7. Containers must be run without managing the underlying servers → **AWS Fargate**
 
-8. Which AWS service is used for **running serverless functions triggered by events**? → **AWS Lambda**
+8. A company wants to run Docker containers using AWS-managed orchestration → **Amazon ECS**
 
-9. Which compute service is considered a **Platform as a Service (PaaS)**? → **AWS Elastic Beanstalk**
+9. An organization needs a managed Kubernetes service → **Amazon EKS**
 
-10. Which AWS service is suitable for **container orchestration using Kubernetes**? → **Amazon EKS**
+10. Large-scale batch jobs must be processed efficiently without manual resource management → **AWS Batch**
 
-11. Which compute service allows AWS infrastructure to run **inside an on-premises data center**? → **AWS Outposts**
+11. A developer wants to run microservices using containers with AWS handling scheduling and scaling → **Amazon ECS**
 
-12. Which service is billed based on **execution duration rather than instance uptime**? → **AWS Lambda**
+12. Compute workloads must run only when an event occurs and stop automatically → **AWS Lambda**
 
-13. Which AWS service provides **virtual machines in the AWS Cloud**? → **Amazon EC2**
+13. A business wants to deploy AWS infrastructure inside its on-premises data center → **AWS Outposts**
 
-14. Which compute service focuses on **simplicity over flexibility**? → **Amazon Lightsail**
+14. A low-latency application must be delivered to 5G mobile devices → **AWS Wavelength**
 
-15. Which AWS service supports **automatic scaling without writing scaling logic**? → **EC2 Auto Scaling**
+15. A company wants to migrate VMware workloads to AWS without re-architecting → **VMware Cloud on AWS**
+
+16. A web application must scale automatically and remain highly available → **Amazon EC2 Auto Scaling**
+
+17. Developers want a managed platform to upload code and let AWS handle capacity planning → **AWS Elastic Beanstalk**
+
+18. A containerized application must run with no cluster or server management → **AWS Fargate**
+
+19. A business wants to pay only for the exact execution time of code → **AWS Lambda**
+
+20. A small business wants predictable pricing and a simple cloud experience → **Amazon Lightsail**
 
 ---
 
 ## 🗄️ STORAGE SERVICES
 
-| **Service**                          | **Storage Type**        | **What it is**                                                                                                                                                                   | **Common Exam Keywords / Use Case**                                  |
-| ------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| **Amazon S3**                        | Object Storage          | Scalable object storage used to store files such as images, videos, backups, logs, and static website content. Data is stored as objects in buckets and accessed via HTTP/HTTPS. | Object storage, unlimited scale, static website, durability (11 9’s) |
-| **Amazon S3 Glacier**                | Archival Object Storage | Low-cost storage for long-term data archiving where data is accessed infrequently. Retrieval takes minutes to hours depending on the retrieval option.                           | Archive, low cost, infrequent access                                 |
-| **Amazon S3 Glacier Deep Archive**   | Archival Object Storage | Lowest-cost AWS storage option designed for long-term data retention (years). Data retrieval usually takes hours.                                                                | Compliance, backups, cheapest storage                                |
-| **Amazon EBS (Elastic Block Store)** | Block Storage           | Persistent block-level storage used with EC2 instances. Data remains even after EC2 is stopped and is typically used for OS disks or databases.                                  | EC2 storage, block storage, persistent                               |
-| **Amazon EFS (Elastic File System)** | File Storage            | Fully managed, scalable file system that can be mounted on multiple EC2 instances simultaneously. Commonly used for shared file systems.                                         | Shared storage, Linux file system                                    |
-| **Amazon FSx**                       | File Storage            | Managed file systems for specific workloads such as Windows File Server or high-performance computing. Cloud Practitioner only requires recognition, not deep details.           | Windows file system, managed file storage                            |
-| **AWS Storage Gateway**              | Hybrid Storage          | Connects on-premises environments with AWS cloud storage, allowing local applications to store data in AWS seamlessly.                                                           | Hybrid cloud, on-prem + AWS                                          |
-| **AWS Backup**                       | Backup Service          | Centralized service to automate and manage backups across AWS services like EBS, EFS, RDS, and DynamoDB.                                                                         | Backup automation, centralized backups                               |
+| **Service**                          | **Storage Type**        | **Explanation**                                                                                                                                                                  |
+| ------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon S3**                        | Object Storage          | Scalable object storage used to store files such as images, videos, backups, logs, and static website content. Data is stored as objects in buckets and accessed via HTTP/HTTPS. |
+| **Amazon S3 Glacier**                | Archival Object Storage | Low-cost storage for long-term data archiving where data is accessed infrequently. Retrieval takes minutes to hours depending on the retrieval option.                           |
+| **Amazon S3 Glacier Deep Archive**   | Archival Object Storage | Lowest-cost AWS storage option designed for long-term data retention (years). Data retrieval usually takes hours.                                                                |
+| **Amazon EBS (Elastic Block Store)** | Block Storage           | Persistent block-level storage used with EC2 instances. Data remains even after EC2 is stopped and is typically used for OS disks or databases.                                  |
+| **Amazon EFS (Elastic File System)** | File Storage            | Fully managed, scalable file system that can be mounted on multiple EC2 instances simultaneously. Commonly used for shared file systems.                                         |
+| **Amazon FSx**                       | File Storage            | Managed file systems for specific workloads such as Windows File Server or high-performance computing. Cloud Practitioner only requires recognition, not deep details.           |
+| **AWS Storage Gateway**              | Hybrid Storage          | Connects on-premises environments with AWS cloud storage, allowing local applications to store data in AWS seamlessly.                                                           |
+| **AWS Backup**                       | Backup Service          | Centralized service to automate and manage backups across AWS services like EBS, EFS, RDS, and DynamoDB.                                                                         |
+
+![AWS_Storage Image](/src/assets/aws-storage.png)
 
 ### 🔹Trick Questions:
 
-1. Which AWS storage service provides **11 9’s durability** for objects? → **Amazon S3**
+1. A company needs highly durable object storage to store images and videos → **Amazon S3**
 
-2. Which AWS service is the **lowest-cost option for long-term data retention**? → **Amazon S3 Glacier Deep Archive**
+2. Data must be stored long-term at the lowest cost and accessed once or twice a year → **Amazon S3 Glacier Deep Archive**
 
-3. Which storage service is **mounted like a disk to a single EC2 instance**? → **Amazon EBS**
+3. An application requires block storage attached to EC2 instances → **Amazon EBS**
 
-4. Which AWS storage service allows **multiple EC2 instances to access the same files simultaneously**? → **Amazon EFS**
+4. Multiple EC2 instances need to share the same file system simultaneously → **Amazon EFS**
 
-5. Which service should you use to **store operating system files for an EC2 instance**? → **Amazon EBS**
+5. A business wants automatic backups across AWS services from a single place → **AWS Backup**
 
-6. Which AWS service is best suited for **static website hosting**? → **Amazon S3**
+6. Frequently accessed data needs low-latency object storage → **Amazon S3 Standard**
 
-7. Which storage service is optimized for **frequent read/write access with low latency**? → **Amazon EBS**
+7. Data must be archived with minutes-to-hours retrieval time at low cost → **Amazon S3 Glacier Flexible Retrieval**
 
-8. Which AWS service provides **file storage accessible using standard file system protocols**? → **Amazon EFS**
+8. An on-premises application needs hybrid access to cloud storage → **AWS Storage Gateway**
 
-9. Which AWS storage option is designed for **data that is rarely accessed but must be retained for years**? → **Amazon S3 Glacier Deep Archive**
+9. Storage is needed for Windows file systems with SMB protocol → **Amazon FSx for Windows File Server**
 
-10. Which AWS service enables **hybrid storage between on-premises and AWS cloud**? → **AWS Storage Gateway**
+10. A high-performance workload needs shared file storage with millisecond latency → **Amazon EFS**
 
-11. Which service is commonly used to **archive compliance or audit data at the lowest cost**? → **Amazon S3 Glacier Deep Archive**
+11. A company wants storage that provides 11 nines (99.999999999%) durability → **Amazon S3**
 
-12. Which AWS service automatically **scales storage capacity without user intervention**? → **Amazon S3**
+12. Temporary storage is required only while an EC2 instance is running → **Instance Store**
 
-13. Which AWS service provides **block-level storage that persists after instance stop**? → **Amazon EBS**
+13. A workload needs persistent storage that survives EC2 termination → **Amazon EBS**
 
-14. Which AWS service is best for **shared Linux file systems across EC2 instances**? → **Amazon EFS**
+14. Data must be stored for regulatory compliance for 7–10 years → **Amazon S3 Glacier Deep Archive**
 
-15. Which AWS service is **NOT suitable for direct installation of an operating system**? → **Amazon S3**
+15. An application requires object-level access over the internet → **Amazon S3**
 
-16. Which AWS service supports **lifecycle policies to move data to cheaper storage tiers**? → **Amazon S3**
+16. A company wants to migrate large petabytes of data physically to AWS → **AWS Snowball**
 
-17. Which AWS storage service requires **manual capacity provisioning**? → **Amazon EBS**
+17. Storage must support POSIX-compliant file system access → **Amazon EFS**
 
-18. Which AWS service is ideal for **backup and restore across multiple AWS services from one place**? → **AWS Backup**
+18. A business wants low-cost storage with infrequent access → **Amazon S3 Standard-IA**
 
-19. Which AWS service allows **retrieval times measured in hours instead of milliseconds**? → **Amazon S3 Glacier Deep Archive**
+19. A backup solution is required for EC2, RDS, DynamoDB, and EFS together → **AWS Backup**
 
-20. Which AWS storage option is **object-based rather than file or block**? → **Amazon S3**
+20. Data must be cached locally while still stored in S3 for low latency → **AWS Storage Gateway (File Gateway)**
 
 ---
 
@@ -142,90 +150,92 @@
 
 ### 1️⃣ Relational Databases (SQL)
 
-| Service           | What it is (Exam-level)                                                                             | Key Exam Clues                                |
-| ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| **Amazon RDS**    | Fully managed relational database service supporting MySQL, PostgreSQL, MariaDB, Oracle, SQL Server | Automated backups, patching, Multi-AZ         |
-| **Amazon Aurora** | AWS-built high-performance relational DB compatible with MySQL & PostgreSQL                         | Faster than RDS, highly available, AWS-native |
+| Service           | Explanation                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
+| **Amazon RDS**    | Fully managed relational database service supporting MySQL, PostgreSQL, MariaDB, Oracle, SQL Server |
+| **Amazon Aurora** | AWS-built high-performance relational DB compatible with MySQL & PostgreSQL                         |
 
 ---
 
 ### 2️⃣ NoSQL Databases
 
-| Service             | What it is (Exam-level)                        | Key Exam Clues                             |
-| ------------------- | ---------------------------------------------- | ------------------------------------------ |
-| **Amazon DynamoDB** | Serverless NoSQL key-value & document database | Single-digit ms latency, automatic scaling |
+| Service             | Explanation                                    |
+| ------------------- | ---------------------------------------------- |
+| **Amazon DynamoDB** | Serverless NoSQL key-value & document database |
 
 ### 3️⃣ In-Memory Databases (Caching)
 
-| Service                | What it is (Exam-level)                       | Key Exam Clues                                |
-| ---------------------- | --------------------------------------------- | --------------------------------------------- |
-| **Amazon ElastiCache** | In-memory data store using Redis or Memcached | Caching, session storage, microsecond latency |
+| Service                | Explanation                                   |
+| ---------------------- | --------------------------------------------- |
+| **Amazon ElastiCache** | In-memory data store using Redis or Memcached |
 
 ### 4️⃣ Data Warehousing (Analytics)
 
-| Service             | What it is (Exam-level)                              | Key Exam Clues                   |
-| ------------------- | ---------------------------------------------------- | -------------------------------- |
-| **Amazon Redshift** | Fully managed data warehouse for analytics workloads | OLAP, columnar storage, BI tools |
+| Service             | Explanation                                          |
+| ------------------- | ---------------------------------------------------- |
+| **Amazon Redshift** | Fully managed data warehouse for analytics workloads |
 
 ### 5️⃣ Document Databases
 
-| Service               | What it is (Exam-level)                                | Key Exam Clues                    |
-| --------------------- | ------------------------------------------------------ | --------------------------------- |
-| **Amazon DocumentDB** | Managed JSON document database compatible with MongoDB | Semi-structured data, scalability |
+| Service               | Explanation                                            |
+| --------------------- | ------------------------------------------------------ |
+| **Amazon DocumentDB** | Managed JSON document database compatible with MongoDB |
 
 ### 6️⃣ Graph Databases
 
-| Service            | What it is (Exam-level)      | Key Exam Clues                 |
-| ------------------ | ---------------------------- | ------------------------------ |
-| **Amazon Neptune** | Fully managed graph database | Relationships, social networks |
+| Service            | Explanation                  |
+| ------------------ | ---------------------------- |
+| **Amazon Neptune** | Fully managed graph database |
 
 ### 7️⃣ Key-Value (Cassandra-compatible)
 
-| Service              | What it is (Exam-level)                   | Key Exam Clues                 |
-| -------------------- | ----------------------------------------- | ------------------------------ |
-| **Amazon Keyspaces** | Serverless Apache Cassandra-compatible DB | Wide-column, high availability |
+| Service              | Explanation                               |
+| -------------------- | ----------------------------------------- |
+| **Amazon Keyspaces** | Serverless Apache Cassandra-compatible DB |
+
+![AWS_Database Image](/src/assets/aws-database.png)
 
 ### 🔹Trick Questions:
 
-1. An application needs **SQL support, automated backups, and minimal administration** → **Amazon RDS**
+1. A business needs a fully managed relational database with automated backups and patching → **Amazon RDS**
 
-2. A MySQL workload requires **high performance and fault tolerance with AWS-native design** → **Amazon Aurora**
+2. An application requires a MySQL/PostgreSQL-compatible database with high performance and fault tolerance → **Amazon Aurora**
 
-3. A serverless application needs **massive scale with single-digit millisecond latency** → **Amazon DynamoDB**
+3. A serverless application needs a NoSQL key-value database with single-digit millisecond latency → **Amazon DynamoDB**
 
-4. A system stores **session data that must be extremely fast** → **Amazon ElastiCache**
+4. A company wants a petabyte-scale data warehouse for analytical queries → **Amazon Redshift**
 
-5. A company wants to run **complex analytical queries on petabytes of data** → **Amazon Redshift**
+5. A gaming app needs an in-memory data store for microsecond latency → **Amazon ElastiCache**
 
-6. An application stores **JSON documents and needs MongoDB compatibility** → **Amazon DocumentDB**
+6. A business wants a MongoDB-compatible fully managed database → **Amazon DocumentDB**
 
-7. A recommendation engine needs to model **relationships between entities** → **Amazon Neptune**
+7. A recommendation engine needs to store and query relationships between entities → **Amazon Neptune**
 
-8. A workload requires a **fully managed Apache Cassandra-compatible database** → **Amazon Keyspaces**
+8. An IoT application needs a time-series database optimized for fast ingestion → **Amazon Timestream**
 
-9. A database must **scale automatically without capacity planning** → **Amazon DynamoDB**
+9. A company wants a Cassandra-compatible serverless database → **Amazon Keyspaces**
 
-10. A reporting system is used mainly for **BI dashboards and analytics** → **Amazon Redshift**
+10. An application requires durable backups and point-in-time recovery for databases → **Amazon RDS**
 
-11. Data must be **relational but with lower operational overhead** → **Amazon RDS**
+11. A company needs a database that automatically scales capacity based on traffic → **Amazon DynamoDB**
 
-12. Data access requires **microsecond latency, not persistence focus** → **Amazon ElastiCache**
+12. A startup wants a relational database without managing servers and with pay-as-you-go pricing → **Amazon Aurora Serverless**
 
-13. A workload needs **high availability with read replicas and failover** → **Amazon Aurora**
+13. An analytics team wants to run complex SQL queries across large datasets → **Amazon Redshift**
 
-14. A NoSQL database must handle **unpredictable traffic spikes** → **Amazon DynamoDB**
+14. A caching layer is required to reduce database read latency → **Amazon ElastiCache**
 
-15. An analytics team queries data using **SQL but not for transactions** → **Amazon Redshift**
+15. A graph-based fraud detection system needs fast traversal of connected data → **Amazon Neptune**
 
-16. SQL transactions with joins and constraints → **Amazon RDS**
+16. A company wants a managed relational database supporting multiple engines (MySQL, PostgreSQL, Oracle) → **Amazon RDS**
 
-17. Serverless key-value storage with global scale → **Amazon DynamoDB**
+17. A serverless app needs a database that integrates natively with AWS Lambda → **Amazon DynamoDB**
 
-18. Caching layer placed in front of a database → **Amazon ElastiCache**
+18. A company wants real-time analytics on structured data using SQL → **Amazon Redshift**
 
-19. Graph-based queries like “friends of friends” → **Amazon Neptune**
+19. A document-based application needs JSON-like storage with MongoDB compatibility → **Amazon DocumentDB**
 
-20. Semi-structured document storage → **Amazon DocumentDB**
+20. A workload requires a highly available NoSQL database with global replication → **Amazon DynamoDB Global Tables**
 
 ---
 
@@ -233,324 +243,476 @@
 
 ![AWS_DNS Image](/src/assets/aws-dns.png)
 
-| **Service**                      | **What it is**                                                 | **Key Purpose / When to Use**                                                                          |
-| -------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Amazon VPC**                   | A logically isolated virtual network in AWS                    | Used to launch AWS resources (EC2, RDS, etc.) in a private, controlled network with your own IP ranges |
-| **Subnets**                      | A segmented range of IPs inside a VPC                          | Used to separate resources (public vs private) across Availability Zones                               |
-| **Internet Gateway (IGW)**       | A gateway that allows VPC resources to access the internet     | Required for public subnets so instances can send/receive internet traffic                             |
-| **NAT Gateway**                  | Allows private subnet resources to access the internet         | Used when instances must download updates but must NOT be publicly accessible                          |
-| **Route Tables**                 | Rules that control traffic routing in a VPC                    | Determines where network traffic is directed (IGW, NAT, VPC peering, etc.)                             |
-| **Security Groups**              | Virtual firewall at the instance level                         | Controls inbound and outbound traffic (stateful)                                                       |
-| **Network ACL (NACL)**           | Firewall at the subnet level                                   | Provides an extra layer of security (stateless)                                                        |
-| **Elastic Load Balancing (ELB)** | Distributes incoming traffic across multiple targets           | Improves availability and fault tolerance (ALB, NLB – no deep config needed for exam)                  |
-| **Amazon Route 53**              | Highly available DNS (Domain Name System) service              | Routes users to applications using domain names and routing policies                                   |
-| **Amazon CloudFront**            | Content Delivery Network (CDN)                                 | Delivers content (images, videos, APIs) with low latency using edge locations                          |
-| **AWS Direct Connect**           | Dedicated private connection from on-premises to AWS           | Used for consistent network performance and lower latency (enterprise use case)                        |
-| **Site-to-Site VPN**             | Encrypted tunnel between on-prem and AWS                       | Used for hybrid cloud connectivity over the public internet                                            |
-| **AWS Global Accelerator**       | Improves availability and performance using AWS global network | Routes traffic to the nearest healthy endpoint using static IPs                                        |
-| **Amazon API Gateway**           | Managed service to create, publish, and secure APIs            | Acts as a front door for applications (often used with Lambda)                                         |
+| **Service**                      | **Explanation**                                                                                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon VPC**                   | A logically isolated virtual network in AWS. Used to launch AWS resources (EC2, RDS, etc.) in a private, controlled network with your own IP ranges |
+| **Subnets**                      | A segmented range of IPs inside a VPC. Used to separate resources (public vs private) across Availability Zones                                     |
+| **Internet Gateway (IGW)**       | A gateway that allows VPC resources to access the internet. Required for public subnets so instances can send/receive internet traffic              |
+| **NAT Gateway**                  | Allows private subnet resources to access the internet. Used when instances must download updates but must NOT be publicly accessible               |
+| **Route Tables**                 | Rules that control traffic routing in a VPC. Determines where network traffic is directed (IGW, NAT, VPC peering, etc.)                             |
+| **Security Groups**              | Virtual firewall at the instance level. Controls inbound and outbound traffic (stateful)                                                            |
+| **Network ACL (NACL)**           | Firewall at the subnet level. Provides an extra layer of security (stateless)                                                                       |
+| **Elastic Load Balancing (ELB)** | Distributes incoming traffic across multiple targets. Improves availability and fault tolerance (ALB, NLB – no deep config needed for exam)         |
+| **Amazon Route 53**              | Highly available DNS (Domain Name System) service. Routes users to applications using domain names and routing policies                             |
+| **Amazon CloudFront**            | Content Delivery Network (CDN). Delivers content (images, videos, APIs) with low latency using edge locations                                       |
+| **AWS Direct Connect**           | Dedicated private connection from on-premises to AWS. Used for consistent network performance and lower latency (enterprise use case)               |
+| **Site-to-Site VPN**             | Encrypted tunnel between on-prem and AWS. Used for hybrid cloud connectivity over the public internet                                               |
+| **AWS Global Accelerator**       | Improves availability and performance using AWS global network. Routes traffic to the nearest healthy endpoint using static IPs                     |
+| **Amazon API Gateway**           | Managed service to create, publish, and secure APIs. Acts as a front door for applications (often used with Lambda)                                 |
+
+![AWS_Network Image](/src/assets/aws-network.png)
 
 ### 🔹Trick Questions:
 
-1. A service is needed to **translate a domain name to an IP address globally** → **Amazon Route 53**
+1. A company needs a DNS service to route users to applications globally → **Amazon Route 53**
 
-2. Users worldwide experience **high latency while loading static images** → **Amazon CloudFront**
+2. A business wants to deliver content to users with low latency worldwide → **Amazon CloudFront**
 
-3. An application must **distribute traffic across multiple EC2 instances** → **Elastic Load Balancing (ELB)**
+3. An application needs a logically isolated virtual network in AWS → **Amazon VPC**
 
-4. Resources must run in a **logically isolated private network** → **Amazon VPC**
+4. Private subnets must access the internet without inbound traffic → **NAT Gateway**
 
-5. Instances in a private subnet need **outbound internet access only** → **NAT Gateway**
+5. Resources in a VPC must communicate with the internet → **Internet Gateway**
 
-6. A subnet requires **direct inbound and outbound internet access** → **Internet Gateway**
+6. A company wants a dedicated private connection from on-premises to AWS → **AWS Direct Connect**
 
-7. Traffic routing rules inside a VPC must be controlled → **Route Tables**
+7. Multiple VPCs need to communicate using a central hub → **AWS Transit Gateway**
 
-8. Security rules must apply **directly to EC2 instances** → **Security Groups**
+8. An application needs a fully managed API front door → **Amazon API Gateway**
 
-9. Security rules must apply **at the subnet level** → **Network ACL (NACL)**
+9. A global application needs static IPs and improved availability → **AWS Global Accelerator**
 
-10. On-premises data center needs a **secure encrypted connection over the internet** → **Site-to-Site VPN**
+10. A company wants DDoS protection at the network edge → **AWS Shield**
 
-11. On-premises data center needs a **private, dedicated, high-bandwidth connection** → **AWS Direct Connect**
+11. A web application needs protection from common web attacks (SQL injection, XSS) → **AWS WAF**
 
-12. A global application needs **static IPs and fastest user routing** → **AWS Global Accelerator**
+12. A business wants to cache content closer to users automatically → **Amazon CloudFront**
 
-13. A service is needed to **create, manage, and secure REST APIs** → **Amazon API Gateway**
+13. A hybrid architecture needs secure site-to-site encrypted connectivity → **Site-to-Site VPN**
 
-14. Traffic must be routed to the **nearest healthy endpoint globally** → **Amazon Route 53 (latency routing)**
+14. An application requires private access to AWS services without internet exposure → **AWS PrivateLink**
 
-15. DDoS protection for network-level attacks is required → **AWS Shield**
+15. A company wants fine-grained traffic control between microservices → **AWS App Mesh**
 
-16. Content must be cached at **edge locations worldwide** → **Amazon CloudFront**
+16. DNS health checks are needed to route traffic only to healthy endpoints → **Amazon Route 53**
 
-17. A company wants **high availability without managing servers** → **Elastic Load Balancing**
+17. A company wants content delivery with built-in SSL and edge locations → **Amazon CloudFront**
 
-18. A VPC needs to communicate with another VPC securely → **VPC Peering**
+18. Multiple AWS accounts must share VPC resources securely → **AWS Resource Access Manager (RAM)**
 
-19. Hybrid architecture is required using the **public internet** → **VPN**
+19. An application needs layer-7 load balancing for HTTP/HTTPS traffic → **Application Load Balancer**
 
-20. Hybrid architecture requires **predictable performance and low latency** → **Direct Connect**
+20. A company needs automatic scaling and distribution of incoming traffic → **Elastic Load Balancing**
 
 ---
 
 ## 🔐 SECURITY, IDENTITY & COMPLIANCE
 
-| **Service**                                  | **What it is**                                                                                                                   | **Exam Keywords / Focus**                                      |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| **AWS Identity and Access Management (IAM)** | Core AWS service to **manage users, groups, roles, and permissions**. Uses policies written in JSON to define _who can do what_. | Authentication, Authorization, Least Privilege, Roles vs Users |
-| **IAM Identity Center (SSO)**                | Centralized **single sign-on (SSO)** service to manage access across **multiple AWS accounts and applications**.                 | SSO, Multi-account access, Federation                          |
-| **Amazon Cognito**                           | Provides **user sign-up, sign-in, and authentication** for web and mobile apps. Used for **application users**, not AWS admins.  | App users, OAuth, User pools                                   |
-| **AWS Organizations**                        | Helps manage **multiple AWS accounts** centrally, apply **Service Control Policies (SCPs)**, and consolidate billing.            | Multi-account management, SCPs                                 |
-| **AWS Key Management Service (KMS)**         | Managed service to **create, manage, and control encryption keys** used to encrypt data across AWS services.                     | Encryption at rest, CMK, Integrated encryption                 |
-| **AWS Secrets Manager**                      | Securely **stores and rotates secrets** like database passwords, API keys, and tokens.                                           | Secrets rotation, No hardcoded secrets                         |
-| **AWS Certificate Manager (ACM)**            | Manages **SSL/TLS certificates** for services like ALB, CloudFront, and API Gateway.                                             | HTTPS, TLS, Certificates                                       |
-| **AWS Shield**                               | Provides **DDoS protection**. Shield Standard is automatic and free; Shield Advanced offers enhanced protection.                 | DDoS protection                                                |
-| **AWS Web Application Firewall (WAF)**       | Protects web applications from **common web exploits** like SQL injection and XSS attacks.                                       | Layer 7 protection                                             |
-| **Amazon GuardDuty**                         | **Threat detection service** that continuously monitors AWS accounts for malicious activity using ML and logs.                   | Intelligent threat detection                                   |
-| **Amazon Inspector**                         | **Automated security assessment** service that scans EC2 and container workloads for vulnerabilities.                            | Vulnerability scanning                                         |
-| **Amazon Macie**                             | Uses ML to **discover and protect sensitive data** (like PII) stored in Amazon S3.                                               | PII, Data classification                                       |
-| **AWS Security Hub**                         | Central dashboard that **aggregates security findings** from multiple AWS security services.                                     | Security posture management                                    |
-| **AWS Artifact**                             | Provides **on-demand access to compliance reports** and agreements (SOC, ISO, PCI).                                              | Compliance reports                                             |
-| **AWS CloudTrail**                           | Records **all API calls and account activity** for auditing and compliance.                                                      | Who did what, Audit logs                                       |
+| **Service**                                  | **Explanation**                                                                                                                  |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **AWS Identity and Access Management (IAM)** | Core AWS service to **manage users, groups, roles, and permissions**. Uses policies written in JSON to define _who can do what_. |
+| **IAM Identity Center (SSO)**                | Centralized **single sign-on (SSO)** service to manage access across **multiple AWS accounts and applications**.                 |
+| **Amazon Cognito**                           | Provides **user sign-up, sign-in, and authentication** for web and mobile apps. Used for **application users**, not AWS admins.  |
+| **AWS Organizations**                        | Helps manage **multiple AWS accounts** centrally, apply **Service Control Policies (SCPs)**, and consolidate billing.            |
+| **AWS Key Management Service (KMS)**         | Managed service to **create, manage, and control encryption keys** used to encrypt data across AWS services.                     |
+| **AWS Secrets Manager**                      | Securely **stores and rotates secrets** like database passwords, API keys, and tokens.                                           |
+| **AWS Certificate Manager (ACM)**            | Manages **SSL/TLS certificates** for services like ALB, CloudFront, and API Gateway.                                             |
+| **AWS Shield**                               | Provides **DDoS protection**. Shield Standard is automatic and free; Shield Advanced offers enhanced protection.                 |
+| **AWS Web Application Firewall (WAF)**       | Protects web applications from **common web exploits** like SQL injection and XSS attacks.                                       |
+| **Amazon GuardDuty**                         | **Threat detection service** that continuously monitors AWS accounts for malicious activity using ML and logs.                   |
+| **Amazon Inspector**                         | **Automated security assessment** service that scans EC2 and container workloads for vulnerabilities.                            |
+| **Amazon Macie**                             | Uses ML to **discover and protect sensitive data** (like PII) stored in Amazon S3.                                               |
+| **AWS Security Hub**                         | Central dashboard that **aggregates security findings** from multiple AWS security services.                                     |
+| **AWS Artifact**                             | Provides **on-demand access to compliance reports** and agreements (SOC, ISO, PCI).                                              |
+| **AWS CloudTrail**                           | Records **all API calls and account activity** for auditing and compliance.                                                      |
+
+![AWS_Compliance Image](/src/assets/aws-compliance.png)
 
 ### 🔹Trick Questions:
 
-1. A service is needed to **control who can access AWS resources using policies** → **AWS IAM**
+1. A company needs to control who can access AWS resources → **IAM**
 
-2. A service is required to **grant temporary permissions to AWS services** → **IAM Role**
+2. Users need single sign-on (SSO) to AWS accounts and business apps → **IAM Identity Center**
 
-3. A company wants **single sign-on across multiple AWS accounts** → **IAM Identity Center (SSO)**
+3. A web application needs protection from SQL injection and XSS attacks → **AWS WAF**
 
-4. A mobile app needs **user sign-up and sign-in** → **Amazon Cognito**
+4. The business wants DDoS protection for applications → **AWS Shield**
 
-5. A service is needed to **centrally manage multiple AWS accounts** → **AWS Organizations**
+5. The company needs to store API keys and database passwords securely → **AWS Secrets Manager**
 
-6. A company wants to **restrict what accounts can do, even for admins** → **Service Control Policies (SCPs)**
+6. Data must be encrypted using customer-managed encryption keys → **AWS KMS**
 
-7. A service is required to **encrypt data at rest using managed keys** → **AWS KMS**
+7. The organization wants to detect suspicious activity and compromised accounts → **Amazon GuardDuty**
 
-8. A service is needed to **store database passwords securely** → **AWS Secrets Manager**
+8. A security team wants to scan EC2 instances for vulnerabilities → **Amazon Inspector**
 
-9. A service automatically **rotates database credentials** → **AWS Secrets Manager**
+9. The company needs to discover sensitive data like PII in S3 buckets → **Amazon Macie**
 
-10. A service is required to **protect applications from DDoS attacks** → **AWS Shield**
+10. Developers want user sign-up, sign-in, and authentication for an app → **Amazon Cognito**
 
-11. A service is needed to **block SQL injection and XSS attacks** → **AWS WAF**
+11. The audit team wants compliance reports and certifications → **AWS Artifact**
 
-12. A service continuously **detects suspicious activity using ML** → **Amazon GuardDuty**
+12. A company wants to centrally manage security alerts and findings → **AWS Security Hub**
 
-13. A service is required to **scan EC2 instances for vulnerabilities** → **Amazon Inspector**
+13. An enterprise needs hardware-based key storage → **AWS CloudHSM**
 
-14. A service identifies **PII data stored in S3 buckets** → **Amazon Macie**
+14. A company wants to record all AWS API calls for auditing → **AWS CloudTrail**
 
-15. A service provides a **central security findings dashboard** → **AWS Security Hub**
+15. The security team wants managed firewall rules across multiple accounts → **AWS Firewall Manager**
 
-16. A service records **who did what and when in AWS** → **AWS CloudTrail**
+16. An organization wants to analyze and investigate security incidents → **Amazon Detective**
 
-17. A service is needed to **audit API calls for compliance** → **AWS CloudTrail**
+17. The business needs SSL/TLS certificates for its websites → **AWS Certificate Manager**
 
-18. A service provides **SOC, ISO, and PCI compliance reports** → **AWS Artifact**
+18. A company wants to control access between AWS accounts → **AWS Resource Access Manager (RAM)**
 
-19. A service manages **SSL/TLS certificates for AWS services** → **AWS Certificate Manager**
+19. The security team needs network-level firewall protection → **AWS Network Firewall**
 
-20. A service is needed to **protect against account compromise attempts** → **Amazon GuardDuty**
-
-21. A service enforces **least privilege access by default** → **AWS IAM**
-
-22. A service allows **federated login using Google or Facebook** → **Amazon Cognito**
-
-23. A service helps **meet regulatory compliance without managing infrastructure** → **AWS Artifact**
-
-24. A service aggregates **security alerts from Inspector, GuardDuty, and Macie** → **AWS Security Hub**
-
-25. A service detects **unauthorized cryptocurrency mining** → **Amazon GuardDuty**
+20. The company wants to monitor compliance against security rules → **AWS Config**
 
 ---
 
 ## 🛠️ MANAGEMENT & MONITORING
 
-| **Service**                   | **What it does**                                                                               | **Why it exists (exam-oriented)**                                                                           |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Amazon CloudWatch**         | Collects **metrics, logs, and alarms** from AWS resources like EC2, Lambda, RDS, etc.          | Used to **monitor performance and health** of AWS resources and trigger alerts when thresholds are crossed. |
-| **AWS CloudTrail**            | Records **all API calls and account activity** made in your AWS account.                       | Used for **auditing, governance, and security investigations** (who did what, when).                        |
-| **AWS Config**                | Tracks **resource configurations** and configuration changes over time.                        | Helps with **compliance and drift detection** (e.g., “Was encryption turned off?”).                         |
-| **AWS Systems Manager**       | Centralized operational hub for **patching, automation, parameter storage, and run commands**. | Used to **manage EC2 and hybrid resources at scale** without logging into servers.                          |
-| **AWS Trusted Advisor**       | Analyzes your account and gives **best-practice recommendations**.                             | Helps improve **cost optimization, security, fault tolerance, and performance**.                            |
-| **AWS Health Dashboard**      | Displays **service-level and account-specific AWS issues**.                                    | Used to understand **AWS outages and planned maintenance** affecting your resources.                        |
-| **AWS Organizations**         | Manages **multiple AWS accounts centrally** using OUs and policies.                            | Enables **account governance, consolidated billing, and SCPs**.                                             |
-| **AWS Control Tower**         | Automates **multi-account setup** using AWS best practices.                                    | Used to quickly build a **secure, governed landing zone**.                                                  |
-| **AWS Service Catalog**       | Allows admins to create **approved service portfolios**.                                       | Ensures teams launch **only compliant and pre-approved resources**.                                         |
-| **AWS Well-Architected Tool** | Reviews workloads against AWS **best-practice pillars**.                                       | Helps identify **architectural risks** in cost, security, reliability, etc.                                 |
-| **AWS Auto Scaling**          | Automatically adjusts capacity across services (EC2, ECS, DynamoDB).                           | Ensures **availability and cost efficiency** during demand changes.                                         |
+| **Service**                   | **Explanation**                                                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon CloudWatch**         | Collects **metrics, logs, and alarms** from AWS resources like EC2, Lambda, RDS, etc. Used to **monitor performance and health** of AWS resources and trigger alerts when thresholds are crossed. |
+| **AWS CloudTrail**            | Records **all API calls and account activity** made in your AWS account. Used for **auditing, governance, and security investigations** (who did what, when).                                     |
+| **AWS Config**                | Tracks **resource configurations** and configuration changes over time. Helps with **compliance and drift detection** (e.g., “Was encryption turned off?”).                                       |
+| **AWS Systems Manager**       | Centralized operational hub for **patching, automation, parameter storage, and run commands**.Used to **manage EC2 and hybrid resources at scale** without logging into servers.                  |
+| **AWS Trusted Advisor**       | Analyzes your account and gives **best-practice recommendations**. Helps improve **cost optimization, security, fault tolerance, and performance**.                                               |
+| **AWS Health Dashboard**      | Displays **service-level and account-specific AWS issues**. Used to understand **AWS outages and planned maintenance** affecting your resources.                                                  |
+| **AWS Organizations**         | Manages **multiple AWS accounts centrally** using OUs and policies.Enables **account governance, consolidated billing, and SCPs**.                                                                |
+| **AWS Control Tower**         | Automates **multi-account setup** using AWS best practices. Used to quickly build a **secure, governed landing zone**.                                                                            |
+| **AWS Service Catalog**       | Allows admins to create **approved service portfolios**. Ensures teams launch **only compliant and pre-approved resources**.                                                                      |
+| **AWS Well-Architected Tool** | Reviews workloads against AWS **best-practice pillars**. Helps identify **architectural risks** in cost, security, reliability, etc.                                                              |
+| **AWS Auto Scaling**          | Automatically adjusts capacity across services (EC2, ECS, DynamoDB). Ensures **availability and cost efficiency** during demand changes.                                                          |
 
 ### 🔹Trick Questions:
 
-1. A service is needed to **control access to AWS services using users, roles, and policies** → **AWS Identity and Access Management (IAM)**
+1. A company needs to monitor CPU, memory, and create alarms for AWS resources → **Amazon CloudWatch**
 
-2. A service is needed to **grant temporary permissions to AWS resources without sharing credentials** → **AWS Identity and Access Management (IAM Roles)**
+2. A security team needs a record of all API calls made in an AWS account → **AWS CloudTrail**
 
-3. A service is needed to **authenticate users for a web or mobile application** → **Amazon Cognito**
+3. An auditor asks who deleted an S3 bucket and when → **AWS CloudTrail**
 
-4. A service is needed to **protect applications from DDoS attacks automatically** → **AWS Shield**
+4. A company wants to track configuration changes and resource compliance → **AWS Config**
 
-5. A service is needed to **block malicious HTTP requests like SQL injection and XSS** → **AWS WAF**
+5. A business needs centralized operational data and automated remediation → **AWS Systems Manager**
 
-6. A service is needed to **encrypt data using managed encryption keys** → **AWS Key Management Service (KMS)**
+6. An organization wants best-practice recommendations for cost, security, and performance → **AWS Trusted Advisor**
 
-7. A service is needed to **store database passwords and API keys securely** → **AWS Secrets Manager**
+7. A DevOps team needs to view logs, metrics, and set alarms in one place → **Amazon CloudWatch**
 
-8. A service is needed to **detect suspicious activity like compromised credentials** → **Amazon GuardDuty**
+8. A compliance team wants to check if resources follow internal rules continuously → **AWS Config**
 
-9. A service is needed to **scan EC2 instances for vulnerabilities** → **Amazon Inspector**
+9. A company wants to centrally manage multiple AWS accounts → **AWS Organizations**
 
-10. A service is needed to **identify sensitive data like PII in S3 buckets** → **Amazon Macie**
+10. A startup needs to set up a multi-account AWS environment with guardrails → **AWS Control Tower**
 
-11. A service is needed to **provide AWS compliance reports (SOC, ISO, PCI)** → **AWS Artifact**
+11. A business wants to automatically notify users of AWS service outages → **AWS Service Health Dashboard**
 
-12. A service is needed to **centrally manage security findings across AWS accounts** → **AWS Security Hub**
+12. A developer needs to trace requests across microservices → **AWS X-Ray**
 
-13. A service is needed to **log all API calls made in an AWS account** → **AWS CloudTrail**
+13. A company wants to store and search application logs → **Amazon CloudWatch Logs**
 
-14. A service is needed to **monitor configuration changes for compliance** → **AWS Config**
+14. A finance team needs alerts when AWS usage exceeds a threshold → **AWS Budgets**
 
-15. A service is needed to **store SSL/TLS certificates for free and manage renewals** → **AWS Certificate Manager (ACM)**
+15. A business wants to analyze historical AWS spending trends → **AWS Cost Explorer**
 
-16. A service is needed to **protect network traffic with managed firewall rules** → **AWS Network Firewall**
+16. A security team wants a centralized view of security findings → **AWS Security Hub**
 
-17. A service is needed to **share AWS resources securely between accounts** → **AWS Resource Access Manager (RAM)**
+17. A company wants to define infrastructure using templates → **AWS CloudFormation**
 
-18. A service is needed to **enforce permissions across multiple AWS accounts** → **AWS Organizations**
+18. An operations team wants patch management for EC2 instances → **AWS Systems Manager**
+
+19. A company needs automatic scaling recommendations to reduce cost → **AWS Compute Optimizer**
+
+20. A business wants to track operational best practices using a framework → **AWS Well-Architected Tool**
 
 ---
 
 ### 💰 PRICING & COST MANAGEMENT
 
-| **Service**                          | **What it is**                                                   | **What problem it solves**                                                                                                                                                    |
-| ------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **AWS Cost Explorer**                | A visual analytics tool to explore AWS costs and usage over time | Helps you **analyze past & current spending**, identify which services or accounts cost the most, and forecast future costs. Exam keyword: **visualize & analyze costs**.     |
-| **AWS Budgets**                      | A budgeting and alerting service                                 | Lets you **set cost, usage, or reservation budgets** and sends alerts when thresholds are exceeded or forecasted to exceed. Exam keyword: **alerts & thresholds**.            |
-| **AWS Cost and Usage Report (CUR)**  | The most detailed billing report AWS provides                    | Gives **hourly or daily line-item usage and cost data** for every AWS service. Used for **deep cost analysis and auditing**. Exam keyword: **most detailed billing data**.    |
-| **AWS Billing Conductor**            | Custom billing management service                                | Used mainly by **enterprises and solution providers** to do **chargeback/showback** with custom pricing views. Exam keyword: **custom billing for internal teams/customers**. |
-| **Savings Plans**                    | A flexible pricing model based on usage commitment               | Provides **lower prices than On-Demand** in exchange for a **1-year or 3-year commitment**. Exam keyword: **commit to usage → save money**.                                   |
-| **Reserved Instance (RI) Reporting** | Reporting tools for Reserved Instances                           | Helps track **RI utilization and coverage** to ensure you’re actually using what you paid for. Exam keyword: **measure RI efficiency**.                                       |
+| **Service**                          | **Explanation**                                                                                                                                                                                                                             |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AWS Cost Explorer**                | A visual analytics tool to explore AWS costs and usage over time. Helps you **analyze past & current spending**, identify which services or accounts cost the most, and forecast future costs. Exam keyword: **visualize & analyze costs**. |
+| **AWS Budgets**                      | A budgeting and alerting service . Lets you **set cost, usage, or reservation budgets** and sends alerts when thresholds are exceeded or forecasted to exceed. Exam keyword: **alerts & thresholds**.                                       |
+| **AWS Cost and Usage Report (CUR)**  | The most detailed billing report AWS provides. Gives **hourly or daily line-item usage and cost data** for every AWS service. Used for **deep cost analysis and auditing**. Exam keyword: **most detailed billing data**.                   |
+| **AWS Billing Conductor**            | Custom billing management service . Used mainly by **enterprises and solution providers** to do **chargeback/showback** with custom pricing views. Exam keyword: **custom billing for internal teams/customers**.                           |
+| **Savings Plans**                    | A flexible pricing model based on usage commitment. Provides **lower prices than On-Demand** in exchange for a **1-year or 3-year commitment**. Exam keyword: **commit to usage → save money**.                                             |
+| **Reserved Instance (RI) Reporting** | Reporting tools for Reserved Instances . Helps track **RI utilization and coverage** to ensure you’re actually using what you paid for. Exam keyword: **measure RI efficiency**.                                                            |
+
+![AWS_Pricing Image](/src/assets/aws-pricing.png)
 
 ### 🔹Trick Questions:
 
-1. A service is needed to **visualize AWS costs and forecast future spending** → **AWS Cost Explorer**
+1. A company wants to estimate monthly AWS costs before deploying resources → **AWS Pricing Calculator**
 
-2. A service is required to **send alerts when monthly spend exceeds a limit** → **AWS Budgets**
+2. A finance team needs to visualize historical AWS spending with graphs and filters → **AWS Cost Explorer**
 
-3. A company needs **hour-by-hour, line-item billing data for every service** → **AWS Cost and Usage Report (CUR)**
+3. A business wants to receive alerts when AWS spending exceeds a threshold → **AWS Budgets**
 
-4. A business wants to **set different internal prices for different teams** → **AWS Billing Conductor**
+4. A company needs detailed, line-item usage and cost reports stored in S3 → **AWS Cost and Usage Report**
 
-5. A pricing model offers **discounts in exchange for a 1-year or 3-year usage commitment** → **Savings Plans**
+5. A startup wants to avoid charges while learning AWS services → **AWS Free Tier**
 
-6. A report is needed to **check if Reserved Instances are being fully utilized** → **Reserved Instance (RI) Reporting**
+6. An organization wants to pay only for compute capacity while it is running → **On-Demand Instances**
 
-7. A user wants to **compare cost trends across multiple linked AWS accounts** → **AWS Cost Explorer**
+7. A workload requires long-term, steady EC2 usage at a lower cost → **Reserved Instances**
 
-8. A finance team needs **budget alerts via email or SNS** → **AWS Budgets**
+8. A batch job can tolerate interruptions and needs maximum cost savings → **Spot Instances**
 
-9. A company wants the **most detailed billing data for auditing purposes** → **AWS Cost and Usage Report (CUR)**
+9. A company wants flexible cost savings across EC2, Lambda, and Fargate → **Savings Plans**
 
-10. A solution provider needs **chargeback and showback for customers** → **AWS Billing Conductor**
+10. A team wants to track costs by department using tags → **Cost Allocation Tags**
 
-11. Pay only for compute time with **no upfront commitment** → **On-Demand pricing**
+11. A company needs to set a forecasted budget and get notified before overspending → **AWS Budgets**
 
-12. Get **up to 90% discount** using unused EC2 capacity → **Spot Instances**
+12. A business wants to analyze which AWS service is contributing most to cost increases → **AWS Cost Explorer**
 
-13. Reduce cost by **committing to spend per hour, not instance type** → **Savings Plans**
+13. A finance team needs hourly or daily breakdown of AWS usage per service → **AWS Cost and Usage Report**
 
-14. Reserve EC2 capacity for long-term predictable workloads → **Reserved Instances**
+14. A customer wants to reduce EC2 costs without committing to specific instance types → **Compute Savings Plans**
 
-15. New users want **limited free usage for 12 months** → **AWS Free Tier**
+15. A company wants to automatically stop spending beyond the Free Tier limits → **AWS Budgets**
 
-16. **Analyze past costs** but not alert → **AWS Cost Explorer**
+16. A business wants to compare pricing between regions before deployment → **AWS Pricing Calculator**
 
-17. **Alert on future overspend** → **AWS Budgets**
+17. A company wants lower pricing in exchange for a 1-year or 3-year commitment → **Reserved Instances**
 
-18. **Deep billing export to S3** → **AWS Cost and Usage Report**
+18. A startup wants to pay nothing for EC2, S3, and Lambda within limits for 12 months → **AWS Free Tier**
 
-19. **Custom internal pricing views** → **AWS Billing Conductor**
+19. A company wants to identify unused or underutilized resources for cost optimization → **AWS Cost Explorer**
 
-20. **Commit usage across EC2, Lambda, Fargate** → **Compute Savings Plans**
+20. A finance team wants centralized visibility of AWS costs across accounts → **AWS Cost Explorer**
 
 ---
 
-### 🚀 DEPLOYMENT & MIGRATION
+## 🚀 DEPLOYMENT & MIGRATION
 
-- **AWS Elastic Beanstalk** deploys applications automatically.
-  Developers upload code while AWS manages the infrastructure.
+Here is the **UPDATED & COMPLETE section** with the **missing services added**, written **cleanly**, **exam-oriented**, and **ONLY with “Service | Explanation” columns** as you asked.
 
-- **AWS CloudFormation** uses templates to create resources.
-  It ensures consistent and repeatable infrastructure deployment.
+---
 
-- **AWS Snowball** transfers large amounts of data offline.
-  It is useful when network transfer is slow or expensive.
+## 🚀 DEPLOYMENT & MIGRATION
+
+### 📦 DEPLOYMENT SERVICES (Application & Infrastructure Deployment)
+
+| **Service**               | **Explanation**                                                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **AWS Elastic Beanstalk** | Fully managed service to deploy web applications while AWS handles servers, scaling, load balancing, and monitoring. |
+| **AWS CloudFormation**    | Infrastructure as Code (IaC) service to create and manage AWS resources using YAML or JSON templates.                |
+| **AWS CodeDeploy**        | Automates application deployments to EC2 instances, AWS Lambda, or on-premises servers.                              |
+| **AWS CodePipeline**      | Continuous Integration and Continuous Delivery (CI/CD) service to automate build, test, and deploy workflows.        |
+| **AWS CodeBuild**         | Fully managed build service to compile source code, run tests, and produce deployable artifacts.                     |
+
+### 🧭 MIGRATION PLANNING & DISCOVERY
+
+| **Service**                           | **Explanation**                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **AWS Migration Hub**                 | Centralized dashboard to track the progress of application migrations across multiple AWS tools. |
+| **AWS Application Discovery Service** | Collects on-premises server and application data to assist with migration planning.              |
+| **AWS Migration Evaluator**           | Analyzes on-premises environments to estimate migration costs and right-size AWS resources.      |
+
+### 🖥️ APPLICATION & SERVER MIGRATION
+
+| **Service**                                 | **Explanation**                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **AWS Application Migration Service (MGN)** | Lift-and-shift service to migrate physical or virtual servers to AWS with minimal downtime. |
+| **AWS Elastic Disaster Recovery**           | Provides continuous replication for fast recovery and disaster recovery migrations to AWS.  |
+
+### 🗄️ DATABASE MIGRATION
+
+| **Service**                              | **Explanation**                                                                                       |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **AWS Database Migration Service (DMS)** | Migrates databases to AWS with minimal downtime, supporting homogeneous and heterogeneous migrations. |
+
+### 📦 DATA TRANSFER (ONLINE & HYBRID)
+
+| **Service**             | **Explanation**                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **AWS DataSync**        | Automates and accelerates online data transfer between on-premises storage and AWS services. |
+| **AWS Transfer Family** | Managed SFTP, FTPS, and FTP service to transfer data directly into Amazon S3 or Amazon EFS.  |
+| **AWS Storage Gateway** | Hybrid storage service that connects on-premises environments with AWS cloud storage.        |
+| **AWS Snowball**        | Physical device used to transfer terabytes to petabytes of data into AWS.                    |
+| **AWS Snowmobile**      | Truck-based service for transferring exabyte-scale data into AWS data centers.               |
+
+![AWS_Migration Image](/src/assets/aws-migration.png)
+
+### 🔹Trick Questions:
+
+1. A company wants to automatically deploy code to EC2 and on-prem servers → **AWS CodeDeploy**
+
+2. A developer needs a fully managed CI/CD pipeline with minimal setup → **AWS CodePipeline**
+
+3. A team wants to build, test, and package code automatically → **AWS CodeBuild**
+
+4. A business wants to deploy web applications without managing servers → **AWS Elastic Beanstalk**
+
+5. A company wants to define infrastructure using code templates → **AWS CloudFormation**
+
+6. A business wants a central place to track application migration progress → **AWS Migration Hub**
+
+7. A company wants to lift-and-shift on-prem servers to AWS with minimal downtime → **AWS Application Migration Service**
+
+8. A database needs to be migrated to AWS with minimal downtime → **AWS Database Migration Service (DMS)**
+
+9. A company wants to move large datasets online securely and quickly → **AWS DataSync**
+
+10. A business needs to transfer petabytes of data without internet → **AWS Snowball**
+
+11. A company needs to physically move exabytes of data to AWS → **AWS Snowmobile**
+
+12. A company wants to run AWS services on-premises → **AWS Outposts**
+
+13. A startup wants a simple deployment experience with minimal AWS knowledge → **AWS Elastic Beanstalk**
+
+14. A team wants to migrate legacy apps without rewriting code → **AWS Application Migration Service**
+
+15. A company wants to orchestrate multi-step deployments automatically → **AWS CodePipeline**
 
 ---
 
 ### 📦 APPLICATION INTEGRATION
 
-- **Amazon SQS** enables message queuing between applications.
-  It decouples components and improves system reliability.
+| **Service**                                  | **Explanation**                                                                                                                                                                                                                                                            |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon Simple Queue Service (SQS)**        | A fully managed message queue service that decouples application components by allowing them to send, store, and receive messages asynchronously. It helps applications scale reliably without losing messages, even when parts of the system are temporarily unavailable. |
+| **Amazon Simple Notification Service (SNS)** | A fully managed pub/sub messaging service used to send messages or notifications to multiple subscribers at once. SNS supports fan-out to services like SQS, Lambda, HTTP endpoints, email, SMS, and mobile push notifications.                                            |
+| **Amazon EventBridge**                       | A serverless event bus that enables event-driven architectures by routing events from AWS services, SaaS applications, or custom applications to targets like Lambda. It allows loosely coupled systems to react to events in real time.                                   |
+| **AWS Step Functions**                       | A serverless orchestration service that coordinates multiple AWS services into visual workflows. It is commonly used to build multi-step applications by managing execution order, retries, error handling, and state tracking.                                            |
+| **Amazon MQ**                                | A managed message broker service for Apache ActiveMQ and RabbitMQ. It is mainly used when migrating existing applications that rely on traditional message brokers and standard protocols like JMS, AMQP, or MQTT.                                                         |
+| **Amazon Simple Workflow Service (SWF)**     | A service that helps coordinate long-running background jobs with multiple steps. It tracks task states and execution progress, making it suitable for workflows that take longer than typical request-response operations.                                                |
 
-- **Amazon SNS** uses a publish-subscribe model.
-  Messages can be sent to multiple endpoints simultaneously.
+![AWS_Integration Image](/src/assets/aws-integration.png)
 
-- **AWS Step Functions** coordinates multi-step workflows.
-  It simplifies complex application logic and error handling.
+### 🔹Trick Questions:
+
+1. An application needs to decouple microservices using a fully managed message queue → **Amazon SQS**
+
+2. A system must send notifications to multiple subscribers using pub/sub → **Amazon SNS**
+
+3. A company wants to route events from AWS services and SaaS apps in real time → **Amazon EventBridge**
+
+4. A serverless workflow needs visual orchestration of multiple AWS services → **AWS Step Functions**
+
+5. A legacy application requires a managed Apache ActiveMQ or RabbitMQ broker → **Amazon MQ**
+
+6. An application must trigger actions when specific AWS events occur → **Amazon EventBridge**
+
+7. A system needs to fan-out messages to Lambda, SQS, and HTTP endpoints → **Amazon SNS**
+
+8. A workload needs reliable message storage until consumers process it → **Amazon SQS**
+
+9. A business wants to coordinate long-running background jobs with state tracking → **AWS Step Functions**
+
+10. A company is migrating from on-premises message brokers without rewriting code → **Amazon MQ**
+
+11. An event-driven architecture needs loose coupling between producers and consumers → **Amazon EventBridge**
+
+12. A microservices system must process messages in order exactly once → **Amazon SQS FIFO**
+
+13. A serverless application needs step-by-step execution with retries and error handling → **AWS Step Functions**
 
 ---
 
 ### 📊 ANALYTICS (FOUNDATION LEVEL)
 
-- **Amazon Athena** queries data stored in S3 using SQL.
-  It is serverless and requires no infrastructure management.
+| **Service**                      | **Explanation**                                                                                                                                                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon Athena**                | A **serverless interactive query service** used to analyze data directly in **Amazon S3 using SQL**. There is no infrastructure to manage, and you pay only for the queries you run. Commonly used for ad-hoc analysis and log analytics. |
+| **Amazon Redshift**              | A **fully managed cloud data warehouse** used for running **complex analytical queries** on large volumes of structured and semi-structured data using SQL. Designed for business intelligence and reporting workloads.                   |
+| **Amazon Redshift Serverless**   | A **serverless version of Amazon Redshift** that automatically scales capacity based on workload. Users can run analytics without managing clusters and pay only for the resources used.                                                  |
+| **Amazon OpenSearch Service**    | A **managed search and analytics service** used for **log analytics, monitoring, and real-time dashboards**. Commonly used with application logs and operational data.                                                                    |
+| **Amazon Kinesis**               | A service for **real-time data streaming** that enables you to collect, process, and analyze streaming data such as clickstreams, logs, IoT telemetry, and events as they arrive.                                                         |
+| **Amazon Kinesis Data Firehose** | A **fully managed data delivery service** that automatically loads streaming data into destinations such as **Amazon S3, Amazon Redshift, and OpenSearch** with minimal setup.                                                            |
+| **AWS Glue**                     | A **fully managed ETL (Extract, Transform, Load) service** used to prepare and transform data for analytics. It also provides a **central data catalog** that is commonly used by Athena and Redshift.                                    |
+| **Amazon EMR**                   | A **big data processing service** used to run open-source frameworks such as **Apache Spark and Hadoop** for large-scale data processing and analytics workloads.                                                                         |
+| **Amazon QuickSight**            | A **serverless business intelligence (BI) service** used to create interactive dashboards and visualizations. It allows business users to gain insights from data without managing infrastructure.                                        |
 
-- **Amazon Redshift** is a data warehouse service.
-  It processes large analytical workloads efficiently.
+![AWS_Analytics Image](/src/assets/aws-analytics.png)
 
-- **AWS Glue** prepares and transforms data automatically.
-  It is commonly used for ETL and analytics pipelines.
+### 🔹Trick Questions:
+
+1. A business needs to visualize data using interactive dashboards without managing infrastructure → **Amazon QuickSight**
+
+2. A company wants to run SQL queries directly on data stored in Amazon S3 without provisioning servers → **Amazon Athena**
+
+3. An organization needs a fully managed data warehouse for petabyte-scale analytics → **Amazon Redshift**
+
+4. A team wants to analyze streaming data such as clickstreams in real time → **Amazon Kinesis**
+
+5. A developer needs a managed ETL service to prepare and transform data for analytics → **AWS Glue**
+
+6. A company wants to process big data using Apache Spark and Hadoop → **Amazon EMR**
+
+7. A business needs to search, analyze, and visualize log and text data in real time → **Amazon OpenSearch Service**
+
+8. A team wants to load streaming data into S3 or Redshift with minimal setup → **Amazon Kinesis Data Firehose**
+
+9. Analysts want to run BI queries on a data warehouse without managing infrastructure → **Amazon Redshift Serverless**
+
+10. A company wants to build dashboards that automatically scale to thousands of users → **Amazon QuickSight**
+
+11. A business needs near real-time analytics on incoming application logs → **Amazon Kinesis Data Streams**
+
+12. A team wants a central data catalog to discover and manage metadata → **AWS Glue Data Catalog**
+
+13. A company wants to securely share and analyze datasets with partners without copying data → **AWS Clean Rooms**
+
+14. A data engineer wants to create and manage a secure data lake quickly → **AWS Lake Formation**
+
+15. A business wants to subscribe to third-party datasets directly in AWS → **AWS Data Exchange**
 
 ---
 
 ### 🤖 AI & MACHINE LEARNING (AWARENESS)
 
-- **Amazon Rekognition** analyzes images and videos.
-  It can detect objects, faces, and text automatically.
+| **Service**               | **Explanation**                                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon SageMaker**      | Fully managed service to **build, train, and deploy machine learning models** at scale without managing infrastructure.    |
+| **Amazon Bedrock**        | Managed service that provides access to **foundation models (generative AI)** via APIs without managing ML infrastructure. |
+| **Amazon Rekognition**    | Analyzes **images and videos** to detect objects, faces, text, scenes, and activities using computer vision.               |
+| **Amazon Comprehend**     | Uses **natural language processing (NLP)** to analyze text for sentiment, key phrases, entities, and language.             |
+| **Amazon Lex**            | Service for building **chatbots and voice bots**, using the same technology as Amazon Alexa.                               |
+| **Amazon Polly**          | Converts **text into lifelike speech** using text-to-speech technology.                                                    |
+| **Amazon Transcribe**     | Automatically **converts speech to text**, commonly used for call transcripts and captions.                                |
+| **Amazon Translate**      | Provides **real-time language translation** for text across multiple languages.                                            |
+| **Amazon Textract**       | Extracts **text, forms, and tables from scanned documents** using machine learning.                                        |
+| **Amazon Forecast**       | Uses machine learning to generate **time-series forecasts**, such as demand or inventory predictions.                      |
+| **Amazon Personalize**    | Builds **real-time recommendation systems**, similar to those used by Amazon.com.                                          |
+| **Amazon Fraud Detector** | Detects **potentially fraudulent activities** using machine learning models.                                               |
+| **Amazon Kendra**         | Intelligent **enterprise search service** powered by machine learning to find answers in documents.                        |
 
-- **Amazon Polly** converts written text into speech.
-  It supports multiple languages and lifelike voices.
+![AWS_AI_ML Image](/src/assets/aws-ai-ml.png)
 
-- **Amazon SageMaker** builds and trains ML models.
-  Cloud Practitioner knowledge is mostly conceptual.
+### 🔹Trick Questions:
 
----
+1. A company wants to build, train, and deploy ML models without managing servers → **Amazon SageMaker**
 
-- **User → Route 53 → DNS → Shield → WAF**
-  User traffic is routed using DNS, protected from DDoS attacks, and filtered by web application rules.
+2. A business wants to use generative AI models through APIs without building ML models → **Amazon Bedrock**
 
-- **Regions → Availability Zones → CloudFront → Edge Locations**
-  Requests are served globally with low latency using edge caching before reaching core infrastructure.
+3. An application needs to identify faces, objects, and text in images or videos → **Amazon Rekognition**
 
-- **VPC → Subnets → Internet Gateway / NAT Gateway**
-  Traffic enters isolated virtual networks with controlled public and private access.
+4. A company wants to analyze customer reviews to detect sentiment and key phrases → **Amazon Comprehend**
 
-- **ELB → Auto Scaling → EC2 Instances**
-  Load balancers distribute traffic while Auto Scaling adjusts compute capacity automatically.
+5. A business needs to build a chatbot with voice and text capabilities → **Amazon Lex**
 
-- **S3 → S3 Glacier → RDS → Aurora → DynamoDB**
-  Data flows between object storage, archival storage, relational databases, and NoSQL databases.
+6. An application must convert written text into natural-sounding speech → **Amazon Polly**
 
-- **IAM → CloudWatch → CloudTrail → Trusted Advisor → Cost Explorer**
-  Access control, monitoring, auditing, best-practice checks, and cost analysis work together.
+7. A call center wants to convert recorded calls into text automatically → **Amazon Transcribe**
 
-- **Hybrid & Integration Layer**
-  On-Premises ↔ Snowball / Snowmobile (data transfer),
-  AppSync / API Gateway (APIs),
-  SQS / SNS (messaging),
-  Athena / Redshift (analytics).
+8. A global application needs to translate text between multiple languages in real time → **Amazon Translate**
+
+9. A company needs to extract text, tables, and forms from scanned PDFs → **Amazon Textract**
+
+10. A retail business wants to forecast future product demand using historical data → **Amazon Forecast**
+
+11. An e-commerce site wants to recommend products based on user behavior → **Amazon Personalize**
+
+12. A fintech company wants to detect suspicious or fraudulent transactions → **Amazon Fraud Detector**
+
+13. Employees need to search enterprise documents using natural language questions → **Amazon Kendra**
+
+![AWS_Architecture Image](/src/assets/aws-architecture.png)
