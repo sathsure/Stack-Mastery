@@ -491,12 +491,6 @@
 
 ## 🚀 DEPLOYMENT & MIGRATION
 
-Here is the **UPDATED & COMPLETE section** with the **missing services added**, written **cleanly**, **exam-oriented**, and **ONLY with “Service | Explanation” columns** as you asked.
-
----
-
-## 🚀 DEPLOYMENT & MIGRATION
-
 ### 📦 DEPLOYMENT SERVICES (Application & Infrastructure Deployment)
 
 | **Service**               | **Explanation**                                                                                                      |
@@ -667,7 +661,7 @@ Here is the **UPDATED & COMPLETE section** with the **missing services added**, 
 
 ---
 
-### 🤖 AI & MACHINE LEARNING (AWARENESS)
+### 🤖 AI & MACHINE LEARNING
 
 | **Service**               | **Explanation**                                                                                                            |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
