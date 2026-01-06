@@ -48,17 +48,42 @@
 - Once the operation completes, a callback is queued for execution in the event loop.
 - This allows Node.js to remain responsive even under heavy load.
 
+_Example: Blocking vs Non-Blocking_
+
+- ❌ Blocking (Traditional)
+
+```js
+const data = fs.readFileSync("file.txt");
+console.log(data);
+```
+
+The server stops until the file is fully read.
+
+- ✅ Non-Blocking (Node.js)
+
+```js
+fs.readFile("file.txt", (err, data) => {
+  console.log(data);
+});
+```
+
+The file read happens in the background, and Node.js continues executing other requests.
+
 ---
 
 ### ❓ 4. Explain the Node.js Event Loop in detail.
 
 📝 **Answer (Senior-level explanation):**
 
+![NodeJSEventLoop Image](/src/assets/nodejs-eventloop.png)
+
 - The Event Loop is the mechanism that allows Node.js to handle asynchronous operations using a single main JavaScript thread.
 - Node.js relies on **libuv**, which manages the event loop and a background thread pool.
 - The Event Loop processes tasks in **phases**, ensuring predictable execution order.
 
 #### 🔁 Event Loop Phases (Explained Clearly)
+
+![NodeJSEventLoop Image](/src/assets/nodejs-event-loop-phase.png)
 
 - **Timers Phase**
   Executes callbacks scheduled by `setTimeout()` and `setInterval()` once their delay has expired.
@@ -90,8 +115,6 @@ Promise.resolve().then(() => console.log("promise"));
 
 - `promise` executes first because microtasks have higher priority.
 
-![NodeJSEventLoop Image](/src/assets/nodejs-eventloop.png)
-
 ---
 
 ### ❓ 5. Is Node.js single-threaded?
@@ -113,21 +136,241 @@ Promise.resolve().then(() => console.log("promise"));
 - Worker threads should be used for tasks such as encryption, image processing, or heavy computations.
 - They should not be used for I/O-bound tasks.
 
+💻 **Code Example:**
+
+#### 1️⃣ `main.js` (Main Thread)
+
+```js
+import { Worker } from "worker_threads";
+
+// Create worker and send input
+const worker = new Worker("./worker.js", {
+  workerData: 5,
+});
+
+// Receive result from worker
+worker.on("message", (result) => {
+  console.log("Result from worker:", result);
+});
+
+console.log("Main thread is NOT blocked");
+```
+
+#### 2️⃣ `worker.js` (Worker Thread)
+
+```js
+import { workerData, parentPort } from "worker_threads";
+
+// Function that runs in worker thread
+function calculate(number) {
+  return number * 2;
+}
+
+// Execute function
+const result = calculate(workerData);
+
+// Send result back to main thread
+parentPort.postMessage(result);
+```
+
+#### 🔄 Worker Threads – Short Conceptual Workflow
+
+1️⃣ The application starts on the **`main thread`**, which runs the event loop and normal application logic.
+
+2️⃣ The main thread creates a **`Worker`**, which starts a new JavaScript thread separate from the main thread.
+
+3️⃣ The input value passed as **`workerData`** is sent once during Worker creation and becomes available to the worker thread.
+
+4️⃣ The worker thread begins executing **`worker.js`**, fully isolated from the main thread’s execution.
+
+5️⃣ The worker runs its own function using the provided **`workerData`**, and this logic executes only inside the worker thread.
+
+6️⃣ All CPU-intensive computation happens inside the worker thread, keeping the main thread free and responsive.
+
+7️⃣ After finishing its work, the worker sends the result back to the main thread using **`parentPort`**.
+
+8️⃣ The main thread listens for messages from the worker, receives the result asynchronously, and continues execution without blocking.
+
+9️⃣ While the **`Worker`** is running, the main thread continues handling other tasks, confirming that the event loop is not blocked.
+
 ---
 
 ### ❓ 7. What are Streams and why are they important?
 
 📝 **Answer**
 
-- Streams allow data to be processed in small chunks instead of loading the entire data into memory.
-- This approach significantly reduces memory usage and improves performance.
-- Streams are critical for handling large files, video streaming, and real-time data processing.
+![Image](/src/assets/nodejs-streams-buffer.png)
+
+#### 1️⃣ What Are Streams in Node.js?
+
+Streams are a **mechanism in Node.js that allow data to be processed incrementally, piece by piece**, instead of loading the entire data into memory at once.
+
+In simple terms:
+
+> **Streams let you read or write data continuously as it becomes available.**
+
+Node.js streams are especially useful for handling:
+
+- Large files
+- Network data
+- Real-time data processing
+
+#### **📌 Types of Streams (High-Level)**
+
+Node.js provides four main types of streams:
+
+- **Readable** – used to read data (e.g., reading a file)
+- **Writable** – used to write data (e.g., writing to a file)
+- **Duplex** – both readable and writable (e.g., TCP sockets)
+- **Transform** – modifies data while streaming (e.g., compression)
+
+#### 2️⃣ Why Are Streams Important in Node.js?
+
+**📌 Memory Efficiency**
+
+Without streams, Node.js would need to:
+
+- Load the entire file or payload into memory
+- Process it
+- Then send it forward
+
+This becomes dangerous for:
+
+- Large files (GBs)
+- High-traffic APIs
+- Concurrent users
+
+Streams solve this by:
+
+- Processing **small chunks**
+- Releasing memory immediately after use
+- Keeping the application responsive
+
+#### **📌 Performance and Scalability**
+
+Node.js is designed to handle **I/O-heavy workloads**.
+Streams align perfectly with this design because they:
+
+- Do not block the event loop
+- Reduce memory pressure
+- Allow backpressure handling
+
+This is why streams are heavily used in:
+
+- File uploads/downloads
+- Video streaming
+- API gateways
+- Log processing
+- Data pipelines
+
+#### **📌 Real-World Analogy**
+
+Think of:
+
+- **Buffer** as downloading an entire movie before watching
+- **Stream** as watching a movie while it is still downloading
+
+#### 3️⃣ Simple Stream Code Example (File Copy)
+
+#### **❌ Without Streams (Buffer-based – Risky)**
 
 ```js
-fs.createReadStream("large.log").pipe(fs.createWriteStream("output.log"));
+import fs from "fs";
+
+const data = fs.readFileSync("largeFile.txt");
+fs.writeFileSync("copy.txt", data);
 ```
 
-![NodeJSStreams Image](/src/assets/nodejs-streams.png)
+#### **Problems:**
+
+- Entire file is loaded into memory
+- Can crash for large files
+- Blocks execution
+
+#### **✅ With Streams (Recommended)**
+
+```js
+import fs from "fs";
+
+const readStream = fs.createReadStream("largeFile.txt");
+const writeStream = fs.createWriteStream("copy.txt");
+
+readStream.pipe(writeStream);
+```
+
+#### **Benefits:**
+
+- Data flows chunk by chunk
+- Low memory usage
+- Highly scalable
+
+#### 4️⃣ What Is a Buffer in Node.js?
+
+A **Buffer** is a temporary memory allocation used to store **binary data entirely in memory**.
+
+Buffers are:
+
+- Fixed-size
+- Stored fully before processing
+- Used for small, manageable data chunks
+
+#### **📌 When Buffers Are Commonly Used**
+
+Buffers are ideal when:
+
+- Data size is small
+- Immediate access to the entire data is required
+- You need random access to bytes
+
+Examples:
+
+- Cryptographic operations
+- Image processing
+- Parsing small binary protocols
+
+#### **📌 Buffer Code Example**
+
+```js
+const buffer = Buffer.from("Hello World");
+console.log(buffer.toString());
+```
+
+This works well because the data is small and controlled.
+
+#### 5️⃣ Difference Between Streams and Buffer (Explained Clearly)
+
+| Aspect        | Streams                   | Buffer              |
+| ------------- | ------------------------- | ------------------- |
+| Data Handling | Chunk by chunk            | All at once         |
+| Memory Usage  | Very low                  | High for large data |
+| Performance   | Scales well               | Risky for big data  |
+| Use Case      | Large files, network data | Small binary data   |
+| Blocking Risk | Non-blocking              | Can block           |
+
+#### 6️⃣ When to Use Streams vs Buffer (Interview Expectation)
+
+#### **✅ Use Streams When:**
+
+- File size is large
+- Data comes from network
+- You want scalability
+- You need backpressure handling
+
+#### **✅ Use Buffer When:**
+
+- Data is small
+- Entire payload is required at once
+- Processing is quick and controlled
+
+#### 7️⃣ Backpressure (Senior-Level Insight)
+
+Streams handle **backpressure**, meaning:
+
+- If the destination is slow
+- The source automatically slows down
+- Prevents memory overflow
+
+This is something Buffers **cannot handle**, which makes Streams far more reliable in production systems.
 
 ---
 
@@ -153,84 +396,7 @@ app.use(express.urlencoded({ extended: true }));
 
 ---
 
-### ❓ 9. What is Authentication and Authorization?
-
-📝 **Answer**
-
-- Authentication verifies the identity of a user and answers the question, “Who are you?”
-- Authorization determines what an authenticated user is allowed to access.
-- Authentication always happens before authorization.
-
----
-
-### ❓ 10. Explain all authentication methods used in Node.js applications.
-
-#### 1️⃣ Sessions & Cookies
-
-- Session data is stored on the server.
-- A session ID is stored in a cookie on the client.
-- This approach is simple but does not scale well without shared session storage.
-
-#### 2️⃣ JWT (Recommended for APIs)
-
-- JWT stores authentication data inside a signed token.
-- The server verifies the token signature instead of querying a database.
-- JWT is stateless and works well with microservices.
-
-```js
-jwt.sign({ userId }, SECRET, { expiresIn: "15m" });
-```
-
-#### 3️⃣ OAuth & SSO
-
-- OAuth allows authentication using third-party providers.
-- SSO allows a user to authenticate once and access multiple systems.
-
----
-
-### ❓ 11. Explain Access Tokens, Refresh Tokens, and Token Rotation.
-
-📝 **Answer**
-
-- Access tokens are short-lived tokens used for API access.
-- Refresh tokens are long-lived tokens used to obtain new access tokens.
-- Token rotation invalidates old refresh tokens after use, preventing token replay attacks.
-
----
-
-### ❓ 12. How do you secure authentication systems?
-
-📝 **Answer**
-
-- **HTTPOnly Cookies** prevent JavaScript access to tokens.
-- **SameSite Cookies** protect against CSRF attacks.
-- **CSRF Tokens** validate request origin.
-- **Helmet** secures HTTP headers.
-- **Rate Limiting** prevents brute-force attacks.
-- **Password Hashing** ensures passwords are never stored in plaintext.
-- **Salting** prevents rainbow table attacks.
-- **Peppering** adds an application-level secret.
-- **MFA / 2FA / OTP / TOTP** add extra verification layers.
-- **RBAC, ABAC, PBAC** control access based on roles, attributes, or policies.
-- **Nonce usage** prevents replay attacks.
-- **Token expiration handling** ensures old tokens are invalidated properly.
-- **API Keys & Basic Auth** are used for machine-to-machine communication.
-
-![Image](/src/assets/nodejs-at-and-rt.png)
-
-- **_AT: Access Token_**
-- **_RT: Refresh Token_**
-- **_RS: Resource Server_**
-- **_AS: Authorization Server_**
-- **_SPA: Single Page Application_**
-
-![Image](/src/assets/nodejs-authorization-flow.png)
-
-![Image](/src/assets/nodejs-csrftoken.png)
-
----
-
-### ❓ 13. How do you manage environment configuration?
+### ❓ 9. How do you manage environment configuration?
 
 📝 **Answer**
 
@@ -240,7 +406,7 @@ jwt.sign({ userId }, SECRET, { expiresIn: "15m" });
 
 ---
 
-### ❓ 14. How does load balancing work in Node.js?
+### ❓ 10. How does load balancing work in Node.js?
 
 📝 **Answer**
 
@@ -250,7 +416,7 @@ jwt.sign({ userId }, SECRET, { expiresIn: "15m" });
 
 ---
 
-### ❓ 15. Explain routing, route params, and query params.
+### ❓ 11. Explain routing, route params, and query params.
 
 📝 **Answer**
 
@@ -267,7 +433,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 16. How do you profile Node.js applications?
+### ❓ 12. How do you profile Node.js applications?
 
 📝 **Answer**
 
@@ -276,7 +442,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 17. How does logging work in production?
+### ❓ 13. How does logging work in production?
 
 📝 **Answer**
 
@@ -286,7 +452,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 18. Explain memory management and garbage collection.
+### ❓ 14. Explain memory management and garbage collection.
 
 📝 **Answer**
 
@@ -296,7 +462,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 19. Compare npm, yarn, pnpm, and npx.
+### ❓ 15. Compare npm, yarn, pnpm, and npx.
 
 📝 **Answer**
 
@@ -307,7 +473,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 20. What is the Node.js REPL?
+### ❓ 16. What is the Node.js REPL?
 
 📝 **Answer**
 
@@ -316,7 +482,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 21. How does the File System module work?
+### ❓ 17. How does the File System module work?
 
 📝 **Answer**
 
@@ -325,7 +491,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 22. What is caching and why is it important?
+### ❓ 18. What is caching and why is it important?
 
 📝 **Answer**
 
@@ -335,7 +501,7 @@ app.get("/users/:id", (req, res) => {
 
 ---
 
-### ❓ 23. Does `async/await` create threads in Node.js?
+### ❓ 19. Does `async/await` create threads in Node.js?
 
 📝 **Answer**
 
