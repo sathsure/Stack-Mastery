@@ -477,82 +477,8 @@ Changes the DOM structure by adding or removing elements.
 
 ### ❓ 10. How `*ngIf` and `*ngFor` Works Internally?
 
-```html
-<div *ngIf="isLoggedIn">Welcome</div>
-```
+<img width="1857" height="475" alt="image" src="https://github.com/user-attachments/assets/254306d8-0b77-4e87-8b29-ffdc975f43c6" />
 
-**What Angular converts it into (desugaring)**
-
-```html
-<ng-template [ngIf]="isLoggedIn">
-  <div>Welcome</div>
-</ng-template>
-```
-
-👉 `*` is **syntactic sugar** for `ng-template`.
-
-**Internal Logic of `NgIf` (Simplified)**
-
-```ts
-@Directive({
-  selector: "[ngIf]",
-})
-export class NgIf {
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef
-  ) {}
-
-  @Input()
-  set ngIf(condition: boolean) {
-    this.viewContainer.clear();
-
-    if (condition) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-    }
-  }
-}
-```
-
-**What `*ngFor` looks like**
-
-```html
-<li *ngFor="let user of users; index as i">{{ i }} - {{ user.name }}</li>
-```
-
-**What Angular converts it into**
-
-```html
-<ng-template ngFor let-user [ngForOf]="users" let-i="index">
-  <li>{{ i }} - {{ user.name }}</li>
-</ng-template>
-```
-
-**Internal Logic of `NgForOf` (Simplified)**
-
-```ts
-@Directive({
-  selector: "[ngFor][ngForOf]",
-})
-export class NgForOf<T> {
-  @Input() ngForOf!: T[];
-
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef
-  ) {}
-
-  ngDoCheck() {
-    this.viewContainer.clear();
-
-    for (let item of this.ngForOf) {
-      this.viewContainer.createEmbeddedView(this.templateRef, {
-        $implicit: item,
-      });
-    }
-  }
-}
-```
 
 **TrackBy**
 
