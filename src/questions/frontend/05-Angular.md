@@ -381,6 +381,8 @@ You use it to interact with child APIs directly (e.g. focus, call methods).
 
 No. It’s only reliably available in `ngAfterViewInit` (or later), not in the constructor.
 
+
+
 ### ❓ 9. Difference between components and directives?
 
 📝 **Answer:**
