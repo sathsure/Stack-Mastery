@@ -85,12 +85,26 @@ Used when creating **reusable components**.
 ➡️ Gives full control over two-way data flow.
 
 ```ts
-@Input() value!: string;
-@Output() valueChange = new EventEmitter<string>();
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-input',
+  templateUrl: './input.component.html',
+  standalone: true,
+})
+export class InputComponent {
+  @Input() value!: string;
+  @Output() valueChange = new EventEmitter<string>();
+
+  onInput(event: Event) {
+    const element = event.target as HTMLInputElement;
+    this.valueChange.emit(element.value);
+  }
+}
 ```
 
 ```html
-<input [value]="value" (input)="valueChange.emit($event.target.value)" />
+<input [value]="value" (input)="onInput($event)" />
 ```
 
 Usage:
