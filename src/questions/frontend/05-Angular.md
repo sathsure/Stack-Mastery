@@ -364,6 +364,9 @@ export class ChildComponent
 
 > DOM access should be done only in `ngAfterViewInit` because the view and child components are fully initialized at that stage.
 
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/0b9e1e0a-9c72-4f17-9e14-f5dccce88e5e" />
+
+
 ---
 
 ### ❓ 7. What is `ViewChild` and when would you use it?
@@ -928,7 +931,28 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 
 📝 **Answer:**
 
-A multi-provider allows multiple values for the same token (e.g. multiple `HTTP_INTERCEPTORS`). You declare `multi: true` in the provider.
+A provider configuration with the multi: true property, telling Angular's Dependency Injection (DI) to collect all providers for a specific token into an array instead of replacing them.  
+When a component requests a dependency using a token (often an InjectionToken), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.  
+
+```ts
+// 1. Define a token for validators
+import { InjectionToken } from '@angular/core';
+export const MY_VALIDATORS = new InjectionToken<any>('my-validators');
+
+// 2. Register multiple validators with 'multi: true' in a module/component
+providers: [
+  { provide: MY_VALIDATORS, useClass: EmailValidator, multi: true },
+  { provide: MY_VALIDATORS, useClass: PasswordStrengthValidator, multi: true },
+  // ... add more validators
+]
+
+// 3. Inject the array in a service or component
+constructor(@Inject(MY_VALIDATORS) private validators: any[]) {
+  // 'validators' will now be an array containing EmailValidator and PasswordStrengthValidator
+  console.log(this.validators);
+}
+
+```
 
 ---
 
@@ -936,7 +960,54 @@ A multi-provider allows multiple values for the same token (e.g. multiple `HTTP_
 
 📝 **Answer:**
 
-Two: one in the root injector, and a separate one in the lazy module’s injector.
+👉 **Two instances** will exist.
+
+Angular has **hierarchical dependency injection**:
+
+* `providedIn: 'root'` → one **application-wide singleton**
+* A **lazy-loaded module** has its **own injector**
+* If the same service is also provided in that lazy module, Angular creates **another instance** scoped to that module
+
+#### ❌ Example: Two instances created
+
+#### `logger.service.ts`
+
+```ts
+@Injectable({
+  providedIn: 'root'
+})
+export class LoggerService {
+  id = Math.random();
+}
+```
+
+#### `lazy.module.ts`
+
+```ts
+@NgModule({
+  providers: [LoggerService] // ❌ creates a new instance
+})
+export class LazyModule {}
+```
+
+#### Result
+
+* Components in **AppModule** → instance A
+* Components in **LazyModule** → instance B
+
+
+#### ✅ Best Practice (Recommended)
+
+#### `lazy.module.ts`
+
+```ts
+@NgModule({
+  // ❌ no providers array
+})
+export class LazyModule {}
+```
+
+✔️ Now **both modules share the same instance**
 
 ---
 
