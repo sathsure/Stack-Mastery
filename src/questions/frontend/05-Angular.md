@@ -918,7 +918,8 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 
 📝 **Answer:**
 
-`'root'` creates a singleton service in the root injector. `'any'` creates a new instance in each lazy-loaded module or component injector where it’s requested.
+providedIn: 'root' - registers the service in the application's main root injector, creating a single, singleton instance shared by all modules (eagerly and lazy loaded) throughout the entire application.
+providedIn: 'any' - ensures that all eagerly loaded modules share a single instance, but each lazy-loaded module gets its own unique instance of the service. 
 
 ---
 
