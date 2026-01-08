@@ -1075,6 +1075,203 @@ null instanceof Object; // false
 
 👉 `setTimeout(0)` still waits
 
-#### Call Stack → nextTick → Microtasks → previous Macrotasks.
 
-![EventLoop GIF](/src/assets/event-loop-gif.gif)
+Below is a **detailed yet crisp comparison** of
+**`Promise.all` vs `Promise.allSettled` vs `Promise.race` vs `Promise.any`**,
+with **clear behavior rules and real outputs** — exactly how interviewers expect you to explain it.
+
+---
+
+### ❓ 32. Explain the difference between Promise.all, Promise.allSettled, Promise.race, and Promise.any. When would you use each one?
+
+📝 **Answer:**
+
+#### 🔹 1. `Promise.all()`
+
+* Runs **multiple promises in parallel**
+* **Fails fast** → rejects immediately if **any one** promise fails
+* Returns **results in the same order** as input promises
+
+#### ✅ When to use
+
+* When **all async operations are mandatory**
+* Example: Load user profile, permissions, and config
+
+#### 🧠 Behavior
+
+| Scenario     | Result                               |
+| ------------ | ------------------------------------ |
+| All resolved | Resolves with array of values        |
+| Any rejected | Rejects immediately with first error |
+
+#### 🧪 Example
+
+```js
+const p1 = Promise.resolve(10);
+const p2 = Promise.resolve(20);
+const p3 = Promise.resolve(30);
+
+Promise.all([p1, p2, p3])
+  .then(result => console.log(result))
+  .catch(err => console.error(err));
+```
+
+#### 📤 Output
+
+```txt
+[10, 20, 30]
+```
+
+#### ❌ Failure Case
+
+```js
+const p2 = Promise.reject("Error in p2");
+
+Promise.all([p1, p2, p3])
+  .catch(err => console.error(err));
+```
+
+```txt
+Error in p2
+```
+
+#### 🔹 2. `Promise.allSettled()`
+
+* Waits for **all promises to complete**
+* Never fails fast
+* Returns **status + value/reason** for each promise
+
+#### ✅ When to use
+
+* When **partial success is acceptable**
+* Logging, batch processing, analytics, retries
+
+#### 🧠 Behavior
+
+| Scenario      | Result                          |
+| ------------- | ------------------------------- |
+| All resolved  | All `fulfilled`                 |
+| Some rejected | Still resolves with full report |
+
+#### 🧪 Example
+
+```js
+const p1 = Promise.resolve(10);
+const p2 = Promise.reject("Failed");
+const p3 = Promise.resolve(30);
+
+Promise.allSettled([p1, p2, p3])
+  .then(result => console.log(result));
+```
+
+#### 📤 Output
+
+```txt
+[
+  { status: 'fulfilled', value: 10 },
+  { status: 'rejected', reason: 'Failed' },
+  { status: 'fulfilled', value: 30 }
+]
+```
+
+#### 🔹 3. `Promise.race()`
+
+* Returns **first settled promise**
+* Can be **resolve OR reject**
+* Others are ignored
+
+#### ✅ When to use
+
+* Timeouts
+* First-response wins (CDN, fallback APIs)
+
+#### 🧠 Behavior
+
+| Scenario       | Result   |
+| -------------- | -------- |
+| First resolves | Resolves |
+| First rejects  | Rejects  |
+
+#### 🧪 Example
+
+```js
+const p1 = new Promise(res => setTimeout(() => res("Fast"), 100));
+const p2 = new Promise(res => setTimeout(() => res("Slow"), 500));
+
+Promise.race([p1, p2])
+  .then(result => console.log(result));
+```
+
+#### 📤 Output
+
+```txt
+Fast
+```
+
+#### ❌ Reject Case
+
+```js
+const p1 = new Promise((_, rej) => setTimeout(() => rej("Timeout"), 100));
+
+Promise.race([p1, p2])
+  .catch(err => console.error(err));
+```
+
+```txt
+Timeout
+```
+
+#### 🔹 4. `Promise.any()` (ES2021)
+
+* Returns **first fulfilled promise**
+* Ignores rejections unless **all fail**
+* Rejects with `AggregateError` if none succeed
+
+#### ✅ When to use
+
+* Multiple fallback APIs
+* First **successful** response wins
+
+#### 🧠 Behavior
+
+| Scenario     | Result                        |
+| ------------ | ----------------------------- |
+| Any resolved | Resolves                      |
+| All rejected | Rejects with `AggregateError` |
+
+#### 🧪 Example
+
+```js
+const p1 = Promise.reject("Error 1");
+const p2 = Promise.resolve("Success");
+const p3 = Promise.reject("Error 3");
+
+Promise.any([p1, p2, p3])
+  .then(result => console.log(result))
+  .catch(err => console.error(err));
+```
+
+#### 📤 Output
+
+```txt
+Success
+```
+
+#### ❌ All Failed
+
+```js
+Promise.any([p1, p3])
+  .catch(err => console.error(err.errors));
+```
+
+```txt
+["Error 1", "Error 3"]
+```
+
+#### Which Promise method should be used?
+1. You are calling three backend APIs in parallel. One API is critical, two are optional. → **Promise.any**
+2. How would you implement an API timeout using Promises? → **Promise.race**
+
+---
+
+
