@@ -1469,3 +1469,302 @@ providers: [
   { provide: HTTP_INTERCEPTORS, useClass: TrimInterceptor, multi: true },
 ];
 ```
+
+### ❓ 101. what is the main purpose of using ControlValueAccessor in angular?
+
+📝 **Answer:**
+
+In Angular, the **main purpose of using `ControlValueAccessor`** is to **connect a custom component to Angular Forms** so that it behaves like a native form control (`input`, `select`, etc.).
+
+#### In simple terms
+
+`ControlValueAccessor (CVA)` acts as a **bridge** between:
+
+- **Angular Forms API** (`FormControl`, `ngModel`, validation, touched/dirty states)
+- **Your custom UI component**
+
+Without CVA, Angular **cannot read from or write to** your custom form component.
+
+#### Why it exists
+
+Angular forms expect every form control to know how to:
+
+1. **Receive a value from the form**
+2. **Notify the form when the value changes**
+3. **Notify when the control is touched**
+4. **Handle disabled state**
+
+Native inputs already do this.
+**Custom components do not — unless you implement `ControlValueAccessor`.**
+
+#### What ControlValueAccessor enables
+
+When you implement CVA, your component can:
+
+- Work with **Reactive Forms**
+- Work with **Template-driven Forms**
+- Support:
+
+  - `formControlName`
+  - `formControl`
+  - `ngModel`
+  - Validators
+  - `touched`, `dirty`, `disabled` states
+
+#### Core methods and what they do
+
+| Method                         | Purpose                                   |
+| ------------------------------ | ----------------------------------------- |
+| `writeValue(value)`            | Angular → Component (set value from form) |
+| `registerOnChange(fn)`         | Component → Angular (notify value change) |
+| `registerOnTouched(fn)`        | Component → Angular (mark as touched)     |
+| `setDisabledState(isDisabled)` | Enable/disable control                    |
+
+#### When you should use ControlValueAccessor
+
+Use it **when building custom form components**, such as:
+
+- Custom dropdowns
+- Date pickers
+- Toggle switches
+- OTP inputs
+- Rich text editors
+- Multi-select components
+
+If the component **accepts user input and should participate in a form**, CVA is the correct solution.
+
+#### Example scenario
+
+You create a `<custom-toggle>` component.
+
+Without CVA ❌
+
+```html
+<custom-toggle formControlName="status"></custom-toggle>
+```
+
+➡️ Angular throws errors or doesn’t track value/state.
+
+With CVA ✅
+
+```html
+<custom-toggle formControlName="status"></custom-toggle>
+```
+
+➡️ Works exactly like `<input type="checkbox">`
+
+💻 **Code Example:**
+
+#### 1️⃣ Custom Input Component (with ControlValueAccessor)
+
+#### `custom-input.component.ts`
+
+```ts
+import { Component, forwardRef } from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+
+@Component({
+  selector: "app-custom-input",
+  template: `
+    <input [value]="value" (input)="onInput($event)" (blur)="onTouched()" />
+  `,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CustomInputComponent),
+      multi: true,
+    },
+  ],
+})
+export class CustomInputComponent implements ControlValueAccessor {
+  value: string = "";
+
+  // Functions provided by Angular Forms
+  private onChange = (value: any) => {};
+  private onTouched = () => {};
+
+  // Called when form sets a value
+  writeValue(value: any): void {
+    this.value = value;
+  }
+
+  // Register change callback
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  // Register touched callback
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  // Handle user typing
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
+  }
+}
+```
+
+#### 2️⃣ Use it in a Reactive Form
+
+##### `app.component.ts`
+
+```ts
+import { Component } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+
+@Component({
+  selector: "app-root",
+  template: `
+    <form [formGroup]="form">
+      <app-custom-input formControlName="name"></app-custom-input>
+    </form>
+
+    <p>Form Value: {{ form.value | json }}</p>
+  `,
+})
+export class AppComponent {
+  form = new FormGroup({
+    name: new FormControl(""),
+  });
+}
+```
+
+#### Core rule (important)
+
+> **Use `ControlValueAccessor` ONLY when the component _is a form control_.**
+
+#### 1️⃣ Why do we add `NG_VALUE_ACCESSOR`?
+
+#### What Angular Forms is looking for
+
+When Angular sees this:
+
+```html
+<app-custom-input formControlName="name"></app-custom-input>
+```
+
+Angular asks internally:
+
+> “Does this element know how to behave like a form control?”
+
+It answers this by **looking in the component’s injector** for a provider with the token:
+
+```ts
+NG_VALUE_ACCESSOR;
+```
+
+👉 This token represents **“a thing that knows how to read/write form values.”**
+
+#### What happens if you don’t provide it?
+
+If you **implement `ControlValueAccessor` but don’t provide `NG_VALUE_ACCESSOR`**:
+
+❌ Angular **will NOT use your component**
+❌ You’ll get errors like:
+
+```
+No value accessor for form control with name 'name'
+```
+
+So:
+
+> **Implementing the interface is not enough — you must register it.**
+
+That’s why we add:
+
+```ts
+providers: [{
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: ...
+}]
+```
+
+#### 2️⃣ Why `useExisting`?
+
+```ts
+useExisting: forwardRef(() => CustomInputComponent);
+```
+
+This tells Angular:
+
+> “Use **this component instance itself** as the value accessor.”
+
+Not:
+
+- a new instance
+- not some service
+- not a different class
+
+Without `useExisting`, Angular would not know **which object actually implements CVA**.
+
+#### 3️⃣ Why `forwardRef()`?
+
+#### The problem
+
+At the moment Angular processes `providers`, **the class is not fully defined yet**.
+
+This would break:
+
+```ts
+useExisting: CustomInputComponent; // ❌ class not ready yet
+```
+
+#### The solution
+
+`forwardRef()` delays the reference until runtime:
+
+```ts
+useExisting: forwardRef(() => CustomInputComponent);
+```
+
+Meaning:
+
+> “I promise this class will exist later — trust me.”
+
+This avoids circular dependency and load-order issues.
+
+#### 4️⃣ Why `multi: true`? (VERY important)
+
+#### What `NG_VALUE_ACCESSOR` actually is
+
+`NG_VALUE_ACCESSOR` is a **multi-provider token**.
+
+That means Angular expects:
+
+```ts
+NG_VALUE_ACCESSOR = [ accessor1, accessor2, accessor3, ... ]
+```
+
+Built-in Angular controls already register themselves:
+
+- `input`
+- `select`
+- `textarea`
+- `checkbox`
+
+#### What happens if you omit `multi: true`?
+
+If you write:
+
+```ts
+{
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => CustomInputComponent)
+  // ❌ multi missing
+}
+```
+
+🚨 You will **overwrite Angular’s entire list of value accessors**.
+
+This can:
+
+- Break other form controls
+- Cause unpredictable behavior
+- Create hard-to-debug issues
+
+So `multi: true` means:
+
+> “Add my accessor to the list — don’t replace others.”
