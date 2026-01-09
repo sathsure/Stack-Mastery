@@ -85,11 +85,11 @@ Used when creating **reusable components**.
 ➡️ Gives full control over two-way data flow.
 
 ```ts
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
+  selector: "app-input",
+  templateUrl: "./input.component.html",
   standalone: true,
 })
 export class InputComponent {
@@ -119,109 +119,6 @@ Usage:
 - `[prop]` → Set properties
 - `(event)` → Handle events
 - `[(ngModel)]` → Sync data both ways
-
----
-
-### ❓ 4. What is the difference between `ngOnInit` and the constructor in a component
-
-📝 **Answer:**
-
-**Constructor**
-
-- Used to **create the component instance**
-- Mainly for **dependency injection**
-- Runs **before Angular initializes bindings**
-- Should **NOT contain business logic or API calls**
-
-```ts
-constructor(private service: DataService) {
-  // Dependency injection only
-}
-```
-
-**ngOnInit**
-
-- Lifecycle hook called **after Angular initializes all `@Input()` properties**
-- Used for **component initialization logic**
-- Ideal place for **API calls, subscriptions, default values**
-
-```ts
-ngOnInit() {
-  this.loadData();
-}
-```
-
-**Key Differences (One-line Points)**
-
-| Constructor                     | ngOnInit                                 |
-| ------------------------------- | ---------------------------------------- |
-| Runs when class is instantiated | Runs after data-bound properties are set |
-| Used for DI                     | Used for initialization logic            |
-| Runs before `@Input()` values   | Has access to `@Input()` values          |
-| Not a lifecycle hook            | Lifecycle hook                           |
-
----
-
-### ❓ 5. Difference between `ngOnChanges` and `ngOnInit`?
-
-📝 **Answer:**
-
-**ngOnChanges**
-
-- Called **every time an `@Input()` value changes**
-- Runs **before `ngOnInit`** (on first change)
-- Receives **previous and current values**
-- Used to **react to input changes from parent**
-
-```ts
-@Input() userId!: number;
-
-ngOnChanges(changes: SimpleChanges) {
-  if (changes['userId']) {
-    console.log('Previous:', changes['userId'].previousValue);
-    console.log('Current:', changes['userId'].currentValue);
-  }
-}
-```
-
-**ngOnInit**
-
-- Called **once after the first `ngOnChanges`**
-- Used for **initial setup**
-- Ideal for **API calls, subscriptions, initialization logic**
-
-```ts
-ngOnInit() {
-  this.fetchUserData();
-}
-```
-
-**Key Differences**
-
-| ngOnChanges                     | ngOnInit                |
-| ------------------------------- | ----------------------- |
-| Runs on every `@Input()` change | Runs only once          |
-| Gets `SimpleChanges` object     | No parameters           |
-| Detects parent → child updates  | Initial setup only      |
-| Can run multiple times          | Runs once per component |
-
-**Execution Order**
-
-```
-constructor → ngOnChanges → ngOnInit
-```
-
-**When to Use What (One-liners)**
-
-- Use **`ngOnChanges`** when:
-
-  - Parent data changes dynamically
-  - You must respond to input updates
-
-- Use **`ngOnInit`** when:
-
-  - Component loads for the first time
-  - You need initial API calls or setup
 
 ---
 
@@ -364,8 +261,7 @@ export class ChildComponent
 
 > DOM access should be done only in `ngAfterViewInit` because the view and child components are fully initialized at that stage.
 
-<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/0b9e1e0a-9c72-4f17-9e14-f5dccce88e5e" />
-
+![Angular_Lifecycle Image](/src/assets/angular-lifecycle.png)
 
 ---
 
@@ -373,18 +269,33 @@ export class ChildComponent
 
 📝 **Answer:**
 
-`@ViewChild` gives you a reference to a child component/directive or template element in the same view.  
-You use it to interact with child APIs directly (e.g. focus, call methods).
+In Angular, @ViewChild lets a component directly access something in its own template (DOM element or child component).
+
+👉 Use it when data binding isn’t enough and you need direct control.
+
+Code-Em
+
+```ts
+@ViewChild('emailInput', { static: true })
+  emailInput!: ElementRef<HTMLInputElement>;
+
+@ViewChild('nameInput')
+  nameInput!: ElementRef<HTMLInputElement>;
+
+ngOnInit() {
+  this.nameInput.nativeElement.focus(); //  ❌ nameInput is undefined
+  this.emailInput.nativeElement.focus(); // ✅ Available here
+}
+
+ngAfterViewInit() {
+  this.nameInput.nativeElement.focus(); // ✅ Available here
+  this.emailInput.nativeElement.focus(); // ✅ works
+}
+```
+
+nativeElement = real browser DOM element. `type`: **ElementRef<HTMLInputElement>**
 
 ---
-
-### ❓ 8. Trick: Can you access a `@ViewChild` in the constructor?
-
-📝 **Answer:**
-
-No. It’s only reliably available in `ngAfterViewInit` (or later), not in the constructor.
-
-
 
 ### ❓ 9. Difference between components and directives?
 
@@ -481,7 +392,6 @@ Changes the DOM structure by adding or removing elements.
 ### ❓ 10. How `*ngIf` and `*ngFor` Works Internally?
 
 <img width="1857" height="475" alt="image" src="https://github.com/user-attachments/assets/254306d8-0b77-4e87-8b29-ffdc975f43c6" />
-
 
 **TrackBy**
 
@@ -790,61 +700,6 @@ OnPush encourages immutable data patterns and significantly improves performance
 
 ---
 
-### ❓ 25. Why was change detection considered problematic before signals were introduced?
-
-📝 **Answer:**
-
-Before signals, Angular relied heavily on zone-triggered global change detection.
-This caused frequent re-checking of large component trees, even when only a small piece of data changed.
-
-Developers had to manually optimize performance using OnPush, immutability, and manual change detection APIs.
-
----
-
-### ❓ 26. How do Angular Signals change the way change detection works?
-
-📝 **Answer:**
-
-Signals introduce **fine-grained reactivity** into Angular.
-Instead of scanning the component tree, Angular tracks which signals are read by which templates.
-
-When a signal updates, Angular re-renders only the parts of the UI that depend on that signal, eliminating unnecessary checks.
-
----
-
-### ❓ 27. How do signals know where input reference changes occur?
-
-📝 **Answer:**
-
-Signals track **access**, not references.
-
-When a signal is read in a template, Angular records that dependency.
-When the signal’s value is updated, Angular already knows exactly which views depend on it and updates only those views.
-
-This removes the need for full tree traversal.
-
----
-
-### ❓ 28. Do signals completely replace `zone.js` and traditional change detection?
-
-📝 **Answer:**
-
-No.
-Signals reduce reliance on `zone.js`, but Angular can still use zones to detect external async events.
-
-Signals also work in **zone-less Angular**, making change detection more predictable and easier to reason about.
-
----
-
-### ❓ 29. How do signals improve performance compared to OnPush?
-
-📝 **Answer:**
-
-OnPush limits when components are checked, but Angular still walks parts of the component tree.
-Signals skip the tree entirely and update only the exact reactive consumers, making them more precise and efficient.
-
----
-
 ### ❓ 30. If no async event happens, will Angular still run change detection?
 
 📝 **Answer:**
@@ -869,14 +724,6 @@ No. OnPush relies on reference changes, so mutations do not trigger change detec
 
 ---
 
-### ❓ 33. Do signals rely on dirty checking like AngularJS?
-
-📝 **Answer:**
-
-No. Signals rely on dependency tracking, not repeated value comparisons.
-
----
-
 ### ❓ 34. Is change detection asynchronous because HTTP calls are async?
 
 📝 **Answer:**
@@ -885,27 +732,30 @@ No. Change detection itself is synchronous, even though it is triggered by async
 
 ---
 
-### ❓ 35. Can signals update the UI without scanning the component tree?
+### ❓ 25. Why was change detection considered problematic before signals were introduced?
 
 📝 **Answer:**
 
-Yes. Signals update only the views that explicitly depend on them.
+Before signals, Angular relied heavily on zone-triggered global change detection.
+This caused frequent re-checking of large component trees, even when only a small piece of data changed.
+
+Developers had to manually optimize performance using OnPush, immutability, and manual change detection APIs.
+
+Signals introduce **fine-grained reactivity** into Angular.
+Instead of scanning the component tree, Angular tracks which signals are read by which templates.
+
+When a signal updates, Angular re-renders only the parts of the UI that depend on that signal, eliminating unnecessary checks.
 
 ---
 
-### ❓ 36. What are Angular signals (if you’ve used them)?
+### ❓ 28. Do signals completely replace `zone.js` and traditional change detection?
 
 📝 **Answer:**
 
-Signals are reactive primitives that hold a value and notify dependents when the value changes, offering a more explicit and fine-grained reactivity model than Zone-based change detection.
+No.
+Signals reduce reliance on `zone.js`, but Angular can still use zones to detect external async events.
 
----
-
-### ❓ 37. Trick: Does changing a signal value in a service automatically update all consuming components?
-
-📝 **Answer:**
-
-Yes, any computed views or effects using that signal re-run, updating the UI where it’s read.
+Signals also work in **zone-less Angular**, making change detection more predictable and easier to reason about.
 
 ---
 
@@ -921,9 +771,9 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 
 📝 **Answer:**
 
-**providedIn: 'root'** - registers the service in the application's main root injector, creating a single, singleton instance shared by all modules (eagerly and lazy loaded) throughout the entire application.  
+**providedIn: 'root'** - registers the service in the application's main root injector, creating a single, singleton instance shared by all modules (eagerly and lazy loaded) throughout the entire application.
 
-**providedIn: 'any'** - ensures that all eagerly loaded modules share a single instance, but each lazy-loaded module gets its own unique instance of the service. 
+**providedIn: 'any'** - ensures that all eagerly loaded modules share a single instance, but each lazy-loaded module gets its own unique instance of the service.
 
 ---
 
@@ -932,7 +782,7 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 📝 **Answer:**
 
 A provider configuration with the multi: true property, telling Angular's Dependency Injection (DI) to collect all providers for a specific token into an array instead of replacing them.  
-When a component requests a dependency using a token (often an InjectionToken), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.  
+When a component requests a dependency using a token (often an InjectionToken), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.
 
 ```ts
 // 1. Define a token for validators
@@ -964,9 +814,9 @@ constructor(@Inject(MY_VALIDATORS) private validators: any[]) {
 
 Angular has **hierarchical dependency injection**:
 
-* `providedIn: 'root'` → one **application-wide singleton**
-* A **lazy-loaded module** has its **own injector**
-* If the same service is also provided in that lazy module, Angular creates **another instance** scoped to that module
+- `providedIn: 'root'` → one **application-wide singleton**
+- A **lazy-loaded module** has its **own injector**
+- If the same service is also provided in that lazy module, Angular creates **another instance** scoped to that module
 
 #### ❌ Example: Two instances created
 
@@ -974,7 +824,7 @@ Angular has **hierarchical dependency injection**:
 
 ```ts
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LoggerService {
   id = Math.random();
@@ -985,16 +835,15 @@ export class LoggerService {
 
 ```ts
 @NgModule({
-  providers: [LoggerService] // ❌ creates a new instance
+  providers: [LoggerService], // ❌ creates a new instance
 })
 export class LazyModule {}
 ```
 
 #### Result
 
-* Components in **AppModule** → instance A
-* Components in **LazyModule** → instance B
-
+- Components in **AppModule** → instance A
+- Components in **LazyModule** → instance B
 
 #### ✅ Best Practice (Recommended)
 
@@ -1477,18 +1326,6 @@ Late subscribers get no current value, only future ones, causing components to r
 
 ---
 
-### ❓ 90. When integrating RxJS with Angular’s signals (latest versions), what’s the subtle pitfall of using `toSignal(observable)` on a non-completing stream?
-
-📝 **Answer:**
-
-Non-completing streams are fine, but:
-
-- If the observable never emits, the signal’s initial value may be undefined
-- Without `initialValue`, templates may crash or show “undefined”
-  Use `toSignal(obs, { initialValue })` or ensure a seed emission.
-
----
-
 ### ❓ 91. Why is `takeUntilDestroyed()` (or `takeUntil(this.destroy$)`) not sufficient by itself to avoid all leaks?
 
 📝 **Answer:**
@@ -1586,3 +1423,49 @@ It treats _all_ errors as “deny access”:
 - Better: log properly, show an error page, and return meaningful navigation decisions.
 
 ---
+
+### ❓ 100. In an Angular application, we want to remove trailing and leading spaces from all user input fields. We want to avoid calling trim() in every component, and we don’t want to use directives or pipes that must be applied to each field individually. How would you design a centralized solution?
+
+📝 **Answer:**
+
+There are two approaches:
+
+**Approach 1:**
+
+If the application uses NgRx, sanitize the data inside the effect, before making the HTTP call.
+
+```ts
+saveUser$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(saveUser),
+    map((action) => ({
+      ...action,
+      user: trimStringsDeep(action.user),
+    })),
+    switchMap((action) => this.userService.save(action.user))
+  )
+);
+```
+
+**Approach 2:**
+
+If trimming is a generic requirement for all outgoing data, enforce it globally using an HTTP interceptor.
+
+```ts
+@Injectable()
+export class TrimInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    if (req.body) {
+      const sanitizedBody = trimStringsDeep(req.body);
+      req = req.clone({ body: sanitizedBody });
+    }
+    return next.handle(req);
+  }
+}
+```
+
+```ts
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: TrimInterceptor, multi: true },
+];
+```
