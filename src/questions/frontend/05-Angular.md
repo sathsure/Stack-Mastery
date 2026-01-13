@@ -486,8 +486,6 @@ Angular may re-render many list items unnecessarily, causing poor performance.
 
 ## Modules & Standalone APIs
 
----
-
 ### ❓ How do standalone components differ from NgModules, and when would you choose one over the other?
 
 ### 📝 Answer
@@ -1694,6 +1692,8 @@ Dynamic pages or client-side navigation need meta tags updated after initial loa
 
 ### ❓ Consider the below scenario. What will be the output?
 
+### 📝 Answer
+
 **Global styles (`styles.css`)**
 
 ```css
@@ -1722,8 +1722,6 @@ div[_ngcontent-c1] {
   color: blue;
 }
 ```
-
-### 📝 Answer
 
 **Child Output: Color -> Red**
 
