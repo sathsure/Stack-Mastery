@@ -1,6 +1,6 @@
-### ❓ 1. Write a program `to check if two strings are anagrams`.
+### ❓ Write a program `to check if two strings are anagrams`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 // ======= Using Sort =======
@@ -40,9 +40,9 @@ console.log(isAnagram("abc", "abd")); // false
 
 ---
 
-### ❓ 2. Write a program `to convert a camelCase string into snake_case`.
+### ❓ Write a program `to convert a camelCase string into snake_case`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 //convert a string from camelCase to snake_case
@@ -57,9 +57,9 @@ console.log(toSnakeCase);
 
 ---
 
-### ❓ 3. Write a program `to find the first non-repeating character in a string`.
+### ❓ Write a program `to find the first non-repeating character in a string`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function firstNonRepeating(str) {
@@ -80,9 +80,9 @@ console.log(firstNonRepeating("aabbcc")); // null
 
 ---
 
-### ❓ 4. Write a program `to find the frequency of each character in a string`.
+### ❓ Write a program `to find the frequency of each character in a string`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function charFrequency(str) {
@@ -99,9 +99,9 @@ console.log(charFrequency("hello world"));
 
 ---
 
-### ❓ 5. Write a program `to find the length of a string` without using built-in methods.
+### ❓ Write a program `to find the length of a string` without using built-in methods.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 const aa = "asdadssdas kskdaskjk";
@@ -139,9 +139,9 @@ console.log(count);
 
 ---
 
-### ❓ 6. Write a program `to check if a string is a palindrome`.
+### ❓ Write a program `to check if a string is a palindrome`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function isPalindrome(str) {
@@ -169,9 +169,9 @@ console.log(isPalindrome("hello")); // false
 
 ---
 
-### ❓ 7. Write a program `to reverse a string`.
+### ❓ Write a program `to reverse a string`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 const aa = "asdadssdas kskdaskjk";
@@ -189,9 +189,9 @@ console.log(reverse);
 
 ---
 
-### ❓ 8. Explain the difference between `substring() and slice()` with examples.
+### ❓ Explain the difference between `substring() and slice()` with examples.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 // EXAMPLE: 1
@@ -210,9 +210,9 @@ console.log("world".slice(-2, 4)); // Output: l
 
 ---
 
-### ❓ 9. Write a program `to split an array into chunks`.
+### ❓ Write a program `to split an array into chunks`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function chunk(arr, size) {
@@ -233,9 +233,9 @@ chunk([1, 2, 3, 4, 5], 3);
 
 ---
 
-### ❓ 10. Write a program `to check if two arrays are equal`.
+### ❓ Write a program `to check if two arrays are equal`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function arraysEqual(a, b) {
@@ -254,9 +254,9 @@ console.log(arraysEqual([1, 2, 3], [1, 2, 4])); // false
 
 ---
 
-### ❓ 11. Write a program `to flatten a nested array`.
+### ❓ Write a program `to flatten a nested array`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 var arr = [1, 2, 3, [4, 5], [6, 7], 8, 9];
@@ -275,9 +275,9 @@ console.log(outputWithoutFlat);
 
 ---
 
-### ❓ 12. Write a program `to find the maximum and minimum values in an array`.
+### ❓ Write a program `to find the maximum and minimum values in an array`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 // ======= With Spread =======
@@ -312,9 +312,9 @@ console.log("Min:", min);
 
 ---
 
-### ❓ 13. Write a program `to remove duplicate elements from an array`.
+### ❓ Write a program `to remove duplicate elements from an array`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 // Remove duplicates from an array
@@ -343,9 +343,9 @@ console.log(unique);
 
 ---
 
-### ❓ 14. Write a program `to find the second largest number in an array`.
+### ❓ Write a program `to find the second largest number in an array`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 let array = [1, 3, 5, 7, 9, 10];
@@ -359,9 +359,9 @@ console.log(newArray[newArray.length - 2]);
 
 ---
 
-### ❓ 15. Write a program `to extract unique values from an array`.
+### ❓ Write a program `to extract unique values from an array`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function unique(arr) {
@@ -385,9 +385,9 @@ console.log(unique([1, 2, 2, 3, 4, 4])); // [1, 2, 3, 4]
 
 ---
 
-### ❓ 16. Write a program `to generate the Fibonacci series`.
+### ❓ Write a program `to generate the Fibonacci series`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function fibonacci(n) {
@@ -408,9 +408,9 @@ console.log(fibonacci(10));
 
 ---
 
-### ❓ 17. Write a program `to implement FizzBuzz`.
+### ❓ Write a program `to implement FizzBuzz`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function fizzBuzz(n) {
@@ -444,9 +444,9 @@ fizzBuzz(15);
 
 ---
 
-### ❓ 18. Explain `call(), bind()` with examples.
+### ❓ Explain `call(), bind()` with examples.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 /*--------------------------- CALL ---------------------------- */
@@ -478,9 +478,9 @@ greetDev("Mumbai"); // Now we call the new function whenever we want
 
 ---
 
-### ❓ 19. Write a program `to implement a counter using closures`.
+### ❓ Write a program `to implement a counter using closures`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function outer() {
@@ -509,9 +509,9 @@ for (var i = 0; i < 3; i++) {
 
 ---
 
-### ❓ 20. Write a program `to implement function currying`.
+### ❓ Write a program `to implement function currying`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 /***************** FUNCTION CURRYING ********************/
@@ -546,9 +546,9 @@ console.log("Curried step-by-step:", add1and2(3)); // Output: 6
 
 ---
 
-### ❓ 21. Explain `higher-order functions` with examples.
+### ❓ Explain `higher-order functions` with examples.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 /********************** HIGHER ORDER FUNCTION (HOF) **********************/
@@ -575,9 +575,9 @@ console.log("HOF Multiply:", calculate(3, 4, multiply)); // 12
 
 ---
 
-### ❓ 22. Write a program `to implement memoization`.
+### ❓ Write a program `to implement memoization`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function add(a, b) {
@@ -627,9 +627,9 @@ console.log(calculate(10, 10, multiply));
 
 ---
 
-### ❓ 23. Explain JavaScript `prototype inheritance`.
+### ❓ Explain JavaScript `prototype inheritance`.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 function Person(name) {
@@ -657,9 +657,9 @@ p2.sayHi(); // Uses the same shared method → "Hi, I am Raj"
 
 ---
 
-### ❓ 24. Explain how the `JavaScript event loop` works.
+### ❓ Explain how the `JavaScript event loop` works.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 // event-loop.js
@@ -743,9 +743,9 @@ console.log("script-end");
 
 ---
 
-### ❓ 25. Explain hoisting in JavaScript with examples.
+### ❓ Explain hoisting in JavaScript with examples.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 /***************** HOISTING ******************/
@@ -781,9 +781,9 @@ Arrow Function (let/const)	✔ Declaration is hoisted(throws error on access)
 
 ---
 
-### ❓ 26. Explain temporal dead zone and variable shadowing.
+### ❓ Explain temporal dead zone and variable shadowing.
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 var a = 1; // Global variable
@@ -809,9 +809,9 @@ f(); // Never reached
 
 ---
 
-### ❓ 27. If Array.prototype.map is removed, how do you recreate it?
+### ❓ If Array.prototype.map is removed, how do you recreate it?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 Array.prototype.myMap = function (callback) {
@@ -830,13 +830,10 @@ const arr = [1, 2, 3];
 console.log(arr.myMap((v) => v * 2)); // [2, 4, 6]
 ```
 
-Here’s a **short, interview-ready explanation** focused exactly on your three questions, using the given `myMap` / `myFilter` code.
-
-#### 1️⃣ Why does the callback receive **3 parameters**?
+1️⃣ Why does the callback receive **3 parameters**?
 
 **`callback(value, index, array)`**
 
-**Short explanation:**
 JavaScript provides **value**, **index**, and **array** so the callback can make **context-aware decisions** without relying on external variables.
 
 - `value` → current element being processed
@@ -845,9 +842,8 @@ JavaScript provides **value**, **index**, and **array** so the callback can make
 
 👉 This design makes `map` and `filter` **flexible and self-contained**.
 
-#### 2️⃣ Why do `map` and `filter` return a **new (immutable) array** instead of mutating the original?
+2️⃣ Why do `map` and `filter` return a **new (immutable) array** instead of mutating the original?
 
-**Short explanation:**
 `map` and `filter` follow **functional programming principles**—they are **pure functions**.
 
 - They **do not change** the original array
@@ -856,9 +852,8 @@ JavaScript provides **value**, **index**, and **array** so the callback can make
 
 👉 Mutating the original array would break chaining and introduce bugs.
 
-#### 3️⃣ How does `this` get the array value inside `myMap` / `myFilter`?
+3️⃣ How does `this` get the array value inside `myMap` / `myFilter`?
 
-**Short explanation:**
 When you call:
 
 ```js
@@ -873,9 +868,9 @@ arr.myMap(...)
 
 ---
 
-### ❓ 28. Why does `this` behave differently in arrow vs normal functions?
+### ❓ Why does `this` behave differently in arrow vs normal functions?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```js
 const obj = {
@@ -911,11 +906,11 @@ obj.arrow(); // undefined
 
 ---
 
-### ❓ 29. Explain Why `[] == ![] is true`?
+### ❓ Explain Why `[] == ![] is true`?
 
-📝 **Answer:**
+### 📝 Answer
 
-#### 1️⃣ Why `[]` is **true**
+1️⃣ Why `[]` is **true**?
 
 ```js
 if ([]) {
@@ -929,25 +924,23 @@ if ([]) {
 
 ✅ So `[]` → **true**
 
-#### 2️⃣ Why `![]` is **false**
+2️⃣ Why `![]` is **false**?
 
 ```js
 ![];
 ```
-
-Steps:
 
 1. `[]` is truthy
 2. `!truthy` → `false`
 
 ✅ So `![]` → **false**
 
-#### 3️⃣ Why `[] == ![]` is **true**
+#### 3️⃣ Why `[] == ![]` is **true**?
 
 ⚠️ This is **NOT** a truthiness check.
 This uses **abstract equality (`==`)**, which **forces type conversion**.
 
-#### Step-by-step:
+🔍 Step-by-step:
 
 ```js
 [] == ![];
@@ -972,13 +965,13 @@ This uses **abstract equality (`==`)**, which **forces type conversion**.
 
 ---
 
-### ❓ 30. Why `typeof null === "object"`?
+### ❓ Why `typeof null === "object"`?
 
-📝 **Answer:**
+### 📝 Answer
 
 This is **a historical bug in JavaScript**, not a logical design decision.
 
-#### 1️⃣ How `typeof` works internally
+1️⃣ How `typeof` works internally?
 
 In the original JavaScript implementation, values were stored using **type tags**:
 
@@ -990,7 +983,7 @@ In the original JavaScript implementation, values were stored using **type tags*
 | String  | `100`        |
 | Boolean | `110`        |
 
-#### 2️⃣ Why `null` becomes `"object"`
+2️⃣ Why `null` becomes `"object"`?
 
 - `null` was represented as **all zero bits (`000`)**
 - `000` matched the **object type tag**
@@ -1005,7 +998,7 @@ This behavior was **never fixed** because:
 - It would break massive amounts of existing code
 - JavaScript preserves backward compatibility
 
-#### 3️⃣ Important clarification
+⚠️ **Important clarification**
 
 - `null` is **NOT** an object
 - It represents **intentional absence of value**
@@ -1020,13 +1013,13 @@ null instanceof Object; // false
 
 ---
 
-### ❓ 31. How does the Event Loop work internally?
+### ❓ How does the Event Loop work internally?
 
-📝 **Answer:**
+### 📝 Answer
 
 ![EventLoop Image](/src/assets/event-loop.png)
 
-#### 1️⃣ Call Stack (Executes First)
+1. Call Stack (Executes First)
 
 - JavaScript executes **only one thing at a time**
 - All **synchronous code** runs here
@@ -1035,7 +1028,7 @@ null instanceof Object; // false
 
 👉 **Rule:** Call Stack must be empty before async code runs
 
-#### 2️⃣ Web APIs (Background Work)
+2. Web APIs (Background Work)
 
 - Provided by browser / Node.js
 - Handles:
@@ -1049,7 +1042,7 @@ null instanceof Object; // false
 
 👉 After completion, callbacks are pushed to queues
 
-#### 3️⃣ Microtask Queue (High Priority)
+3. Microtask Queue (High Priority)
 
 - Runs **immediately after Call Stack is empty**
 - Executed **before any macrotask**
@@ -1062,7 +1055,7 @@ null instanceof Object; // false
 
 👉 **All microtasks are executed completely**
 
-#### 4️⃣ Macrotask Queue (Low Priority / Callback Queue)
+4. Macrotask Queue (Low Priority / Callback Queue)
 
 - Runs **after microtasks**
 - Only **one macrotask runs per cycle**
@@ -1075,36 +1068,35 @@ null instanceof Object; // false
 
 👉 `setTimeout(0)` still waits
 
-
 Below is a **detailed yet crisp comparison** of
 **`Promise.all` vs `Promise.allSettled` vs `Promise.race` vs `Promise.any`**,
 with **clear behavior rules and real outputs** — exactly how interviewers expect you to explain it.
 
 ---
 
-### ❓ 32. Explain the difference between Promise.all, Promise.allSettled, Promise.race, and Promise.any. When would you use each one?
+### ❓ Explain the difference between Promise.all, Promise.allSettled, Promise.race, and Promise.any. When would you use each one?
 
-📝 **Answer:**
+### 📝 Answer
 
-#### 🔹 1. `Promise.all()`
+1. `Promise.all()`
 
-* Runs **multiple promises in parallel**
-* **Fails fast** → rejects immediately if **any one** promise fails
-* Returns **results in the same order** as input promises
+- Runs **multiple promises in parallel**
+- **Fails fast** → rejects immediately if **any one** promise fails
+- Returns **results in the same order** as input promises
 
-#### ✅ When to use
+✅ When to use
 
-* When **all async operations are mandatory**
-* Example: Load user profile, permissions, and config
+- When **all async operations are mandatory**
+- Example: Load user profile, permissions, and config
 
-#### 🧠 Behavior
+🧠 Behavior
 
 | Scenario     | Result                               |
 | ------------ | ------------------------------------ |
 | All resolved | Resolves with array of values        |
 | Any rejected | Rejects immediately with first error |
 
-#### 🧪 Example
+💡 Example
 
 ```js
 const p1 = Promise.resolve(10);
@@ -1112,59 +1104,57 @@ const p2 = Promise.resolve(20);
 const p3 = Promise.resolve(30);
 
 Promise.all([p1, p2, p3])
-  .then(result => console.log(result))
-  .catch(err => console.error(err));
+  .then((result) => console.log(result))
+  .catch((err) => console.error(err));
 ```
 
-#### 📤 Output
+📤 Output
 
 ```txt
 [10, 20, 30]
 ```
 
-#### ❌ Failure Case
+❌ **Failure Case**
 
 ```js
 const p2 = Promise.reject("Error in p2");
 
-Promise.all([p1, p2, p3])
-  .catch(err => console.error(err));
+Promise.all([p1, p2, p3]).catch((err) => console.error(err));
 ```
 
 ```txt
 Error in p2
 ```
 
-#### 🔹 2. `Promise.allSettled()`
+2. `Promise.allSettled()`
 
-* Waits for **all promises to complete**
-* Never fails fast
-* Returns **status + value/reason** for each promise
+- Waits for **all promises to complete**
+- Never fails fast
+- Returns **status + value/reason** for each promise
 
-#### ✅ When to use
+✅ When to use
 
-* When **partial success is acceptable**
-* Logging, batch processing, analytics, retries
+- When **partial success is acceptable**
+- Logging, batch processing, analytics, retries
 
-#### 🧠 Behavior
+🧠 Behavior
 
 | Scenario      | Result                          |
 | ------------- | ------------------------------- |
 | All resolved  | All `fulfilled`                 |
 | Some rejected | Still resolves with full report |
 
-#### 🧪 Example
+💡 Example
 
 ```js
 const p1 = Promise.resolve(10);
 const p2 = Promise.reject("Failed");
 const p3 = Promise.resolve(30);
 
-Promise.allSettled([p1, p2, p3])
-  .then(result => console.log(result));
+Promise.allSettled([p1, p2, p3]).then((result) => console.log(result));
 ```
 
-#### 📤 Output
+📤 Output
 
 ```txt
 [
@@ -1174,72 +1164,70 @@ Promise.allSettled([p1, p2, p3])
 ]
 ```
 
-#### 🔹 3. `Promise.race()`
+3. `Promise.race()`
 
-* Returns **first settled promise**
-* Can be **resolve OR reject**
-* Others are ignored
+- Returns **first settled promise**
+- Can be **resolve OR reject**
+- Others are ignored
 
-#### ✅ When to use
+✅ When to use
 
-* Timeouts
-* First-response wins (CDN, fallback APIs)
+- Timeouts
+- First-response wins (CDN, fallback APIs)
 
-#### 🧠 Behavior
+🧠 Behavior
 
 | Scenario       | Result   |
 | -------------- | -------- |
 | First resolves | Resolves |
 | First rejects  | Rejects  |
 
-#### 🧪 Example
+💡 Example
 
 ```js
-const p1 = new Promise(res => setTimeout(() => res("Fast"), 100));
-const p2 = new Promise(res => setTimeout(() => res("Slow"), 500));
+const p1 = new Promise((res) => setTimeout(() => res("Fast"), 100));
+const p2 = new Promise((res) => setTimeout(() => res("Slow"), 500));
 
-Promise.race([p1, p2])
-  .then(result => console.log(result));
+Promise.race([p1, p2]).then((result) => console.log(result));
 ```
 
-#### 📤 Output
+📤 Output
 
 ```txt
 Fast
 ```
 
-#### ❌ Reject Case
+❌ **Reject Case**
 
 ```js
 const p1 = new Promise((_, rej) => setTimeout(() => rej("Timeout"), 100));
 
-Promise.race([p1, p2])
-  .catch(err => console.error(err));
+Promise.race([p1, p2]).catch((err) => console.error(err));
 ```
 
 ```txt
 Timeout
 ```
 
-#### 🔹 4. `Promise.any()` (ES2021)
+4. `Promise.any()` (ES2021)
 
-* Returns **first fulfilled promise**
-* Ignores rejections unless **all fail**
-* Rejects with `AggregateError` if none succeed
+- Returns **first fulfilled promise**
+- Ignores rejections unless **all fail**
+- Rejects with `AggregateError` if none succeed
 
-#### ✅ When to use
+✅ When to use
 
-* Multiple fallback APIs
-* First **successful** response wins
+- Multiple fallback APIs
+- First **successful** response wins
 
-#### 🧠 Behavior
+🧠 Behavior
 
 | Scenario     | Result                        |
 | ------------ | ----------------------------- |
 | Any resolved | Resolves                      |
 | All rejected | Rejects with `AggregateError` |
 
-#### 🧪 Example
+💡 Example
 
 ```js
 const p1 = Promise.reject("Error 1");
@@ -1247,31 +1235,31 @@ const p2 = Promise.resolve("Success");
 const p3 = Promise.reject("Error 3");
 
 Promise.any([p1, p2, p3])
-  .then(result => console.log(result))
-  .catch(err => console.error(err));
+  .then((result) => console.log(result))
+  .catch((err) => console.error(err));
 ```
 
-#### 📤 Output
+📤 Output
 
 ```txt
 Success
 ```
 
-#### ❌ All Failed
+❌ **All Failed**
 
 ```js
-Promise.any([p1, p3])
-  .catch(err => console.error(err.errors));
+Promise.any([p1, p3]).catch((err) => console.error(err.errors));
 ```
 
 ```txt
 ["Error 1", "Error 3"]
 ```
 
-#### Which Promise method should be used?
-1. You are calling three backend APIs in parallel. One API is critical, two are optional. → **Promise.any**
-2. How would you implement an API timeout using Promises? → **Promise.race**
+**Follow-up Questions**
+
+Which Promise method should be used?
+
+1️⃣ You are calling three backend APIs in parallel. One API is critical, two are optional. → **Promise.any**
+2️⃣ How would you implement an API timeout using Promises? → **Promise.race**
 
 ---
-
-

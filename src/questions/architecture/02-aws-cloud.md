@@ -4,7 +4,7 @@
 
 ## 💻 COMPUTE SERVICES
 
-### 🔹 Core Compute Services (VERY IMPORTANT)
+### Core Compute Services (VERY IMPORTANT)
 
 | Service                          | Explanation                                                                                                        |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -15,7 +15,7 @@
 | **AWS Elastic Beanstalk**        | Platform as a Service (PaaS) for deploying applications without managing infrastructure.                           |
 | **Amazon Lightsail**             | Simplified compute for small apps, websites, or beginners with predictable pricing.                                |
 
-### 🔹 Container & Modern Compute (High-Level Awareness)
+### Container & Modern Compute (High-Level Awareness)
 
 | Service            | Explanation                                                                            |
 | ------------------ | -------------------------------------------------------------------------------------- |
@@ -24,14 +24,14 @@
 | **AWS Fargate**    | Serverless compute engine for containers (used with ECS/EKS).                          |
 | **AWS App Runner** | Fully managed service to run containerized web apps without infrastructure management. |
 
-### 🔹 Batch & Specialized Compute (Basic Recognition Only)
+### Batch & Specialized Compute (Basic Recognition Only)
 
 | Service               | Explanation                                                      |
 | --------------------- | ---------------------------------------------------------------- |
 | **AWS Batch**         | Runs batch computing jobs at any scale without managing servers. |
 | **EC2 Image Builder** | Automates creation of secure VM images (AMI).                    |
 
-### 🔹 Hybrid & Edge Compute (Conceptual Awareness)
+### Hybrid & Edge Compute (Conceptual Awareness)
 
 | Service                 | Explanation                                          |
 | ----------------------- | ---------------------------------------------------- |
@@ -43,47 +43,47 @@
 
 ---
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company needs virtual servers in the cloud with full control over OS and software → **Amazon EC2**
+1️⃣ A company needs virtual servers in the cloud with full control over OS and software → **Amazon EC2**
 
-2. An application must automatically increase or decrease EC2 instances based on traffic → **Amazon EC2 Auto Scaling**
+2️⃣ An application must automatically increase or decrease EC2 instances based on traffic → **Amazon EC2 Auto Scaling**
 
-3. Incoming traffic must be distributed across multiple EC2 instances → **Elastic Load Balancing (ELB)**
+3️⃣ Incoming traffic must be distributed across multiple EC2 instances → **Elastic Load Balancing (ELB)**
 
-4. A developer wants to run code without provisioning or managing servers → **AWS Lambda**
+4️⃣ A developer wants to run code without provisioning or managing servers → **AWS Lambda**
 
-5. A startup wants the easiest way to deploy a small web application with minimal configuration → **Amazon Lightsail**
+5️⃣ A startup wants the easiest way to deploy a small web application with minimal configuration → **Amazon Lightsail**
 
-6. A web application needs automatic deployment, scaling, and management without handling infrastructure → **AWS Elastic Beanstalk**
+6️⃣ A web application needs automatic deployment, scaling, and management without handling infrastructure → **AWS Elastic Beanstalk**
 
-7. Containers must be run without managing the underlying servers → **AWS Fargate**
+7️⃣ Containers must be run without managing the underlying servers → **AWS Fargate**
 
-8. A company wants to run Docker containers using AWS-managed orchestration → **Amazon ECS**
+8️⃣ A company wants to run Docker containers using AWS-managed orchestration → **Amazon ECS**
 
-9. An organization needs a managed Kubernetes service → **Amazon EKS**
+9️⃣ An organization needs a managed Kubernetes service → **Amazon EKS**
 
-10. Large-scale batch jobs must be processed efficiently without manual resource management → **AWS Batch**
+🔟 Large-scale batch jobs must be processed efficiently without manual resource management → **AWS Batch**
 
-11. A developer wants to run microservices using containers with AWS handling scheduling and scaling → **Amazon ECS**
+1️⃣1️⃣ A developer wants to run microservices using containers with AWS handling scheduling and scaling → **Amazon ECS**
 
-12. Compute workloads must run only when an event occurs and stop automatically → **AWS Lambda**
+1️⃣2️⃣ Compute workloads must run only when an event occurs and stop automatically → **AWS Lambda**
 
-13. A business wants to deploy AWS infrastructure inside its on-premises data center → **AWS Outposts**
+1️⃣3️⃣ A business wants to deploy AWS infrastructure inside its on-premises data center → **AWS Outposts**
 
-14. A low-latency application must be delivered to 5G mobile devices → **AWS Wavelength**
+1️⃣4️⃣ A low-latency application must be delivered to 5G mobile devices → **AWS Wavelength**
 
-15. A company wants to migrate VMware workloads to AWS without re-architecting → **VMware Cloud on AWS**
+1️⃣5️⃣ A company wants to migrate VMware workloads to AWS without re-architecting → **VMware Cloud on AWS**
 
-16. A web application must scale automatically and remain highly available → **Amazon EC2 Auto Scaling**
+1️⃣6️⃣ A web application must scale automatically and remain highly available → **Amazon EC2 Auto Scaling**
 
-17. Developers want a managed platform to upload code and let AWS handle capacity planning → **AWS Elastic Beanstalk**
+1️⃣7️⃣ Developers want a managed platform to upload code and let AWS handle capacity planning → **AWS Elastic Beanstalk**
 
-18. A containerized application must run with no cluster or server management → **AWS Fargate**
+1️⃣8️⃣ A containerized application must run with no cluster or server management → **AWS Fargate**
 
-19. A business wants to pay only for the exact execution time of code → **AWS Lambda**
+1️⃣9️⃣ A business wants to pay only for the exact execution time of code → **AWS Lambda**
 
-20. A small business wants predictable pricing and a simple cloud experience → **Amazon Lightsail**
+2️⃣0️⃣ A small business wants predictable pricing and a simple cloud experience → **Amazon Lightsail**
 
 ---
 
@@ -102,53 +102,53 @@
 
 ![AWS_Storage Image](/src/assets/aws-storage.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company needs highly durable object storage to store images and videos → **Amazon S3**
+1️⃣ A company needs highly durable object storage to store images and videos → **Amazon S3**
 
-2. Data must be stored long-term at the lowest cost and accessed once or twice a year → **Amazon S3 Glacier Deep Archive**
+2️⃣ Data must be stored long-term at the lowest cost and accessed once or twice a year → **Amazon S3 Glacier Deep Archive**
 
-3. An application requires block storage attached to EC2 instances → **Amazon EBS**
+3️⃣ An application requires block storage attached to EC2 instances → **Amazon EBS**
 
-4. Multiple EC2 instances need to share the same file system simultaneously → **Amazon EFS**
+4️⃣ Multiple EC2 instances need to share the same file system simultaneously → **Amazon EFS**
 
-5. A business wants automatic backups across AWS services from a single place → **AWS Backup**
+5️⃣ A business wants automatic backups across AWS services from a single place → **AWS Backup**
 
-6. Frequently accessed data needs low-latency object storage → **Amazon S3 Standard**
+6️⃣ Frequently accessed data needs low-latency object storage → **Amazon S3 Standard**
 
-7. Data must be archived with minutes-to-hours retrieval time at low cost → **Amazon S3 Glacier Flexible Retrieval**
+7️⃣ Data must be archived with minutes-to-hours retrieval time at low cost → **Amazon S3 Glacier Flexible Retrieval**
 
-8. An on-premises application needs hybrid access to cloud storage → **AWS Storage Gateway**
+8️⃣ An on-premises application needs hybrid access to cloud storage → **AWS Storage Gateway**
 
-9. Storage is needed for Windows file systems with SMB protocol → **Amazon FSx for Windows File Server**
+9️⃣ Storage is needed for Windows file systems with SMB protocol → **Amazon FSx for Windows File Server**
 
-10. A high-performance workload needs shared file storage with millisecond latency → **Amazon EFS**
+🔟. A high-performance workload needs shared file storage with millisecond latency → **Amazon EFS**
 
-11. A company wants storage that provides 11 nines (99.999999999%) durability → **Amazon S3**
+1️⃣1️⃣ A company wants storage that provides 11 nines (99999999999%) durability → **Amazon S3**
 
-12. Temporary storage is required only while an EC2 instance is running → **Instance Store**
+1️⃣2️⃣ Temporary storage is required only while an EC2 instance is running → **Instance Store**
 
-13. A workload needs persistent storage that survives EC2 termination → **Amazon EBS**
+1️⃣3️⃣ A workload needs persistent storage that survives EC2 termination → **Amazon EBS**
 
-14. Data must be stored for regulatory compliance for 7–10 years → **Amazon S3 Glacier Deep Archive**
+1️⃣4️⃣ Data must be stored for regulatory compliance for 7–10 years → **Amazon S3 Glacier Deep Archive**
 
-15. An application requires object-level access over the internet → **Amazon S3**
+1️⃣5️⃣ An application requires object-level access over the internet → **Amazon S3**
 
-16. A company wants to migrate large petabytes of data physically to AWS → **AWS Snowball**
+1️⃣6️⃣ A company wants to migrate large petabytes of data physically to AWS → **AWS Snowball**
 
-17. Storage must support POSIX-compliant file system access → **Amazon EFS**
+1️⃣7️⃣ Storage must support POSIX-compliant file system access → **Amazon EFS**
 
-18. A business wants low-cost storage with infrequent access → **Amazon S3 Standard-IA**
+1️⃣8️⃣ A business wants low-cost storage with infrequent access → **Amazon S3 Standard-IA**
 
-19. A backup solution is required for EC2, RDS, DynamoDB, and EFS together → **AWS Backup**
+1️⃣9️⃣ A backup solution is required for EC2, RDS, DynamoDB, and EFS together → **AWS Backup**
 
-20. Data must be cached locally while still stored in S3 for low latency → **AWS Storage Gateway (File Gateway)**
+2️⃣0️⃣ Data must be cached locally while still stored in S3 for low latency → **AWS Storage Gateway (File Gateway)**
 
 ---
 
 ## 🗄️ AWS DATABASE SERVICES
 
-### 1️⃣ Relational Databases (SQL)
+1. Relational Databases (SQL)
 
 | Service           | Explanation                                                                                         |
 | ----------------- | --------------------------------------------------------------------------------------------------- |
@@ -157,37 +157,37 @@
 
 ---
 
-### 2️⃣ NoSQL Databases
+2. NoSQL Databases
 
 | Service             | Explanation                                    |
 | ------------------- | ---------------------------------------------- |
 | **Amazon DynamoDB** | Serverless NoSQL key-value & document database |
 
-### 3️⃣ In-Memory Databases (Caching)
+3. In-Memory Databases (Caching)
 
 | Service                | Explanation                                   |
 | ---------------------- | --------------------------------------------- |
 | **Amazon ElastiCache** | In-memory data store using Redis or Memcached |
 
-### 4️⃣ Data Warehousing (Analytics)
+4. Data Warehousing (Analytics)
 
 | Service             | Explanation                                          |
 | ------------------- | ---------------------------------------------------- |
 | **Amazon Redshift** | Fully managed data warehouse for analytics workloads |
 
-### 5️⃣ Document Databases
+5. Document Databases
 
 | Service               | Explanation                                            |
 | --------------------- | ------------------------------------------------------ |
 | **Amazon DocumentDB** | Managed JSON document database compatible with MongoDB |
 
-### 6️⃣ Graph Databases
+6. Graph Databases
 
 | Service            | Explanation                  |
 | ------------------ | ---------------------------- |
 | **Amazon Neptune** | Fully managed graph database |
 
-### 7️⃣ Key-Value (Cassandra-compatible)
+7. Key-Value (Cassandra-compatible)
 
 | Service              | Explanation                               |
 | -------------------- | ----------------------------------------- |
@@ -195,47 +195,47 @@
 
 ![AWS_Database Image](/src/assets/aws-database.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A business needs a fully managed relational database with automated backups and patching → **Amazon RDS**
+1️⃣ A business needs a fully managed relational database with automated backups and patching → **Amazon RDS**
 
-2. An application requires a MySQL/PostgreSQL-compatible database with high performance and fault tolerance → **Amazon Aurora**
+2️⃣ An application requires a MySQL/PostgreSQL-compatible database with high performance and fault tolerance → **Amazon Aurora**
 
-3. A serverless application needs a NoSQL key-value database with single-digit millisecond latency → **Amazon DynamoDB**
+3️⃣ A serverless application needs a NoSQL key-value database with single-digit millisecond latency → **Amazon DynamoDB**
 
-4. A company wants a petabyte-scale data warehouse for analytical queries → **Amazon Redshift**
+4️⃣ A company wants a petabyte-scale data warehouse for analytical queries → **Amazon Redshift**
 
-5. A gaming app needs an in-memory data store for microsecond latency → **Amazon ElastiCache**
+5️⃣ A gaming app needs an in-memory data store for microsecond latency → **Amazon ElastiCache**
 
-6. A business wants a MongoDB-compatible fully managed database → **Amazon DocumentDB**
+6️⃣ A business wants a MongoDB-compatible fully managed database → **Amazon DocumentDB**
 
-7. A recommendation engine needs to store and query relationships between entities → **Amazon Neptune**
+7️⃣ A recommendation engine needs to store and query relationships between entities → **Amazon Neptune**
 
-8. An IoT application needs a time-series database optimized for fast ingestion → **Amazon Timestream**
+8️⃣ An IoT application needs a time-series database optimized for fast ingestion → **Amazon Timestream**
 
-9. A company wants a Cassandra-compatible serverless database → **Amazon Keyspaces**
+9️⃣ A company wants a Cassandra-compatible serverless database → **Amazon Keyspaces**
 
-10. An application requires durable backups and point-in-time recovery for databases → **Amazon RDS**
+🔟. An application requires durable backups and point-in-time recovery for databases → **Amazon RDS**
 
-11. A company needs a database that automatically scales capacity based on traffic → **Amazon DynamoDB**
+1️⃣1️⃣. A company needs a database that automatically scales capacity based on traffic → **Amazon DynamoDB**
 
-12. A startup wants a relational database without managing servers and with pay-as-you-go pricing → **Amazon Aurora Serverless**
+1️⃣2️⃣ A startup wants a relational database without managing servers and with pay-as-you-go pricing → **Amazon Aurora Serverless**
 
-13. An analytics team wants to run complex SQL queries across large datasets → **Amazon Redshift**
+1️⃣3️⃣ An analytics team wants to run complex SQL queries across large datasets → **Amazon Redshift**
 
-14. A caching layer is required to reduce database read latency → **Amazon ElastiCache**
+1️⃣4️⃣ A caching layer is required to reduce database read latency → **Amazon ElastiCache**
 
-15. A graph-based fraud detection system needs fast traversal of connected data → **Amazon Neptune**
+1️⃣5️⃣ A graph-based fraud detection system needs fast traversal of connected data → **Amazon Neptune**
 
-16. A company wants a managed relational database supporting multiple engines (MySQL, PostgreSQL, Oracle) → **Amazon RDS**
+1️⃣6️⃣ A company wants a managed relational database supporting multiple engines (MySQL, PostgreSQL, Oracle) → **Amazon RDS**
 
-17. A serverless app needs a database that integrates natively with AWS Lambda → **Amazon DynamoDB**
+1️⃣7️⃣ A serverless app needs a database that integrates natively with AWS Lambda → **Amazon DynamoDB**
 
-18. A company wants real-time analytics on structured data using SQL → **Amazon Redshift**
+1️⃣8️⃣ A company wants real-time analytics on structured data using SQL → **Amazon Redshift**
 
-19. A document-based application needs JSON-like storage with MongoDB compatibility → **Amazon DocumentDB**
+1️⃣9️⃣ A document-based application needs JSON-like storage with MongoDB compatibility → **Amazon DocumentDB**
 
-20. A workload requires a highly available NoSQL database with global replication → **Amazon DynamoDB Global Tables**
+2️⃣0️⃣ A workload requires a highly available NoSQL database with global replication → **Amazon DynamoDB Global Tables**
 
 ---
 
@@ -262,47 +262,47 @@
 
 ![AWS_Network Image](/src/assets/aws-network.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company needs a DNS service to route users to applications globally → **Amazon Route 53**
+1️⃣ A company needs a DNS service to route users to applications globally → **Amazon Route 53**
 
-2. A business wants to deliver content to users with low latency worldwide → **Amazon CloudFront**
+2️⃣ A business wants to deliver content to users with low latency worldwide → **Amazon CloudFront**
 
-3. An application needs a logically isolated virtual network in AWS → **Amazon VPC**
+3️⃣ An application needs a logically isolated virtual network in AWS → **Amazon VPC**
 
-4. Private subnets must access the internet without inbound traffic → **NAT Gateway**
+4️⃣ Private subnets must access the internet without inbound traffic → **NAT Gateway**
 
-5. Resources in a VPC must communicate with the internet → **Internet Gateway**
+5️⃣ Resources in a VPC must communicate with the internet → **Internet Gateway**
 
-6. A company wants a dedicated private connection from on-premises to AWS → **AWS Direct Connect**
+6️⃣ A company wants a dedicated private connection from on-premises to AWS → **AWS Direct Connect**
 
-7. Multiple VPCs need to communicate using a central hub → **AWS Transit Gateway**
+7️⃣ Multiple VPCs need to communicate using a central hub → **AWS Transit Gateway**
 
-8. An application needs a fully managed API front door → **Amazon API Gateway**
+8️⃣ An application needs a fully managed API front door → **Amazon API Gateway**
 
-9. A global application needs static IPs and improved availability → **AWS Global Accelerator**
+9️⃣ A global application needs static IPs and improved availability → **AWS Global Accelerator**
 
-10. A company wants DDoS protection at the network edge → **AWS Shield**
+🔟 A company wants DDoS protection at the network edge → **AWS Shield**
 
-11. A web application needs protection from common web attacks (SQL injection, XSS) → **AWS WAF**
+1️⃣1️⃣ A web application needs protection from common web attacks (SQL injection, XSS) → **AWS WAF**
 
-12. A business wants to cache content closer to users automatically → **Amazon CloudFront**
+1️⃣2️⃣ A business wants to cache content closer to users automatically → **Amazon CloudFront**
 
-13. A hybrid architecture needs secure site-to-site encrypted connectivity → **Site-to-Site VPN**
+1️⃣3️⃣ A hybrid architecture needs secure site-to-site encrypted connectivity → **Site-to-Site VPN**
 
-14. An application requires private access to AWS services without internet exposure → **AWS PrivateLink**
+1️⃣4️⃣ An application requires private access to AWS services without internet exposure → **AWS PrivateLink**
 
-15. A company wants fine-grained traffic control between microservices → **AWS App Mesh**
+1️⃣5️⃣ A company wants fine-grained traffic control between microservices → **AWS App Mesh**
 
-16. DNS health checks are needed to route traffic only to healthy endpoints → **Amazon Route 53**
+1️⃣6️⃣ DNS health checks are needed to route traffic only to healthy endpoints → **Amazon Route 53**
 
-17. A company wants content delivery with built-in SSL and edge locations → **Amazon CloudFront**
+1️⃣7️⃣ A company wants content delivery with built-in SSL and edge locations → **Amazon CloudFront**
 
-18. Multiple AWS accounts must share VPC resources securely → **AWS Resource Access Manager (RAM)**
+1️⃣8️⃣ Multiple AWS accounts must share VPC resources securely → **AWS Resource Access Manager (RAM)**
 
-19. An application needs layer-7 load balancing for HTTP/HTTPS traffic → **Application Load Balancer**
+1️⃣9️⃣ An application needs layer-7 load balancing for HTTP/HTTPS traffic → **Application Load Balancer**
 
-20. A company needs automatic scaling and distribution of incoming traffic → **Elastic Load Balancing**
+2️⃣0️⃣ A company needs automatic scaling and distribution of incoming traffic → **Elastic Load Balancing**
 
 ---
 
@@ -321,54 +321,54 @@
 | **AWS Web Application Firewall (WAF)**       | Protects web applications from **common web exploits** like SQL injection and XSS attacks.                                       |
 | **Amazon GuardDuty**                         | **Threat detection service** that continuously monitors AWS accounts for malicious activity using ML and logs.                   |
 | **Amazon Inspector**                         | **Automated security assessment** service that scans EC2 and container workloads for vulnerabilities.                            |
-| **Amazon Macie**                             | Uses ML to **discover and protect sensitive data** (like PII) stored in Amazon S3.                                               |
+| **Amazon Macie**                             | Uses ML to **discover and protect sensitive data** (like PII) stored in Amazon S3️⃣                                               |
 | **AWS Security Hub**                         | Central dashboard that **aggregates security findings** from multiple AWS security services.                                     |
 | **AWS Artifact**                             | Provides **on-demand access to compliance reports** and agreements (SOC, ISO, PCI).                                              |
 | **AWS CloudTrail**                           | Records **all API calls and account activity** for auditing and compliance.                                                      |
 
 ![AWS_Compliance Image](/src/assets/aws-compliance.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company needs to control who can access AWS resources → **IAM**
+1️⃣ A company needs to control who can access AWS resources → **IAM**
 
-2. Users need single sign-on (SSO) to AWS accounts and business apps → **IAM Identity Center**
+2️⃣ Users need single sign-on (SSO) to AWS accounts and business apps → **IAM Identity Center**
 
-3. A web application needs protection from SQL injection and XSS attacks → **AWS WAF**
+3️⃣ A web application needs protection from SQL injection and XSS attacks → **AWS WAF**
 
-4. The business wants DDoS protection for applications → **AWS Shield**
+4️⃣ The business wants DDoS protection for applications → **AWS Shield**
 
-5. The company needs to store API keys and database passwords securely → **AWS Secrets Manager**
+5️⃣ The company needs to store API keys and database passwords securely → **AWS Secrets Manager**
 
-6. Data must be encrypted using customer-managed encryption keys → **AWS KMS**
+6️⃣ Data must be encrypted using customer-managed encryption keys → **AWS KMS**
 
-7. The organization wants to detect suspicious activity and compromised accounts → **Amazon GuardDuty**
+7️⃣ The organization wants to detect suspicious activity and compromised accounts → **Amazon GuardDuty**
 
-8. A security team wants to scan EC2 instances for vulnerabilities → **Amazon Inspector**
+8️⃣ A security team wants to scan EC2 instances for vulnerabilities → **Amazon Inspector**
 
-9. The company needs to discover sensitive data like PII in S3 buckets → **Amazon Macie**
+9️⃣ The company needs to discover sensitive data like PII in S3 buckets → **Amazon Macie**
 
-10. Developers want user sign-up, sign-in, and authentication for an app → **Amazon Cognito**
+🔟 Developers want user sign-up, sign-in, and authentication for an app → **Amazon Cognito**
 
-11. The audit team wants compliance reports and certifications → **AWS Artifact**
+1️⃣1️⃣ The audit team wants compliance reports and certifications → **AWS Artifact**
 
-12. A company wants to centrally manage security alerts and findings → **AWS Security Hub**
+1️⃣2️⃣ A company wants to centrally manage security alerts and findings → **AWS Security Hub**
 
-13. An enterprise needs hardware-based key storage → **AWS CloudHSM**
+1️⃣3️⃣ An enterprise needs hardware-based key storage → **AWS CloudHSM**
 
-14. A company wants to record all AWS API calls for auditing → **AWS CloudTrail**
+1️⃣4️⃣ A company wants to record all AWS API calls for auditing → **AWS CloudTrail**
 
-15. The security team wants managed firewall rules across multiple accounts → **AWS Firewall Manager**
+1️⃣5️⃣ The security team wants managed firewall rules across multiple accounts → **AWS Firewall Manager**
 
-16. An organization wants to analyze and investigate security incidents → **Amazon Detective**
+1️⃣6️⃣ An organization wants to analyze and investigate security incidents → **Amazon Detective**
 
-17. The business needs SSL/TLS certificates for its websites → **AWS Certificate Manager**
+1️⃣7️⃣ The business needs SSL/TLS certificates for its websites → **AWS Certificate Manager**
 
-18. A company wants to control access between AWS accounts → **AWS Resource Access Manager (RAM)**
+1️⃣8️⃣ A company wants to control access between AWS accounts → **AWS Resource Access Manager (RAM)**
 
-19. The security team needs network-level firewall protection → **AWS Network Firewall**
+1️⃣9️⃣ The security team needs network-level firewall protection → **AWS Network Firewall**
 
-20. The company wants to monitor compliance against security rules → **AWS Config**
+2️⃣0️⃣ The company wants to monitor compliance against security rules → **AWS Config**
 
 ---
 
@@ -388,47 +388,47 @@
 | **AWS Well-Architected Tool** | Reviews workloads against AWS **best-practice pillars**. Helps identify **architectural risks** in cost, security, reliability, etc.                                                              |
 | **AWS Auto Scaling**          | Automatically adjusts capacity across services (EC2, ECS, DynamoDB). Ensures **availability and cost efficiency** during demand changes.                                                          |
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company needs to monitor CPU, memory, and create alarms for AWS resources → **Amazon CloudWatch**
+1️⃣ A company needs to monitor CPU, memory, and create alarms for AWS resources → **Amazon CloudWatch**
 
-2. A security team needs a record of all API calls made in an AWS account → **AWS CloudTrail**
+2️⃣ A security team needs a record of all API calls made in an AWS account → **AWS CloudTrail**
 
-3. An auditor asks who deleted an S3 bucket and when → **AWS CloudTrail**
+3️⃣ An auditor asks who deleted an S3 bucket and when → **AWS CloudTrail**
 
-4. A company wants to track configuration changes and resource compliance → **AWS Config**
+4️⃣ A company wants to track configuration changes and resource compliance → **AWS Config**
 
-5. A business needs centralized operational data and automated remediation → **AWS Systems Manager**
+5️⃣ A business needs centralized operational data and automated remediation → **AWS Systems Manager**
 
-6. An organization wants best-practice recommendations for cost, security, and performance → **AWS Trusted Advisor**
+6️⃣ An organization wants best-practice recommendations for cost, security, and performance → **AWS Trusted Advisor**
 
-7. A DevOps team needs to view logs, metrics, and set alarms in one place → **Amazon CloudWatch**
+7️⃣ A DevOps team needs to view logs, metrics, and set alarms in one place → **Amazon CloudWatch**
 
-8. A compliance team wants to check if resources follow internal rules continuously → **AWS Config**
+8️⃣ A compliance team wants to check if resources follow internal rules continuously → **AWS Config**
 
-9. A company wants to centrally manage multiple AWS accounts → **AWS Organizations**
+9️⃣ A company wants to centrally manage multiple AWS accounts → **AWS Organizations**
 
-10. A startup needs to set up a multi-account AWS environment with guardrails → **AWS Control Tower**
+🔟 A startup needs to set up a multi-account AWS environment with guardrails → **AWS Control Tower**
 
-11. A business wants to automatically notify users of AWS service outages → **AWS Service Health Dashboard**
+1️⃣1️⃣ A business wants to automatically notify users of AWS service outages → **AWS Service Health Dashboard**
 
-12. A developer needs to trace requests across microservices → **AWS X-Ray**
+1️⃣2️⃣ A developer needs to trace requests across microservices → **AWS X-Ray**
 
-13. A company wants to store and search application logs → **Amazon CloudWatch Logs**
+1️⃣3️⃣ A company wants to store and search application logs → **Amazon CloudWatch Logs**
 
-14. A finance team needs alerts when AWS usage exceeds a threshold → **AWS Budgets**
+1️⃣4️⃣ A finance team needs alerts when AWS usage exceeds a threshold → **AWS Budgets**
 
-15. A business wants to analyze historical AWS spending trends → **AWS Cost Explorer**
+1️⃣5️⃣ A business wants to analyze historical AWS spending trends → **AWS Cost Explorer**
 
-16. A security team wants a centralized view of security findings → **AWS Security Hub**
+1️⃣6️⃣ A security team wants a centralized view of security findings → **AWS Security Hub**
 
-17. A company wants to define infrastructure using templates → **AWS CloudFormation**
+1️⃣7️⃣ A company wants to define infrastructure using templates → **AWS CloudFormation**
 
-18. An operations team wants patch management for EC2 instances → **AWS Systems Manager**
+1️⃣8️⃣ An operations team wants patch management for EC2 instances → **AWS Systems Manager**
 
-19. A company needs automatic scaling recommendations to reduce cost → **AWS Compute Optimizer**
+1️⃣9️⃣ A company needs automatic scaling recommendations to reduce cost → **AWS Compute Optimizer**
 
-20. A business wants to track operational best practices using a framework → **AWS Well-Architected Tool**
+2️⃣0️⃣ A business wants to track operational best practices using a framework → **AWS Well-Architected Tool**
 
 ---
 
@@ -445,47 +445,47 @@
 
 ![AWS_Pricing Image](/src/assets/aws-pricing.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company wants to estimate monthly AWS costs before deploying resources → **AWS Pricing Calculator**
+1️⃣ A company wants to estimate monthly AWS costs before deploying resources → **AWS Pricing Calculator**
 
-2. A finance team needs to visualize historical AWS spending with graphs and filters → **AWS Cost Explorer**
+2️⃣ A finance team needs to visualize historical AWS spending with graphs and filters → **AWS Cost Explorer**
 
-3. A business wants to receive alerts when AWS spending exceeds a threshold → **AWS Budgets**
+3️⃣ A business wants to receive alerts when AWS spending exceeds a threshold → **AWS Budgets**
 
-4. A company needs detailed, line-item usage and cost reports stored in S3 → **AWS Cost and Usage Report**
+4️⃣ A company needs detailed, line-item usage and cost reports stored in S3 → **AWS Cost and Usage Report**
 
-5. A startup wants to avoid charges while learning AWS services → **AWS Free Tier**
+5️⃣ A startup wants to avoid charges while learning AWS services → **AWS Free Tier**
 
-6. An organization wants to pay only for compute capacity while it is running → **On-Demand Instances**
+6️⃣ An organization wants to pay only for compute capacity while it is running → **On-Demand Instances**
 
-7. A workload requires long-term, steady EC2 usage at a lower cost → **Reserved Instances**
+7️⃣ A workload requires long-term, steady EC2 usage at a lower cost → **Reserved Instances**
 
-8. A batch job can tolerate interruptions and needs maximum cost savings → **Spot Instances**
+8️⃣ A batch job can tolerate interruptions and needs maximum cost savings → **Spot Instances**
 
-9. A company wants flexible cost savings across EC2, Lambda, and Fargate → **Savings Plans**
+9️⃣ A company wants flexible cost savings across EC2, Lambda, and Fargate → **Savings Plans**
 
-10. A team wants to track costs by department using tags → **Cost Allocation Tags**
+🔟 A team wants to track costs by department using tags → **Cost Allocation Tags**
 
-11. A company needs to set a forecasted budget and get notified before overspending → **AWS Budgets**
+1️⃣1️⃣ A company needs to set a forecasted budget and get notified before overspending → **AWS Budgets**
 
-12. A business wants to analyze which AWS service is contributing most to cost increases → **AWS Cost Explorer**
+1️⃣2️⃣ A business wants to analyze which AWS service is contributing most to cost increases → **AWS Cost Explorer**
 
-13. A finance team needs hourly or daily breakdown of AWS usage per service → **AWS Cost and Usage Report**
+1️⃣3️⃣ A finance team needs hourly or daily breakdown of AWS usage per service → **AWS Cost and Usage Report**
 
-14. A customer wants to reduce EC2 costs without committing to specific instance types → **Compute Savings Plans**
+1️⃣4️⃣ A customer wants to reduce EC2 costs without committing to specific instance types → **Compute Savings Plans**
 
-15. A company wants to automatically stop spending beyond the Free Tier limits → **AWS Budgets**
+1️⃣5️⃣ A company wants to automatically stop spending beyond the Free Tier limits → **AWS Budgets**
 
-16. A business wants to compare pricing between regions before deployment → **AWS Pricing Calculator**
+1️⃣6️⃣ A business wants to compare pricing between regions before deployment → **AWS Pricing Calculator**
 
-17. A company wants lower pricing in exchange for a 1-year or 3-year commitment → **Reserved Instances**
+1️⃣7️⃣ A company wants lower pricing in exchange for a 1-year or 3-year commitment → **Reserved Instances**
 
-18. A startup wants to pay nothing for EC2, S3, and Lambda within limits for 12 months → **AWS Free Tier**
+1️⃣8️⃣ A startup wants to pay nothing for EC2, S3, and Lambda within limits for 12 months → **AWS Free Tier**
 
-19. A company wants to identify unused or underutilized resources for cost optimization → **AWS Cost Explorer**
+1️⃣9️⃣ A company wants to identify unused or underutilized resources for cost optimization → **AWS Cost Explorer**
 
-20. A finance team wants centralized visibility of AWS costs across accounts → **AWS Cost Explorer**
+2️⃣0️⃣ A finance team wants centralized visibility of AWS costs across accounts → **AWS Cost Explorer**
 
 ---
 
@@ -534,37 +534,37 @@
 
 ![AWS_Migration Image](/src/assets/aws-migration.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company wants to automatically deploy code to EC2 and on-prem servers → **AWS CodeDeploy**
+1️⃣ A company wants to automatically deploy code to EC2 and on-prem servers → **AWS CodeDeploy**
 
-2. A developer needs a fully managed CI/CD pipeline with minimal setup → **AWS CodePipeline**
+2️⃣ A developer needs a fully managed CI/CD pipeline with minimal setup → **AWS CodePipeline**
 
-3. A team wants to build, test, and package code automatically → **AWS CodeBuild**
+3️⃣ A team wants to build, test, and package code automatically → **AWS CodeBuild**
 
-4. A business wants to deploy web applications without managing servers → **AWS Elastic Beanstalk**
+4️⃣ A business wants to deploy web applications without managing servers → **AWS Elastic Beanstalk**
 
-5. A company wants to define infrastructure using code templates → **AWS CloudFormation**
+5️⃣ A company wants to define infrastructure using code templates → **AWS CloudFormation**
 
-6. A business wants a central place to track application migration progress → **AWS Migration Hub**
+6️⃣ A business wants a central place to track application migration progress → **AWS Migration Hub**
 
-7. A company wants to lift-and-shift on-prem servers to AWS with minimal downtime → **AWS Application Migration Service**
+7️⃣ A company wants to lift-and-shift on-prem servers to AWS with minimal downtime → **AWS Application Migration Service**
 
-8. A database needs to be migrated to AWS with minimal downtime → **AWS Database Migration Service (DMS)**
+8️⃣ A database needs to be migrated to AWS with minimal downtime → **AWS Database Migration Service (DMS)**
 
-9. A company wants to move large datasets online securely and quickly → **AWS DataSync**
+9️⃣ A company wants to move large datasets online securely and quickly → **AWS DataSync**
 
-10. A business needs to transfer petabytes of data without internet → **AWS Snowball**
+🔟 A business needs to transfer petabytes of data without internet → **AWS Snowball**
 
-11. A company needs to physically move exabytes of data to AWS → **AWS Snowmobile**
+1️⃣1️⃣ A company needs to physically move exabytes of data to AWS → **AWS Snowmobile**
 
-12. A company wants to run AWS services on-premises → **AWS Outposts**
+1️⃣2️⃣ A company wants to run AWS services on-premises → **AWS Outposts**
 
-13. A startup wants a simple deployment experience with minimal AWS knowledge → **AWS Elastic Beanstalk**
+1️⃣3️⃣ A startup wants a simple deployment experience with minimal AWS knowledge → **AWS Elastic Beanstalk**
 
-14. A team wants to migrate legacy apps without rewriting code → **AWS Application Migration Service**
+1️⃣4️⃣ A team wants to migrate legacy apps without rewriting code → **AWS Application Migration Service**
 
-15. A company wants to orchestrate multi-step deployments automatically → **AWS CodePipeline**
+1️⃣5️⃣ A company wants to orchestrate multi-step deployments automatically → **AWS CodePipeline**
 
 ---
 
@@ -581,33 +581,33 @@
 
 ![AWS_Integration Image](/src/assets/aws-integration.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. An application needs to decouple microservices using a fully managed message queue → **Amazon SQS**
+1️⃣ An application needs to decouple microservices using a fully managed message queue → **Amazon SQS**
 
-2. A system must send notifications to multiple subscribers using pub/sub → **Amazon SNS**
+2️⃣ A system must send notifications to multiple subscribers using pub/sub → **Amazon SNS**
 
-3. A company wants to route events from AWS services and SaaS apps in real time → **Amazon EventBridge**
+3️⃣ A company wants to route events from AWS services and SaaS apps in real time → **Amazon EventBridge**
 
-4. A serverless workflow needs visual orchestration of multiple AWS services → **AWS Step Functions**
+4️⃣ A serverless workflow needs visual orchestration of multiple AWS services → **AWS Step Functions**
 
-5. A legacy application requires a managed Apache ActiveMQ or RabbitMQ broker → **Amazon MQ**
+5️⃣ A legacy application requires a managed Apache ActiveMQ or RabbitMQ broker → **Amazon MQ**
 
-6. An application must trigger actions when specific AWS events occur → **Amazon EventBridge**
+6️⃣ An application must trigger actions when specific AWS events occur → **Amazon EventBridge**
 
-7. A system needs to fan-out messages to Lambda, SQS, and HTTP endpoints → **Amazon SNS**
+7️⃣ A system needs to fan-out messages to Lambda, SQS, and HTTP endpoints → **Amazon SNS**
 
-8. A workload needs reliable message storage until consumers process it → **Amazon SQS**
+8️⃣ A workload needs reliable message storage until consumers process it → **Amazon SQS**
 
-9. A business wants to coordinate long-running background jobs with state tracking → **AWS Step Functions**
+9️⃣ A business wants to coordinate long-running background jobs with state tracking → **AWS Step Functions**
 
-10. A company is migrating from on-premises message brokers without rewriting code → **Amazon MQ**
+🔟 A company is migrating from on-premises message brokers without rewriting code → **Amazon MQ**
 
-11. An event-driven architecture needs loose coupling between producers and consumers → **Amazon EventBridge**
+1️⃣1️⃣ An event-driven architecture needs loose coupling between producers and consumers → **Amazon EventBridge**
 
-12. A microservices system must process messages in order exactly once → **Amazon SQS FIFO**
+1️⃣2️⃣ A microservices system must process messages in order exactly once → **Amazon SQS FIFO**
 
-13. A serverless application needs step-by-step execution with retries and error handling → **AWS Step Functions**
+1️⃣3️⃣ A serverless application needs step-by-step execution with retries and error handling → **AWS Step Functions**
 
 ---
 
@@ -627,37 +627,37 @@
 
 ![AWS_Analytics Image](/src/assets/aws-analytics.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A business needs to visualize data using interactive dashboards without managing infrastructure → **Amazon QuickSight**
+1️⃣ A business needs to visualize data using interactive dashboards without managing infrastructure → **Amazon QuickSight**
 
-2. A company wants to run SQL queries directly on data stored in Amazon S3 without provisioning servers → **Amazon Athena**
+2️⃣ A company wants to run SQL queries directly on data stored in Amazon S3 without provisioning servers → **Amazon Athena**
 
-3. An organization needs a fully managed data warehouse for petabyte-scale analytics → **Amazon Redshift**
+3️⃣ An organization needs a fully managed data warehouse for petabyte-scale analytics → **Amazon Redshift**
 
-4. A team wants to analyze streaming data such as clickstreams in real time → **Amazon Kinesis**
+4️⃣ A team wants to analyze streaming data such as clickstreams in real time → **Amazon Kinesis**
 
-5. A developer needs a managed ETL service to prepare and transform data for analytics → **AWS Glue**
+5️⃣ A developer needs a managed ETL service to prepare and transform data for analytics → **AWS Glue**
 
-6. A company wants to process big data using Apache Spark and Hadoop → **Amazon EMR**
+6️⃣ A company wants to process big data using Apache Spark and Hadoop → **Amazon EMR**
 
-7. A business needs to search, analyze, and visualize log and text data in real time → **Amazon OpenSearch Service**
+7️⃣ A business needs to search, analyze, and visualize log and text data in real time → **Amazon OpenSearch Service**
 
-8. A team wants to load streaming data into S3 or Redshift with minimal setup → **Amazon Kinesis Data Firehose**
+8️⃣ A team wants to load streaming data into S3 or Redshift with minimal setup → **Amazon Kinesis Data Firehose**
 
-9. Analysts want to run BI queries on a data warehouse without managing infrastructure → **Amazon Redshift Serverless**
+9️⃣ Analysts want to run BI queries on a data warehouse without managing infrastructure → **Amazon Redshift Serverless**
 
-10. A company wants to build dashboards that automatically scale to thousands of users → **Amazon QuickSight**
+🔟 A company wants to build dashboards that automatically scale to thousands of users → **Amazon QuickSight**
 
-11. A business needs near real-time analytics on incoming application logs → **Amazon Kinesis Data Streams**
+1️⃣1️⃣ A business needs near real-time analytics on incoming application logs → **Amazon Kinesis Data Streams**
 
-12. A team wants a central data catalog to discover and manage metadata → **AWS Glue Data Catalog**
+1️⃣2️⃣ A team wants a central data catalog to discover and manage metadata → **AWS Glue Data Catalog**
 
-13. A company wants to securely share and analyze datasets with partners without copying data → **AWS Clean Rooms**
+1️⃣3️⃣ A company wants to securely share and analyze datasets with partners without copying data → **AWS Clean Rooms**
 
-14. A data engineer wants to create and manage a secure data lake quickly → **AWS Lake Formation**
+1️⃣4️⃣ A data engineer wants to create and manage a secure data lake quickly → **AWS Lake Formation**
 
-15. A business wants to subscribe to third-party datasets directly in AWS → **AWS Data Exchange**
+1️⃣5️⃣ A business wants to subscribe to third-party datasets directly in AWS → **AWS Data Exchange**
 
 ---
 
@@ -681,32 +681,32 @@
 
 ![AWS_AI_ML Image](/src/assets/aws-ai-ml.png)
 
-### 🔹Trick Questions:
+### Trick Questions
 
-1. A company wants to build, train, and deploy ML models without managing servers → **Amazon SageMaker**
+1️⃣ A company wants to build, train, and deploy ML models without managing servers → **Amazon SageMaker**
 
-2. A business wants to use generative AI models through APIs without building ML models → **Amazon Bedrock**
+2️⃣ A business wants to use generative AI models through APIs without building ML models → **Amazon Bedrock**
 
-3. An application needs to identify faces, objects, and text in images or videos → **Amazon Rekognition**
+3️⃣ An application needs to identify faces, objects, and text in images or videos → **Amazon Rekognition**
 
-4. A company wants to analyze customer reviews to detect sentiment and key phrases → **Amazon Comprehend**
+4️⃣ A company wants to analyze customer reviews to detect sentiment and key phrases → **Amazon Comprehend**
 
-5. A business needs to build a chatbot with voice and text capabilities → **Amazon Lex**
+5️⃣ A business needs to build a chatbot with voice and text capabilities → **Amazon Lex**
 
-6. An application must convert written text into natural-sounding speech → **Amazon Polly**
+6️⃣ An application must convert written text into natural-sounding speech → **Amazon Polly**
 
-7. A call center wants to convert recorded calls into text automatically → **Amazon Transcribe**
+7️⃣ A call center wants to convert recorded calls into text automatically → **Amazon Transcribe**
 
-8. A global application needs to translate text between multiple languages in real time → **Amazon Translate**
+8️⃣ A global application needs to translate text between multiple languages in real time → **Amazon Translate**
 
-9. A company needs to extract text, tables, and forms from scanned PDFs → **Amazon Textract**
+9️⃣ A company needs to extract text, tables, and forms from scanned PDFs → **Amazon Textract**
 
-10. A retail business wants to forecast future product demand using historical data → **Amazon Forecast**
+🔟 A retail business wants to forecast future product demand using historical data → **Amazon Forecast**
 
-11. An e-commerce site wants to recommend products based on user behavior → **Amazon Personalize**
+1️⃣1️⃣ An e-commerce site wants to recommend products based on user behavior → **Amazon Personalize**
 
-12. A fintech company wants to detect suspicious or fraudulent transactions → **Amazon Fraud Detector**
+1️⃣2️⃣ A fintech company wants to detect suspicious or fraudulent transactions → **Amazon Fraud Detector**
 
-13. Employees need to search enterprise documents using natural language questions → **Amazon Kendra**
+1️⃣3️⃣ Employees need to search enterprise documents using natural language questions → **Amazon Kendra**
 
 ![AWS_Architecture Image](/src/assets/aws-architecture.png)

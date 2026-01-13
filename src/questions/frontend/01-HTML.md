@@ -1,11 +1,11 @@
-### ❓ 1. How does a browser render a webpage?
+### ❓ How does a browser render a webpage?
 
-📝 **Answer**
+### 📝 Answer
 
 When a browser receives HTML from a server, it **does not immediately show it on the screen**.
 Instead, it follows a strict internal pipeline to understand _what_ to show and _how_ to show it.
 
-#### Step-by-step breakdown:
+🔍 Step-by-step breakdown
 
 1. **HTML Parsing**
 
@@ -43,29 +43,29 @@ CSS → CSSOM
 DOM + CSSOM → Render Tree → Layout → Paint → Composite
 ```
 
-⚠️ **Important Insight:**
+⚠️ **Important Insight**
 
 - Changing `width`, `height`, `top` → triggers **reflow** (expensive)
 - Changing `color`, `background` → triggers **repaint** (cheaper)
 
 ---
 
-### ❓ 2. What does “semantic HTML” mean?
+### ❓ What does “semantic HTML” mean?
 
-📝 **Answer**
+### 📝 Answer
 
 Semantic HTML means **using HTML tags that describe the meaning of content**, not just how it looks.
 
 The browser, search engines, and screen readers rely on semantics to understand **structure and intent**.
 
-❌ Non-semantic:
+❌ **Non-semantic**
 
 ```html
 <div class="header"></div>
 <div class="nav"></div>
 ```
 
-✅ Semantic:
+✅ **Semantic**
 
 ```html
 <header></header>
@@ -86,20 +86,20 @@ Common semantic elements:
 
 ![Semantic Image](/src/assets/semantic.png)
 
-🧠 **Why semantics matter:**
+🧠 Why semantics matter
 
 - Screen readers announce landmarks
 - SEO crawlers rank content better
 - Developers understand structure faster
 
-📌 **Rule of thumb:**
+📌 **Rule of thumb**
 If an element has _meaning_, don’t use `<div>`.
 
 ---
 
-### ❓ 3. How do you create a responsive layout where paragraphs align horizontally on desktop and vertically on mobile?
+### ❓ How do you create a responsive layout where paragraphs align horizontally on desktop and vertically on mobile?
 
-📝 **Answer**
+### 📝 Answer
 
 This is solved using **Flexbox**, which is designed for **1D layouts**.
 
@@ -135,16 +135,16 @@ Flexbox allows elements to change direction based on screen size.
 
 ![Media Image](/src/assets/media.png)
 
-🎯 **Key Understanding:**
+🎯 **Key Understanding**
 
 - Flexbox responds to **container size**
 - Media queries adapt layout to **device width**
 
 ---
 
-### ❓ 4. Difference between `<div>` and `<span>`?
+### ❓ Difference between `<div>` and `<span>`?
 
-📝 **Answer**
+### 📝 Answer
 
 Both are **non-semantic** elements, but they differ in **display behavior**.
 
@@ -164,9 +164,9 @@ Both are **non-semantic** elements, but they differ in **display behavior**.
 
 ---
 
-### ❓ 5. Difference between `id` and `class`?
+### ❓ Difference between `id` and `class`?
 
-📝 **Answer**
+### 📝 Answer
 
 They are identifiers, but serve **very different purposes**.
 
@@ -185,9 +185,9 @@ They are identifiers, but serve **very different purposes**.
 
 ---
 
-### ❓ 6. What are `data-*` attributes?
+### ❓ What are `data-*` attributes?
 
-📝 **Answer**
+### 📝 Answer
 
 `data-*` attributes let you attach **custom data** to HTML elements without affecting layout or semantics.
 
@@ -199,12 +199,12 @@ They are identifiers, but serve **very different purposes**.
 button.dataset.userId; // "42"
 ```
 
-🧠 **Why they exist:**
+🧠 **Why they exist**
 
 - Clean separation of HTML & JS
 - Avoid hidden inputs or global variables
 
-📌 Use cases:
+📌 Use cases
 
 - User IDs
 - Feature flags
@@ -212,9 +212,9 @@ button.dataset.userId; // "42"
 
 ---
 
-### ❓ 7. Difference between `<strong>` and `<b>`?
+### ❓ Difference between `<strong>` and `<b>`?
 
-📝 **Answer**
+### 📝 Answer
 
 Although both appear bold, their **meaning is different**.
 
@@ -231,17 +231,17 @@ Although both appear bold, their **meaning is different**.
 
 ---
 
-### ❓ 8. What is accessibility (a11y) in HTML?
+### ❓ What is accessibility (a11y) in HTML?
 
-📝 **Answer**
+### 📝 Answer
 
-Accessibility ensures websites are usable by:
+Accessibility ensures websites are usable by
 
 - Screen reader users
 - Keyboard-only users
 - Visually impaired users
 
-Key HTML practices:
+Key HTML practices
 
 - Semantic tags
 - Proper labels
@@ -255,9 +255,9 @@ Key HTML practices:
 
 ---
 
-### ❓ 9. What are ARIA attributes?
+### ❓ What are ARIA attributes?
 
-📝 **Answer**
+### 📝 Answer
 
 ARIA adds **extra meaning** when HTML alone isn’t enough.
 
@@ -265,16 +265,16 @@ ARIA adds **extra meaning** when HTML alone isn’t enough.
 <button aria-label="Close dialog">X</button>
 ```
 
-⚠️ **Golden Rule:**
+⚠️ **Golden Rule**
 **Semantic HTML first, ARIA second.**
 
 Misusing ARIA can make accessibility worse.
 
 ---
 
-### ❓ 10. Difference between `<script>`, `async`, and `defer`?
+### ❓ Difference between `<script>`, `async`, and `defer`?
 
-📝 **Answer**
+### 📝 Answer
 
 ```html
 <script src="a.js"></script>
@@ -294,9 +294,9 @@ Misusing ARIA can make accessibility worse.
 
 ---
 
-### ❓ 11. How does HTML handle parsing errors?
+### ❓ How does HTML handle parsing errors?
 
-📝 **Answer**
+### 📝 Answer
 
 HTML is **forgiving by design**.
 
@@ -307,16 +307,16 @@ HTML is **forgiving by design**.
 
 Browser auto-closes `<p>` to avoid breaking the page.
 
-🧠 This ensures:
+🧠 This ensures
 
 - Backward compatibility
 - Resilience across devices
 
 ---
 
-### ❓ 12. Difference between DOM and Virtual DOM?
+### ❓ Difference between DOM and Virtual DOM?
 
-📝 **Answer**
+### 📝 Answer
 
 | DOM             | Virtual DOM     |
 | --------------- | --------------- |
@@ -328,9 +328,9 @@ Browser auto-closes `<p>` to avoid breaking the page.
 
 ---
 
-### ❓ 13. What are Web Components?
+### ❓ What are Web Components?
 
-📝 **Answer**
+### 📝 Answer
 
 Web Components allow you to create **custom HTML elements** with isolated styles and behavior.
 
@@ -342,7 +342,7 @@ customElements.define("my-card", class extends HTMLElement {});
 <my-card></my-card>
 ```
 
-Benefits:
+✅ Benefits
 
 - Native (no framework)
 - Encapsulation
@@ -350,13 +350,13 @@ Benefits:
 
 ---
 
-### ❓ 14. How does HTML structure impact SEO?
+### ❓ How does HTML structure impact SEO?
 
-📝 **Answer**
+### 📝 Answer
 
 Search engines analyze **HTML structure**, not visuals.
 
-Best practices:
+✅ Best practices
 
 - One `<h1>`
 - Proper heading hierarchy
@@ -379,9 +379,9 @@ You can append this directly to your existing Markdown file.
 
 ---
 
-### ❓ 15. Is `<section>` always better than `<div>`?
+### ❓ Is `<section>` always better than `<div>`?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No.**
 
@@ -400,15 +400,16 @@ You can append this directly to your existing Markdown file.
 <div class="wrapper"></div>
 ```
 
-✅ **Rule:**
+✅ **Rule**
+
 If removing the element removes meaning → use semantic
 If it’s only for layout → use `<div>`
 
 ---
 
-### ❓ 16. Can a webpage have multiple `<h1>` tags?
+### ❓ Can a webpage have multiple `<h1>` tags?
 
-📝 **Answer**
+### 📝 Answer
 
 ✅ **Yes (HTML5 allows it)**
 ❌ **But it’s not recommended for SEO**
@@ -421,13 +422,15 @@ If it’s only for layout → use `<div>`
 <h2>Subsection</h2>
 ```
 
-📌 **Best practice:** One `<h1>` per page
+📌 **Best practice**
+
+One `<h1>` per page
 
 ---
 
-### ❓ 17. Is ARIA better than semantic HTML?
+### ❓ Is ARIA better than semantic HTML?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No. ARIA is a fallback, not a replacement.**
 
@@ -444,15 +447,15 @@ If it’s only for layout → use `<div>`
 <!-- Worse -->
 ```
 
-⚠️ **Golden rule:**
+⚠️ **Golden rule**
 
 > _“Use ARIA only when HTML can’t do the job.”_
 
 ---
 
-### ❓ 18. Does HTML support multithreading?
+### ❓ Does HTML support multithreading?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No.**
 
@@ -460,14 +463,14 @@ If it’s only for layout → use `<div>`
 - Script execution blocks parsing (unless `defer/async`)
 - Rendering pipeline depends on ordered execution
 
-🧠 **Why it matters:**
+🧠 **Why it matters**
 Blocking scripts = slow page load
 
 ---
 
-### ❓ 19. Why does broken HTML still work?
+### ❓ Why does broken HTML still work?
 
-📝 **Answer**
+### 📝 Answer
 
 Because HTML is **fault-tolerant by design**.
 
@@ -485,9 +488,9 @@ Browser auto-corrects:
 
 ---
 
-### ❓ 20. Does `<b>` and `<strong>` behave the same?
+### ❓ Does `<b>` and `<strong>` behave the same?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No, they look similar but mean different things.**
 
@@ -498,9 +501,9 @@ Screen readers emphasize `<strong>`.
 
 ---
 
-### ❓ 21. Does `display: none` remove an element from the DOM?
+### ❓ Does `display: none` remove an element from the DOM?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No.**
 
@@ -514,24 +517,22 @@ display: none;
 
 ---
 
-### ❓ 22. Can CSS affect DOM structure?
+### ❓ Can CSS affect DOM structure?
 
-📝 **Answer**
+### 📝 Answer
 
 ❌ **No.**
 
-CSS:
-
-- Affects layout & appearance
+- CSS Affects layout & appearance
 - Cannot add/remove DOM nodes
 
 Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 23. Your page loads slowly even though HTML is small. What do you check?
+### ❓ Your page loads slowly even though HTML is small. What do you check?
 
-📝 **Answer**
+### 📝 Answer
 
 - Blocking `<script>` tags
 - Missing `defer`
@@ -541,9 +542,9 @@ Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 24. Screen reader users report incorrect reading order.
+### ❓ Screen reader users report incorrect reading order.
 
-📝 **Answer**
+### 📝 Answer
 
 - Check semantic tags
 - Heading hierarchy (`h1 → h2 → h3`)
@@ -552,9 +553,9 @@ Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 25. Mobile layout breaks but desktop works fine.
+### ❓ Mobile layout breaks but desktop works fine.
 
-📝 **Answer**
+### 📝 Answer
 
 - Missing viewport meta tag
 - Fixed widths
@@ -563,9 +564,9 @@ Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 26. Buttons are not keyboard-accessible.
+### ❓ Buttons are not keyboard-accessible.
 
-📝 **Answer**
+### 📝 Answer
 
 - Using `<div>` instead of `<button>`
 - Missing `tabindex`
@@ -574,9 +575,9 @@ Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 27. SEO ranking drops after redesign.
+### ❓ SEO ranking drops after redesign.
 
-📝 **Answer**
+### 📝 Answer
 
 - Lost semantic structure
 - Multiple `<h1>`
@@ -586,9 +587,9 @@ Only JavaScript can modify DOM structure.
 
 ---
 
-### ❓ 28. Click handlers stop working after DOM updates.
+### ❓ Click handlers stop working after DOM updates.
 
-📝 **Answer**
+### 📝 Answer
 
 - DOM replaced dynamically
 - Event listeners lost

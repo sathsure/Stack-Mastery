@@ -1,12 +1,12 @@
-### ❓ 1. What are the main differences between React class components and function components?
+### ❓ What are the main differences between React class components and function components?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Function components are simpler, use hooks, and are now the recommended approach.
 - Class components use `this`, lifecycle methods (`componentDidMount`, etc.).
 - Hooks let you share logic more easily than HOCs/render props.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Function component with hook
@@ -18,9 +18,9 @@ function Counter() {
 
 ---
 
-### ❓ 2. Explain React Hooks rules. What happens if you break them?
+### ❓ Explain React Hooks rules. What happens if you break them?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Only call hooks:
 
@@ -29,7 +29,7 @@ function Counter() {
 
 - If you break them, hook order changes between renders and React will read wrong internal state → bugs or runtime errors.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // ✅ Correct
@@ -42,9 +42,9 @@ function MyComponent({ show }) {
 
 ---
 
-### ❓ 3. How does React’s reconciliation (diffing) algorithm work?
+### ❓ How does React’s reconciliation (diffing) algorithm work?
 
-📝 **Answer:**
+### 📝 Answer
 
 - React builds a virtual DOM tree.
 - On update, it compares old vs new tree:
@@ -54,7 +54,7 @@ function MyComponent({ show }) {
 
 - For lists, `key` helps React match items and avoid unnecessary re-renders.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 {
@@ -64,15 +64,15 @@ function MyComponent({ show }) {
 
 ---
 
-### ❓ 4. Why are keys important in lists? What are bad keys?
+### ❓ Why are keys important in lists? What are bad keys?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Keys identify elements between renders to keep state correctly.
 - Bad keys: array index, random values (because they change or don’t reflect item identity).
 - Good keys: stable ID from data.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // ❌ Bad
@@ -84,9 +84,9 @@ items.map((item) => <Row key={item.id} />);
 
 ---
 
-### ❓ 5. What is `useEffect` and common pitfalls?
+### ❓ What is `useEffect` and common pitfalls?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `useEffect` runs side-effects after render (API calls, subscriptions, DOM, timers).
 - Pitfalls:
@@ -95,7 +95,7 @@ items.map((item) => <Row key={item.id} />);
   - Too many dependencies → unnecessary calls.
   - Not cleaning up (memory leaks).
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 useEffect(() => {
@@ -108,15 +108,15 @@ useEffect(() => {
 
 ---
 
-### ❓ 6. What’s the difference between `useEffect` and `useLayoutEffect`?
+### ❓ What’s the difference between `useEffect` and `useLayoutEffect`?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `useEffect` runs after paint (async, non-blocking).
 - `useLayoutEffect` runs synchronously after DOM mutation but before paint (blocks painting).
 - Use `useLayoutEffect` only when you must measure DOM or avoid flicker.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 useLayoutEffect(() => {
@@ -127,9 +127,9 @@ useLayoutEffect(() => {
 
 ---
 
-### ❓ 7. Explain `useMemo` and `useCallback`. When to use them?
+### ❓ Explain `useMemo` and `useCallback`. When to use them?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `useMemo`: memoizes expensive computed values.
 - `useCallback`: memoizes function references.
@@ -138,7 +138,7 @@ useLayoutEffect(() => {
   - Expensive calculations.
   - Passing functions/objects to children that depend on reference equality.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const filtered = useMemo(() => list.filter((item) => item.active), [list]);
@@ -150,15 +150,15 @@ const handleClick = useCallback(() => {
 
 ---
 
-### ❓ 8. What is React’s Strict Mode and why might effects run twice in dev?
+### ❓ What is React’s Strict Mode and why might effects run twice in dev?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `<React.StrictMode>` helps find side-effect issues.
 - In React 18 dev, React intentionally mounts, unmounts, and re-mounts components to detect unsafe effects.
 - This makes `useEffect` run twice in dev (but not in production).
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -171,15 +171,15 @@ root.render(
 
 ---
 
-### ❓ 9. Explain React 18 concurrent rendering in simple terms.
+### ❓ Explain React 18 concurrent rendering in simple terms.
 
-📝 **Answer:**
+### 📝 Answer
 
 - Concurrent rendering lets React pause, resume, and discard renders.
 - It makes updates more responsive by splitting work and prioritizing urgent updates (like typing) over non-urgent ones.
 - You opt in with features like `startTransition`, `Suspense` for data, etc.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 import { startTransition, useState } from "react";
@@ -198,14 +198,14 @@ function onChange(e) {
 
 ---
 
-### ❓ 10. What is `Suspense` and how is it used?
+### ❓ What is `Suspense` and how is it used?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `Suspense` lets you show a fallback while some child “waits” (lazy-loaded component, or data with React 18 libs).
 - The component throws a promise; React shows fallback until it resolves.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const UserProfile = React.lazy(() => import("./UserProfile"));
@@ -217,16 +217,16 @@ const UserProfile = React.lazy(() => import("./UserProfile"));
 
 ---
 
-### ❓ 11. How does server-side rendering (SSR) work with React?
+### ❓ How does server-side rendering (SSR) work with React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Server renders React components to HTML.
 - Client hydrates that HTML with event listeners.
 - Benefits: faster first paint, SEO.
 - Tools: Next.js, Remix, or `react-dom/server` directly.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```js
 import { renderToString } from "react-dom/server";
@@ -237,15 +237,15 @@ res.send(`<!doctype html><div id="root">${html}</div>`);
 
 ---
 
-### ❓ 12. What is hydration and what can go wrong?
+### ❓ What is hydration and what can go wrong?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Hydration attaches event listeners to existing server-rendered HTML.
 - Problems when server-rendered markup doesn’t match client render (different data, random IDs, time-based values).
 - React logs hydration mismatch warnings.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Avoid non-deterministic values at render time on server
@@ -257,9 +257,9 @@ function Now() {
 
 ---
 
-### ❓ 13. How do you manage global state in a large React app?
+### ❓ How do you manage global state in a large React app?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Options:
 
@@ -268,7 +268,7 @@ function Now() {
 
 - Choose based on complexity, dev tooling, and performance needs.
 
-💻 **Code Example (Context):**
+💻 **Code Example**
 
 ```jsx
 const ThemeContext = React.createContext();
@@ -290,9 +290,9 @@ function Button() {
 
 ---
 
-### ❓ 14. What are common performance optimization techniques in React?
+### ❓ What are common performance optimization techniques in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Memoization: `React.memo`, `useMemo`, `useCallback`.
 - Split code: `React.lazy`, dynamic imports.
@@ -300,7 +300,7 @@ function Button() {
 - Avoid unnecessary re-renders by proper props structure and `key`.
 - Use `useTransition` for non-urgent updates.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const ListItem = React.memo(function ListItem({ item }) {
@@ -311,15 +311,15 @@ const ListItem = React.memo(function ListItem({ item }) {
 
 ---
 
-### ❓ 15. Explain controlled vs uncontrolled components in forms.
+### ❓ Explain controlled vs uncontrolled components in forms.
 
-📝 **Answer:**
+### 📝 Answer
 
 - Controlled: React state is the single source of truth; input value comes from state.
 - Uncontrolled: DOM holds value; use refs to read it.
 - Controlled gives better validation and control; uncontrolled is simpler for basic forms.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Controlled
@@ -333,14 +333,14 @@ const ref = useRef();
 
 ---
 
-### ❓ 16. How do you handle errors in React components?
+### ❓ How do you handle errors in React components?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use error boundaries (class components) to catch render/runtime errors in child components.
 - For async (e.g., fetch), handle in promises/try-catch and show fallback UI.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 class ErrorBoundary extends React.Component {
@@ -360,9 +360,9 @@ class ErrorBoundary extends React.Component {
 
 ---
 
-### ❓ 17. How do you test React components?
+### ❓ How do you test React components?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Unit/integration tests with:
 
@@ -371,7 +371,7 @@ class ErrorBoundary extends React.Component {
 
 - Focus on behavior and output, not implementation details.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Component
@@ -390,15 +390,15 @@ test("shows greeting", () => {
 
 ---
 
-### ❓ 18. What are custom hooks and why use them?
+### ❓ What are custom hooks and why use them?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Custom hooks are functions that use hooks and start with `use`.
 - They encapsulate reusable stateful logic (fetching, subscriptions).
 - They keep components smaller and easier to test.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 function useWindowWidth() {
@@ -414,15 +414,15 @@ function useWindowWidth() {
 
 ---
 
-### ❓ 19. How do you handle authentication flows in React?
+### ❓ How do you handle authentication flows in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Store auth state (token/user) in context or global store.
 - Protect routes with wrappers (e.g., `<PrivateRoute>`).
 - Avoid putting tokens in localStorage if possible; prefer http-only cookies.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 function PrivateRoute({ children }) {
@@ -434,9 +434,9 @@ function PrivateRoute({ children }) {
 
 ---
 
-### ❓ 20. How to avoid prop drilling?
+### ❓ How to avoid prop drilling?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use:
 
@@ -445,7 +445,7 @@ function PrivateRoute({ children }) {
   - Colocate state closer to where it’s used.
   - Component composition instead of deep nesting.
 
-💻 **Code Example (Context to avoid drilling):**
+💻 **Code Example**
 
 ```jsx
 const UserContext = React.createContext();
@@ -467,13 +467,13 @@ function Header() {
 
 ---
 
-### ❓ 21. Explain “lifting state up” with an example.
+### ❓ Explain “lifting state up” with an example.
 
-📝 **Answer:**
+### 📝 Answer
 
 - When two or more components need to share state, move that state to their closest common parent and pass down via props.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 function Parent() {
@@ -489,14 +489,14 @@ function Parent() {
 
 ---
 
-### ❓ 22. What is `React.forwardRef` and when to use it?
+### ❓ What is `React.forwardRef` and when to use it?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `forwardRef` lets a component pass a ref to a child DOM node or another component.
 - Useful for reusable input components, focusing, imperative APIs.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const TextInput = React.forwardRef(function TextInput(props, ref) {
@@ -509,9 +509,9 @@ const ref = useRef();
 
 ---
 
-### ❓ 23. What is the difference between `useRef` and `useState`?
+### ❓ What is the difference between `useRef` and `useState`?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `useRef`:
 
@@ -523,7 +523,7 @@ const ref = useRef();
   - Stores state.
   - Updating triggers re-render.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const countRef = useRef(0);
@@ -535,14 +535,14 @@ function handleClick() {
 
 ---
 
-### ❓ 24. How do you handle large lists efficiently in React?
+### ❓ How do you handle large lists efficiently in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use windowing/virtualization (only render visible rows) with libraries like `react-window`, `react-virtualized`.
 - Avoid heavy DOM for off-screen items.
 
-💻 **Code Example (react-window):**
+💻 **Code Example**
 
 ```jsx
 import { FixedSizeList as List } from "react-window";
@@ -554,16 +554,16 @@ import { FixedSizeList as List } from "react-window";
 
 ---
 
-### ❓ 25. How do you ensure accessibility (a11y) in React apps?
+### ❓ How do you ensure accessibility (a11y) in React apps?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use semantic HTML (`<button>`, `<nav>`, `<header>`).
 - Add ARIA attributes only when necessary.
 - Manage focus properly.
 - Ensure keyboard navigation and proper labels.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 <button aria-label="Close dialog" onClick={onClose}>
@@ -573,15 +573,15 @@ import { FixedSizeList as List } from "react-window";
 
 ---
 
-### ❓ 26. How do you prevent unnecessary re-renders in child components?
+### ❓ How do you prevent unnecessary re-renders in child components?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use `React.memo` to memoize child component.
 - Use stable props (memoized callbacks/objects).
 - Avoid creating new objects/functions in JSX without memo if performance is an issue.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const Child = React.memo(function Child({ onClick }) {
@@ -595,14 +595,14 @@ const onClick = useCallback(() => {
 
 ---
 
-### ❓ 27. What’s the difference between `ReactDOM.render` and `createRoot`?
+### ❓ What’s the difference between `ReactDOM.render` and `createRoot`?
 
-📝 **Answer:**
+### 📝 Answer
 
 - `ReactDOM.render` is legacy (React 17).
 - `createRoot` (React 18+) enables concurrent features and strict mode behaviors.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // React 18
@@ -614,16 +614,16 @@ root.render(<App />);
 
 ---
 
-### ❓ 28. How do you organize a large-scale React project?
+### ❓ How do you organize a large-scale React project?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Feature-based folder structure (by domain, not by type).
 - Separate UI components, hooks, services, and types.
 - Use index files for re-exports.
 - Keep components small and focused.
 
-💻 **Code Example (structure):**
+💻 **Code Example**
 
 ```text
 src/
@@ -637,15 +637,15 @@ src/
 
 ---
 
-### ❓ 29. How do you handle side effects like API calls in React?
+### ❓ How do you handle side effects like API calls in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use `useEffect` for fire-and-forget.
 - Or use data fetching libraries (React Query, SWR) for caching, retries, and stale data.
 - Keep side effects outside of render logic.
 
-💻 **Code Example (basic fetch):**
+💻 **Code Example**
 
 ```jsx
 useEffect(() => {
@@ -664,7 +664,7 @@ useEffect(() => {
 
 ---
 
-### ❓ 30. Explain a “trick” question: Why doesn’t this state update immediately?
+### ❓ Explain a “trick” question: Why doesn’t this state update immediately?
 
 ```jsx
 const [count, setCount] = useState(0);
@@ -672,13 +672,13 @@ setCount(count + 1);
 console.log(count); // ?
 ```
 
-📝 **Answer:**
+### 📝 Answer
 
 - `setCount` schedules an update; it doesn’t change `count` immediately in the same render.
 - `console.log` prints the old value.
 - React batches updates and re-renders with new state afterward.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 useEffect(() => {
@@ -688,7 +688,7 @@ useEffect(() => {
 
 ---
 
-### ❓ 31. Trick: What’s wrong with this effect?
+### ❓ Trick: What’s wrong with this effect?
 
 ```jsx
 useEffect(() => {
@@ -696,12 +696,12 @@ useEffect(() => {
 }, [count]);
 ```
 
-📝 **Answer:**
+### 📝 Answer
 
 - Infinite loop: `setCount` updates `count`, which re-triggers the effect, forever.
 - Use conditional logic or remove `setCount` from `useEffect` if not needed.
 
-💻 **Code Example (fixed):**
+💻 **Code Example**
 
 ```jsx
 useEffect(() => {
@@ -711,19 +711,19 @@ useEffect(() => {
 
 ---
 
-### ❓ 32. Trick: Why is this component re-rendering even with `React.memo`?
+### ❓ Trick: Why is this component re-rendering even with `React.memo`?
 
 ```jsx
 const List = React.memo(function List({ items }) { ... });
 <List items={[]} />
 ```
 
-📝 **Answer:**
+### 📝 Answer
 
 - `items={[]}` creates a new array every render; shallow compare sees a new reference, so memo fails.
 - Fix: memoize the array or pass stable data.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const memoItems = useMemo(() => [], []);
@@ -732,15 +732,15 @@ const memoItems = useMemo(() => [], []);
 
 ---
 
-### ❓ 33. How do you type React components and hooks with TypeScript?
+### ❓ How do you type React components and hooks with TypeScript?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use `React.FC` or explicit props type.
 - Type hooks’ return and params.
 - Use generics when needed.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```tsx
 type ButtonProps = {
@@ -755,14 +755,14 @@ const Button: React.FC<ButtonProps> = ({ onClick, label }) => (
 
 ---
 
-### ❓ 34. How do you implement code-splitting in React?
+### ❓ How do you implement code-splitting in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use `React.lazy` and `Suspense` to lazy-load components.
 - Or dynamic imports in routing (e.g., React Router, Next.js).
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const Settings = React.lazy(() => import("./Settings"));
@@ -774,14 +774,14 @@ const Settings = React.lazy(() => import("./Settings"));
 
 ---
 
-### ❓ 35. How do you debounce or throttle events in React?
+### ❓ How do you debounce or throttle events in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Wrap handler with debounce/throttle (e.g., lodash).
 - Use `useCallback` to keep stable reference.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 import { debounce } from "lodash-es";
@@ -798,15 +798,15 @@ const handleSearch = useCallback(
 
 ---
 
-### ❓ 36. How do you make a reusable modal component in React?
+### ❓ How do you make a reusable modal component in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Create a `Modal` component with props (`isOpen`, `onClose`).
 - Use portals to render on top-level.
 - Control visibility from parent.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 import ReactDOM from "react-dom";
@@ -826,15 +826,15 @@ function Modal({ isOpen, onClose, children }) {
 
 ---
 
-### ❓ 37. How do you implement dark/light theme toggling?
+### ❓ How do you implement dark/light theme toggling?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Store `theme` in context or global store.
 - Apply class on `html/body`.
 - Persist in localStorage if needed.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 const [theme, setTheme] = useState("light");
@@ -850,15 +850,15 @@ useEffect(() => {
 
 ---
 
-### ❓ 38. How do you handle file uploads in React?
+### ❓ How do you handle file uploads in React?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use `<input type="file" />`.
 - Read `event.target.files`.
 - Send `FormData` via fetch/axios.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 function Upload() {
@@ -874,15 +874,15 @@ function Upload() {
 
 ---
 
-### ❓ 39. How do you secure a React app against XSS?
+### ❓ How do you secure a React app against XSS?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Never inject unsanitized HTML.
 - Avoid `dangerouslySetInnerHTML` unless content is sanitized.
 - Rely on React’s default escaping of values.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Safe: React escapes
@@ -894,16 +894,16 @@ function Upload() {
 
 ---
 
-### ❓ 40. How do you debug React performance issues?
+### ❓ How do you debug React performance issues?
 
-📝 **Answer:**
+### 📝 Answer
 
 - Use React DevTools Profiler to see slow components.
 - Check frequent re-renders (high commit count).
 - Optimize with memoization, splitting components, virtualization.
 - Check for unnecessary computations in render.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```jsx
 // Add <React.Profiler> around suspicious subtree in dev

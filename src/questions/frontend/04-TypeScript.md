@@ -1,11 +1,11 @@
-### ❓ 1. What is the difference between `const` and `as const` in TypeScript?
+### ❓ What is the difference between `const` and `as const` in TypeScript?
 
-📝 **Answer:**
+### 📝 Answer
 
 `const` The variable cannot be reassigned, but the contents inside the object can still change.  
 `as const` The value becomes completely locked — its contents cannot change, and the types stay exact.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 const mutableobject = { a: 1, b: 2, c: 3 };
@@ -22,13 +22,13 @@ console.log("immutableobject:", immutableobject);
 
 ---
 
-### ❓ 2. How does TypeScript’s type inference work?
+### ❓ How does TypeScript’s type inference work?
 
-📝 **Answer:**
+### 📝 Answer
 
 TypeScript's type inference is the ability of the compiler to automatically determine and assign types to variables, functions, objects, arrays.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 Variable Initialization:
 
@@ -55,14 +55,14 @@ let user = { name: "Alice", age: 30 }; // Inferred as { name: string; age: numbe
 
 ---
 
-### ❓3. Explain the difference between types vs interfaces. When do you use each?
+### ❓Explain the difference between types vs interfaces. When do you use each?
 
-📝 **Answer:**
+### 📝 Answer
 
 `Interface` is mainly for describing object shapes and is extendable (can be merged).  
 `Type` is more flexible — can represent unions, primitives, tuples, and complex compositions.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 Interface:
 
@@ -113,13 +113,13 @@ const appConfig: Config = {
 
 ---
 
-### ❓4. What are mapped types? Examples.
+### ❓What are mapped types? Examples.
 
-📝 **Answer:**
+### 📝 Answer
 
 `Mapped types` apply transformations to each property of an existing type to produce a new type.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 type Person = { name: string; age: number };
@@ -133,14 +133,14 @@ const person3: PartialPerson = {}; // Valid
 
 ---
 
-### ❓5. Explain Generics with constraints.
+### ❓Explain Generics with constraints.
 
-📝 **Answer:**
+### 📝 Answer
 
 `Generic:` A placeholder type that makes code reusable for many types.
 `Constraint:` A rule that limits what types the generic can accept to ensure safety (like requiring a length property).
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 // T must have a 'length' property
@@ -155,13 +155,13 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 ---
 
-### ❓6. What are utility types like Partial, Pick, Omit, ReturnType?
+### ❓What are utility types like Partial, Pick, Omit, ReturnType?
 
-**📝 Answer:**
+### 📝 Answer
 
 1. `Partial<Type>:` The Partial utility type makes all properties in Type optional.
 
-   💻 **Code Example:**
+   💻 **Code Example**
 
    ```ts
    interface User {
@@ -181,7 +181,7 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 2. `Pick<Type, Keys>:` Pick creates a new type that contains only the selected properties from an existing type.
 
-   💻 **Code Example:**
+   💻 **Code Example**
 
    ```ts
    interface Product {
@@ -202,7 +202,7 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 3. `Omit<Type, Keys>:` Omit creates a new type by removing specific properties from an existing type.
 
-   💻 **Code Example:**
+   💻 **Code Example**
 
    ```ts
    interface UserDetails {
@@ -224,7 +224,7 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 4. `ReturnType<Type>:` ReturnType extracts the type of a function’s return value without repeating the function’s definition.
 
-   💻 **Code Example:**
+   💻 **Code Example**
 
    ```ts
    const getUserData = () => {
@@ -243,13 +243,13 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 ---
 
-### ❓7. What is declaration merging?
+### ❓What is declaration merging?
 
-📝 **Answer:**
+### 📝 Answer
 
 `Declaration merging` combines multiple declarations of the same name into a single definition
 
-💻 **Code Example:**
+💻 **Code Example**
 
     ```ts
     // Declaration Merging (Interface only)
@@ -273,14 +273,14 @@ getLength([1, 2, 3]); // ✔ works (array has length)
 
 ---
 
-### ❓8. Explain structural typing in TS?
+### ❓Explain structural typing in TS?
 
-📝 **Answer:**
+### 📝 Answer
 
 `Structural typing` in TypeScript means two types are compatible if their shape (properties and methods) matches, regardless of their names.
 In short: If the structure fits, the type fits.
 
-💻 **Code Example:**
+💻 **Code Example**
 
     ```ts
     interface Point {
@@ -298,13 +298,13 @@ In short: If the structure fits, the type fits.
 
 ---
 
-### ❓9. What are discriminated unions?
+### ❓What are discriminated unions?
 
-📝 **Answer:**
+### 📝 Answer
 
 `Discriminated unions` allow grouping related types using a common discriminant property, enabling TypeScript to narrow types safely.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 type Shape =
@@ -320,13 +320,13 @@ function area(shape: Shape) {
 
 ---
 
-### ❓10. How do you create and use custom type guards?
+### ❓How do you create and use custom type guards?
 
-📝 **Answer:**
+### 📝 Answer
 
 A `custom type guard` is a function that returns `x is Type` to help TypeScript narrow types at runtime.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 // Custom type guard: checks if val is a number
@@ -344,15 +344,15 @@ if (isNumber(input)) {
 
 ---
 
-### ❓11. What is never, unknown, void? When to use each?
+### ❓What is never, unknown, void? When to use each?
 
-📝 **Answer:**
+### 📝 Answer
 
 `never:` A type that never occurs, used for unreachable code or exhaustive checks.  
 `unknown:`A safe alternative to `any`, requires type-checking before use.  
 `void:` Represents no return value, typically in functions.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 // never returns because it throws an error
@@ -370,13 +370,13 @@ function log(msg: string): void {
 
 ---
 
-### ❓12. What are decorators and how are they applied?
+### ❓What are decorators and how are they applied?
 
-📝 **Answer:**
+### 📝 Answer
 
 Decorators are annotations that modify classes, methods, or properties at runtime; enabled via `experimentalDecorators`.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 ```ts
 function Logger(target: Function) {

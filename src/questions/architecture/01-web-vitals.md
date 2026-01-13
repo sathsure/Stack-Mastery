@@ -1,10 +1,10 @@
 ❓ 1. What is Largest Contentful Paint (LCP)?
 
-📝 **Answer**
+### 📝 Answer
 
 LCP measures how long it takes for the **largest visible content** (image, video, block of text) in the viewport to render. Good LCP ≤ **2.5s**.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (prioritize above-the-fold image)
 
@@ -26,11 +26,11 @@ LCP measures how long it takes for the **largest visible content** (image, video
 
 ❓ 2. How to reduce CLS?
 
-📝 **Answer**
+### 📝 Answer
 
 CLS (Cumulative Layout Shift) is reduced by **reserving space** for elements (images, ads, fonts) so layout doesn’t jump while loading.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (reserve space for image + avoid layout shift)
 
@@ -57,11 +57,11 @@ CLS (Cumulative Layout Shift) is reduced by **reserving space** for elements (im
 
 ❓ 3. How to reduce JS main-thread blocking time?
 
-📝 **Answer**
+### 📝 Answer
 
 Split and defer heavy JS: **code-splitting, async/defer scripts, web workers, and fewer big sync tasks** on the main thread.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (move heavy work to Web Worker)
 
@@ -90,11 +90,11 @@ And load non-critical script without blocking:
 
 ❓ 4. How to implement image optimization?
 
-📝 **Answer**
+### 📝 Answer
 
 Serve **properly sized, compressed, next-gen** images (WebP/AVIF), use **responsive `<img srcset>`**, lazy-load below-the-fold images, and use CDNs.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (responsive + modern formats)
 
@@ -120,12 +120,12 @@ Serve **properly sized, compressed, next-gen** images (WebP/AVIF), use **respons
 
 ❓ 5. Server-side rendering vs client-side rendering performance.
 
-📝 **Answer**
+### 📝 Answer
 
 - **SSR:** HTML is rendered on the server → **faster first paint/TTFB**, better SEO, but more server load and possible slower navigation if not hydrated well.
 - **CSR:** Browser receives a shell + JS, then renders → usually **slower first paint**, but can be very fast after initial load.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (very simplified Node SSR)
 
@@ -158,11 +158,11 @@ app.listen(3000);
 
 ❓ 6. Lazy loading non-critical JS.
 
-📝 **Answer**
+### 📝 Answer
 
 Load non-essential JS **on demand** (after user interaction, viewport visibility, or idle time) using **dynamic import** or script injection.
 
-💻 **Code Example:**
+💻 **Code Example**
 
 (dynamic import on interaction)
 

@@ -1,6 +1,6 @@
-### ❓ 1. What is CSS?
+### ❓ What is CSS?
 
-📝 **Answer:**
+### 📝 Answer
 
 CSS (Cascading Style Sheets) describes **how elements should look** — colors, spacing, layout, and positioning.
 
@@ -9,9 +9,9 @@ CSS is declarative: you describe **rules**, and the browser decides **how to app
 
 ---
 
-### ❓ 2. How does the browser decide which styles to apply?
+### ❓ How does the browser decide which styles to apply?
 
-📝 **Answer:**
+### 📝 Answer
 
 CSS follows a **cascade**:
 
@@ -38,36 +38,36 @@ The browser follows this order **step by step**:
 ```
 
 ```css
-/* 1️⃣ Element selector */
+/* Element selector */
 p {
   color: blue;
 }
 
-/* 2️⃣ Class selector */
+/* Class selector */
 .highlight {
   color: green;
 }
 
-/* 3️⃣ ID selector */
+/* ID selector */
 #text {
   color: orange;
 }
 
-/* 4️⃣ Same specificity, later rule */
+/* Same specificity, later rule */
 #text {
   color: purple;
 }
 ```
 
-#### Final Output
+**Final Output**
 
 **Text color: purple**
 
 ---
 
-### ❓ 3. How do inline, internal, and external styles differ?
+### ❓ How do inline, internal, and external styles differ?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```html
 <!-- Inline -->
@@ -91,9 +91,9 @@ p {
 
 ---
 
-### ❓ 4. What are CSS selectors, and how do they determine which elements styles are applied to?
+### ❓ What are CSS selectors, and how do they determine which elements styles are applied to?
 
-📝 **Answer:**
+### 📝 Answer
 
 Selectors define **which elements** a style rule applies to.
 
@@ -108,9 +108,9 @@ Most CSS issues start with **wrong or overly complex selectors**.
 
 ---
 
-### ❓ 5. What different types of CSS selectors are available, and when would you use each?
+### ❓ What different types of CSS selectors are available, and when would you use each?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 /* Element */
@@ -141,9 +141,9 @@ h2 {
 
 ---
 
-### ❓ 6. How do descendant selectors differ from child selectors, and how does nesting affect selector behavior?
+### ❓ How do descendant selectors differ from child selectors, and how does nesting affect selector behavior?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 /* Descendant */
@@ -160,7 +160,7 @@ h2 {
 Descendant selectors match deeply nested elements.
 Overusing them makes CSS fragile and hard to remove later.
 
-#### 1️⃣ Descendant Selector (space)
+1. Descendant Selector (space)
 
 ```css
 .parent .child {
@@ -182,7 +182,7 @@ Selects **any matching element inside**, at **any depth**.
 - Easy to overuse
 - Can accidentally affect deeply nested elements
 
-#### 2️⃣ Child Selector (`>`)
+2. Child Selector (`>`)
 
 ```css
 .parent > .child {
@@ -207,7 +207,7 @@ Selects **only direct children**, not grandchildren.
 .parent > .child   → direct child only ✅
 ```
 
-#### 3️⃣ Element Selector
+3. Element Selector
 
 ```css
 p {
@@ -217,7 +217,7 @@ p {
 
 Selects all `<p>` elements.
 
-#### 4️⃣ Class Selector
+4. Class Selector
 
 ```css
 .card {
@@ -227,7 +227,7 @@ Selects all `<p>` elements.
 
 Selects all elements with class `card`.
 
-#### 5️⃣ ID Selector
+5. ID Selector
 
 ```css
 #header {
@@ -237,7 +237,7 @@ Selects all elements with class `card`.
 
 Selects the element with id `header`.
 
-#### 6️⃣ Group Selector
+6. Group Selector
 
 ```css
 h1,
@@ -249,7 +249,7 @@ h3 {
 
 Applies the same styles to multiple selectors.
 
-#### 7️⃣ Attribute Selector
+7. Attribute Selector
 
 ```css
 input[type="text"] {
@@ -259,7 +259,7 @@ input[type="text"] {
 
 Selects elements based on attributes.
 
-#### 8️⃣ Pseudo-class Selector (state-based)
+8. Pseudo-class Selector (state-based)
 
 ```css
 button:hover {
@@ -269,7 +269,7 @@ button:hover {
 
 Applies styles based on **state or position**.
 
-Other common ones:
+✅ Other common ones
 
 ```css
 :first-child
@@ -279,7 +279,7 @@ Other common ones:
 :checked
 ```
 
-#### 9️⃣ Pseudo-element Selector (virtual elements)
+9. Pseudo-element Selector (virtual elements)
 
 ```css
 p::before {
@@ -289,7 +289,7 @@ p::before {
 
 Represents **parts of an element**, not real DOM nodes.
 
-Common ones:
+✅ Common ones
 
 ```css
 ::before
@@ -300,7 +300,7 @@ Common ones:
 
 ![PseudoElements Image](/src/assets/pseudo-elements.png)
 
-#### 🔟 Universal Selector
+10. Universal Selector
 
 ```css
 * {
@@ -311,7 +311,7 @@ Common ones:
 Selects **all elements**.
 Use sparingly.
 
-#### 1️⃣1️⃣ Adjacent Sibling Selector (`+`)
+11. Adjacent Sibling Selector (`+`)
 
 ```css
 h1 + p {
@@ -321,7 +321,7 @@ h1 + p {
 
 Selects the **first sibling immediately after** the element.
 
-#### 1️⃣2️⃣ General Sibling Selector (`~`)
+12. General Sibling Selector (`~`)
 
 ```css
 h1 ~ p {
@@ -331,7 +331,7 @@ h1 ~ p {
 
 Selects **all siblings after** the element.
 
-#### Selector Strength (Mental Order)
+✅ Selector Strength (Mental Order)
 
 ```
 Element < Class / Attribute < ID < Inline < !important
@@ -339,9 +339,9 @@ Element < Class / Attribute < ID < Inline < !important
 
 ---
 
-### ❓ 7. What is CSS specificity, and how does it influence which style rule is applied?
+### ❓ What is CSS specificity, and how does it influence which style rule is applied?
 
-📝 **Answer:**
+### 📝 Answer
 
 Specificity is the rule the browser uses to decide which CSS rule wins when multiple rules target the same element.
 
@@ -364,7 +364,7 @@ Specificity can be imagined as a 4-part score:
 
 ( inline , ID , class , element )
 
-Examples:
+💡Examples
 
 p → (0,0,0,1)
 .card → (0,0,1,0)
@@ -394,14 +394,14 @@ The first higher value wins.
 </div>
 ```
 
-#### Specificity
+✅ Specificity
 
 ```
 #app            → (0,1,0,0)
 #app .card p    → (0,1,1,1)
 ```
 
-#### Output
+**Output**
 
 **Text color: red**
 
@@ -409,9 +409,9 @@ Both rules have one ID, but the second rule adds class and element selectors, ma
 
 ---
 
-### ❓ 8. Why `!important` is risky?
+### ❓ Why `!important` is risky?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 p {
@@ -424,9 +424,9 @@ Once used, future overrides become harder and force more `!important`.
 
 ---
 
-### ❓ 9. How does the CSS box model work, and how does it affect element sizing and layout?
+### ❓ How does the CSS box model work, and how does it affect element sizing and layout?
 
-📝 **Answer:**
+### 📝 Answer
 
 ![BoxModel Image](/src/assets/box-model.png)
 
@@ -435,24 +435,24 @@ Misunderstanding this causes layout bugs.
 
 ---
 
-### ❓ 10. What is the difference between `content-box` and `border-box`?
+### ❓ What is the difference between `content-box` and `border-box`?
 
 `content-box` and `border-box` define **how the browser calculates an element’s width and height**.
 
 - **`content-box`** → width/height apply to **content only**
 - **`border-box`** → width/height include **content + padding + border**
 
-#### 1️⃣ `box-sizing: content-box` (Default)
+👉 `box-sizing: content-box` (Default)
 
 The browser treats width as **content-only**.
 This often causes layouts to grow larger than expected.
 
-#### 2️⃣ `box-sizing: border-box`
+👉 `box-sizing: border-box`
 
 The browser adjusts content size so the **overall element size stays fixed**.
 This makes layouts predictable and easier to reason about.
 
-#### Side-by-Side Summary
+👉 Side-by-Side Summary
 
 | Property               | content-box | border-box       |
 | ---------------------- | ----------- | ---------------- |
@@ -462,24 +462,24 @@ This makes layouts predictable and easier to reason about.
 | Easy layout math       | ❌ No       | ✅ Yes           |
 | Preferred in real apps | ❌ Rarely   | ✅ Almost always |
 
-#### ❓ Why does adding padding break my layout?
+1️⃣ ❓ does adding padding break my layout?
 
 Because you are using `content-box`, and padding increases the total size.
 
-#### ❓ Why doesn’t width change when I add padding?
+2️⃣ ❓ doesn’t width change when I add padding?
 
 Because you are using `border-box`, and padding is absorbed inside.
 
-#### One-Line Mental Model
+💡 One-Line Mental Model
 
 > **`content-box`: width means content only
 > `border-box`: width means the whole box**
 
 ![BorderContent Image](/src/assets/border-content.png)
 
-### ❓ 11. What are the different CSS display types, and how do they impact layout and element behavior?
+### ❓ What are the different CSS display types, and how do they impact layout and element behavior?
 
-📝 **Answer:**
+### 📝 Answer
 
 | Display      | Width | Height | Line Break |
 | ------------ | ----- | ------ | ---------- |
@@ -495,9 +495,9 @@ Many alignment issues come from using the wrong display type.
 
 ---
 
-### ❓ 12. What CSS position types are available, and how does each one affect document flow and positioning?
+### ❓ What CSS position types are available, and how does each one affect document flow and positioning?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 static
@@ -515,15 +515,11 @@ sticky
 - Element follows normal document flow
 - top / left / right / bottom do nothing
 
-👉 In the images: element stays exactly where it is in the flow
-
 2️⃣ position: relative
 
 - Element stays in normal flow
 - Can be offset visually using top/left
 - Creates positioning context for absolute children
-
-👉 In the images: space remains, element shifts visually
 
 3️⃣ position: absolute
 
@@ -531,15 +527,11 @@ sticky
 - Positioned relative to nearest positioned ancestor
 - Parent height does not include it
 
-👉 In the images: element floats freely inside a container
-
 4️⃣ position: fixed
 
 - Removed from flow
 - Positioned relative to viewport
 - Does not move during scroll
-
-👉 In the images: element stays pinned while page scrolls
 
 5️⃣ position: sticky
 
@@ -547,9 +539,7 @@ sticky
 - Scrolls normally, then sticks at a threshold
 - Fails if parent has overflow: hidden/auto
 
-👉 In the images: element scrolls → sticks → unsticks
-
-#### Diagram
+💡 Diagram
 
 ```
 relative parent
@@ -561,9 +551,9 @@ Sticky needs scroll context and fails with overflow clipping.
 
 ---
 
-### ❓ 15. Where height and width apply?
+### ❓ Where height and width apply?
 
-📝 **Answer:**
+### 📝 Answer
 
 | Element        | Width | Height |
 | -------------- | ----- | ------ |
@@ -576,18 +566,18 @@ Use `inline-block`, flex, or grid for sizing.
 
 ---
 
-### ❓ 16. Why `height: 100%` fails?
+### ❓ Why `height: 100%` fails?
 
-📝 **Answer:**
+### 📝 Answer
 
 Percentage heights work only if the parent has an explicit height.
 Without it, the browser cannot calculate the value.
 
 ---
 
-### ❓ 17. How do different CSS units differ from each other, and how does the browser interpret them?
+### ❓ How do different CSS units differ from each other, and how does the browser interpret them?
 
-📝 **Answer:**
+### 📝 Answer
 
 Below is a **clean, beginner-to-clear explanation** of **CSS units**, expanding your table with **what each unit really means, when to use it, and common traps**, plus **one visual image** to lock the concepts in.
 
@@ -601,7 +591,7 @@ Below is a **clean, beginner-to-clear explanation** of **CSS units**, expanding 
 
 ![Units Image](/src/assets/units.png)
 
-#### 1️⃣ px — Fixed Unit
+**px — Fixed Unit**
 
 ```css
 .box {
@@ -622,7 +612,7 @@ It does **not scale** with screen size or user font settings.
 - Responsive layouts
 - Accessibility-friendly text
 
-#### 2️⃣ em — Relative to Parent
+**em — Relative to Parent**
 
 ```css
 .parent {
@@ -647,7 +637,7 @@ This can compound when elements are nested.
 
 Padding grows as font size grows.
 
-#### 3️⃣ rem — Relative to Root (`<html>`)
+**rem — Relative to Root (`<html>`)**
 
 ```css
 html {
@@ -668,7 +658,7 @@ This makes layouts **predictable and scalable**.
 - Spacing systems
 - Scalable layouts
 
-#### 4️⃣ vw — Viewport Width
+**vw — Viewport Width**
 
 ```css
 .hero {
@@ -684,7 +674,7 @@ Elements resize automatically when the screen width changes.
 - Full-width layouts
 - Fluid typography (with clamp)
 
-#### 5️⃣ vh — Viewport Height
+**vh — Viewport Height**
 
 ```css
 .section {
@@ -706,7 +696,7 @@ Commonly used for full-screen sections.
 min-height: 100svh;
 ```
 
-#### Practical Rule of Thumb (Very Important)
+💡 Practical Rule of Thumb (Very Important)
 
 | Use Case             | Best Unit  |
 | -------------------- | ---------- |
@@ -716,19 +706,19 @@ min-height: 100svh;
 | Full screen sections | `vh / svh` |
 | Responsive widths    | `% / vw`   |
 
-#### ❓ Why does `em` behave unexpectedly?
+1️⃣ ❓ does `em` behave unexpectedly?
 
 Because it compounds with nesting.
 
-#### ❓ Why is `rem` preferred?
+2️⃣ ❓ is `rem` preferred?
 
 Because it scales from a **single reference point**.
 
 ---
 
-### ❓ 18. Why `100vh` is tricky?
+### ❓ Why `100vh` is tricky?
 
-📝 **Answer:**
+### 📝 Answer
 
 Mobile browsers resize the viewport dynamically.
 This causes layout jumps when using fixed viewport heights.
@@ -741,9 +731,9 @@ min-height: 100svh;
 
 ---
 
-### ❓ 19. What problem does Flexbox solve, and how does it manage alignment and space distribution?
+### ❓ What problem does Flexbox solve, and how does it manage alignment and space distribution?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```
 Main Axis  → →
@@ -871,11 +861,11 @@ This explains many “why is width ignored?” issues.
 
 #### Common Flexbox Confusions (Clarified)
 
-#### ❓ Why width doesn’t work?
+#### ❓ width doesn’t work?
 
 Because `flex-basis` is taking priority.
 
-#### ❓ Why items overflow?
+#### ❓ items overflow?
 
 Because default `min-width: auto` prevents shrinking.
 
@@ -887,15 +877,15 @@ Fix:
 }
 ```
 
-#### ❓ Why vertical centering fails?
+#### ❓ vertical centering fails?
 
 Because people confuse main vs cross axis.
 
 ---
 
-### ❓ 20. How does CSS Grid work, and how is it different from other layout systems?
+### ❓ How does CSS Grid work, and how is it different from other layout systems?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```
 Rows + Columns
@@ -915,9 +905,9 @@ You define the grid; the browser places items inside it.
 
 ---
 
-### ❓ 21. Important grid properties
+### ❓ Important grid properties
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 grid-template-columns
@@ -929,9 +919,9 @@ minmax()
 
 ---
 
-### ❓ 22. How do CSS inline and block logical properties work, and why are they preferred over physical properties like left, right, top, and bottom in direction-aware layouts?
+### ❓ How do CSS inline and block logical properties work, and why are they preferred over physical properties like left, right, top, and bottom in direction-aware layouts?
 
-📝 **Answer:**
+### 📝 Answer
 
 **CSS inline and block logical properties define layout based on content flow, not physical screen directions.**
 They adapt automatically to writing direction (LTR/RTL) and writing mode (horizontal/vertical), making layouts flexible and internationalization-friendly.
@@ -1044,9 +1034,9 @@ Avoid physical properties unless:
 
 ---
 
-### ❓ 23. Why styles sometimes don’t apply?
+### ❓ Why styles sometimes don’t apply?
 
-📝 **Answer:**
+### 📝 Answer
 
 Common causes:
 
@@ -1060,9 +1050,9 @@ Most issues are not missing CSS — they are **conflicting CSS**.
 
 ---
 
-### ❓ 24. Why is `z-index` not working here?
+### ❓ Why is `z-index` not working here?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```html
 <div class="parent">
@@ -1101,9 +1091,9 @@ Since neither element has `position` set, the browser ignores `z-index`.
 
 ---
 
-### ❓ 25. Why does `height: 100%` not work?
+### ❓ Why does `height: 100%` not work?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .child {
@@ -1124,9 +1114,9 @@ If the parent’s height is auto, the browser has nothing to calculate from.
 
 ---
 
-### ❓ 26. Why doesn’t `text-overflow: ellipsis` work?
+### ❓ Why doesn’t `text-overflow: ellipsis` work?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .text {
@@ -1153,9 +1143,9 @@ Ellipsis works only when **all three conditions** are met:
 
 ---
 
-### ❓ 27. Why does `position: sticky` fail?
+### ❓ Why does `position: sticky` fail?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .container {
@@ -1175,9 +1165,9 @@ Remove overflow or move sticky element outside.
 
 ---
 
-### ❓ 28. Why does margin collapse happen here?
+### ❓ Why does margin collapse happen here?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```html
 <div class="box1"></div>
@@ -1200,9 +1190,9 @@ The browser uses the **largest margin**, not the sum.
 
 ---
 
-### ❓ 29. Why does inline element ignore width and height?
+### ❓ Why does inline element ignore width and height?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 span {
@@ -1224,9 +1214,9 @@ span {
 
 ---
 
-### ❓ 30. Why does `100vh` break on mobile?
+### ❓ Why does `100vh` break on mobile?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .section {
@@ -1247,9 +1237,9 @@ This causes layout jumps.
 
 ---
 
-### ❓ 31. Why does `flex: 1` ignore width?
+### ❓ Why does `flex: 1` ignore width?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .item {
@@ -1271,9 +1261,9 @@ Flexbox distributes available space equally.
 
 ---
 
-### ❓ 32. Why is `!important` not working here?
+### ❓ Why is `!important` not working here?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 p {
@@ -1293,9 +1283,9 @@ Avoid inline styles or remove conflict.
 
 ---
 
-### ❓ 33. Why does this selector not apply?
+### ❓ Why does this selector not apply?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .card > .title {
@@ -1324,9 +1314,9 @@ Here `.title` is nested deeper.
 
 ---
 
-### ❓ 34. Why does `overflow: hidden` break dropdowns?
+### ❓ Why does `overflow: hidden` break dropdowns?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .container {
@@ -1342,9 +1332,9 @@ Move dropdown outside or change layout strategy.
 
 ---
 
-### ❓ 35. Why does absolute positioning break layout height?
+### ❓ Why does absolute positioning break layout height?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .child {
@@ -1360,9 +1350,9 @@ Use relative positioning or include a wrapper.
 
 ---
 
-### ❓ 36. Why does this animation feel janky?
+### ❓ Why does this animation feel janky?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 .box {
@@ -1383,9 +1373,9 @@ This is expensive and causes frame drops.
 
 ---
 
-### ❓ 37. Why does Grid overflow unexpectedly?
+### ❓ Why does Grid overflow unexpectedly?
 
-📝 **Answer:**
+### 📝 Answer
 
 ```css
 grid-template-columns: 1fr 1fr;
@@ -1404,9 +1394,9 @@ grid-item {
 
 ---
 
-### ❓ 38. Why does `:hover` not work on mobile?
+### ❓ Why does `:hover` not work on mobile?
 
-📝 **Answer:**
+### 📝 Answer
 
 Touch devices do not have hover state.
 Browsers simulate hover inconsistently.
