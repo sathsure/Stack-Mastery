@@ -216,18 +216,18 @@ Changes the DOM structure by adding or removing elements.
 | Can use `ng-content` | Cannot use `ng-content`     |
 | Always has selector  | Applied as attribute or `*` |
 
-**Q: Is every component a directive?**
-✅ Yes — every component is a directive with a template.
+1️⃣ Is every component a directive?
+Yes — every component is a directive with a template.
 
-**Q: Can directives have lifecycle hooks?**
-✅ Yes (`ngOnInit`, `ngOnChanges`, etc.)
+2️⃣ Can directives have lifecycle hooks?
+Yes (`ngOnInit`, `ngOnChanges`, etc.)
 
-**Q: Which directive manipulates DOM structure?**
-✅ Structural directives like `*ngIf`, `*ngFor`
+3️⃣ Which directive manipulates DOM structure?
+Structural directives like `*ngIf`, `*ngFor`
 
 ---
 
-## 3️⃣ Lifecycle Hooks
+## Lifecycle Hooks
 
 ---
 
@@ -374,7 +374,7 @@ export class ChildComponent
 
 ---
 
-## 4️⃣ Directives & Structural Directives
+## Directives & Structural Directives
 
 ---
 
@@ -490,7 +490,7 @@ Angular may re-render many list items unnecessarily, causing poor performance.
 
 ---
 
-## 5️⃣ Modules & Standalone APIs
+## Modules & Standalone APIs
 
 ---
 
@@ -503,7 +503,7 @@ Standalone components can be used without declaring them in an NgModule. They re
 
 ---
 
-## 6️⃣ View & DOM Interaction
+## View & DOM Interaction
 
 ---
 
@@ -555,7 +555,7 @@ Directly accessing the DOM through `ElementRef` can expose the application to se
 
 ---
 
-## 7️⃣ Pipes
+## Pipes
 
 ---
 
@@ -701,7 +701,7 @@ Angular will never mark a pipe impure by default.
 
 ---
 
-## 8️⃣ Dependency Injection (DI)
+## Dependency Injection (DI)
 
 ---
 
@@ -822,11 +822,11 @@ export class LazyModule {}
 
 ---
 
-## 9️⃣ Routing
+## Routing
 
 ---
 
-### ❓ Core concepts of Angular routing?
+### ❓ What are the core concepts of Angular routing?
 
 ### 📝 Answer
 
@@ -834,7 +834,7 @@ Routes config, router outlet, routerLink/routerLinkActive, route guards, lazy lo
 
 ---
 
-### ❓ What are route guards and types available?
+### ❓ What are route guards, and what types does Angular provide?
 
 ### 📝 Answer
 
@@ -842,7 +842,7 @@ Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `Ca
 
 ---
 
-### ❓ Difference between `CanLoad`/`CanMatch` and `CanActivate`?
+### ❓ What is the difference between `CanActivate`, `CanLoad`, and `CanMatch`?
 
 ### 📝 Answer
 
@@ -850,7 +850,7 @@ Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `Ca
 
 ---
 
-### ❓ Explain lazy loading modules / routes.
+### ❓ How do you configure lazy-loaded modules or routes in Angular?
 
 ### 📝 Answer
 
@@ -858,7 +858,7 @@ Lazy-loaded routes use dynamic imports in route config (e.g. `loadChildren:` or 
 
 ---
 
-### ❓ Trick: If you have a service provided in a lazy-loaded module, is it shared with the rest of the app?
+### ❓ What happens to service instances provided in a lazy-loaded route?
 
 ### 📝 Answer
 
@@ -866,7 +866,7 @@ No. That service instance is scoped to that lazy module’s injector (unless exp
 
 ---
 
-### ❓ How do you access route params and query params?
+### ❓ How do you access route parameters and query parameters in Angular?
 
 ### 📝 Answer
 
@@ -874,9 +874,27 @@ Using `ActivatedRoute`: `route.paramMap`, `route.snapshot.paramMap`, `route.quer
 
 ---
 
+### ❓ Why can returning a non-completing observable from a resolver or canActivate guard break navigation?
+
+### 📝 Answer
+
+Router waits for completion from guards/resolvers. If the observable never completes (e.g., a subject or `interval` without `take(1)`), navigation hangs forever. Always ensure guards/resolvers complete (e.g. `take(1)`, `first()`).
+
 ---
 
-## 8️⃣ Change Detection
+### ❓ Why is `catchError(() => of(false))` in a `canActivate` guard dangerous?
+
+### 📝 Answer
+
+It treats _all_ errors as “deny access”:
+
+- Hides backend / network failures
+- Makes debugging harder
+- Better: log properly, show an error page, and return meaningful navigation decisions.
+
+---
+
+## Change Detection & Zones
 
 ---
 
@@ -913,6 +931,17 @@ This process is synchronous and deterministic, which makes it predictable but po
 
 ---
 
+### ❓ How does Angular traverse the component tree, and why does this impact performance?
+
+### 📝 Answer
+
+Angular organizes the application into a **component tree**.
+Change detection always starts at the root and proceeds top-down through parent and child components.
+
+If many components are checked unnecessarily, performance degrades, which is why limiting change detection is critical in large applications.
+
+---
+
 ### ❓ What change detection strategies does Angular support, and how do they differ?
 
 ### 📝 Answer
@@ -926,7 +955,7 @@ OnPush encourages immutable data patterns and significantly improves performance
 
 ---
 
-### ❓ Does `OnPush` mean change detection never runs for a component?
+### ❓ Does OnPush mean change detection never runs?
 
 ### 📝 Answer
 
@@ -942,102 +971,6 @@ No. OnPush relies on reference changes, so mutations do not trigger change detec
 
 ---
 
-## 🔟 RxJS & Observables
-
----
-
-### ❓ Is the `async` pipe always a complete replacement for manual unsubscription?
-
-### 📝 Answer
-
-Only in templates. Subscriptions created in code (e.g. in `ngOnInit`) must still be manually managed/unsubscribed.
-
----
-
-### ❓ Why is subscribing to `ActivatedRoute.params` inside `ngOnInit` considered a code smell?
-
-### 📝 Answer
-
-If you manually subscribe:
-
-- You need manual unsubscribe
-- Reused components across route changes can accumulate subscriptions
-  Better: `this.route.params.pipe(takeUntil(destroy$))` or `this.route.params` via `async` pipe or `router.events` composition.
-
----
-
-### ❓ Why is exposing a `BehaviorSubject` directly from a service considered a design smell?
-
-### 📝 Answer
-
-Consumers can emit directly, breaking encapsulation and invariants. Prefer exposing `asObservable()` or `readonly` signals/selectors, and keep writable subjects private.
-
----
-
-## Performance & Architecture
-
----
-
-### ❓ What techniques do you use to optimize Angular application performance?
-
-### 📝 Answer
-
-`OnPush` change detection, trackBy in `*ngFor`, lazy loading routes/components, preloading strategies, pure pipes, avoiding heavy work in templates, memoization, CDRef control.
-
----
-
-### ❓ How would you analyze and debug performance issues in a large Angular application?
-
-### 📝 Answer
-
-Use Angular DevTools, browser performance profiler, change detection profiling, logging of lifecycle hooks, and analyzing network/bundle size.
-
----
-
-### ❓ Why can using `shareReplay(1)` on an `HttpClient` request cause memory leaks across route changes?
-
-### 📝 Answer
-
-`shareReplay(1)` by default never completes the subject it holds and doesn’t reset on unsubscribe. If the source never completes or is hot, the replayed value sticks in memory. Use `shareReplay({ bufferSize: 1, refCount: true })` and ensure the source completes, or use `takeUntil(destroy$)` before `shareReplay`.
-
----
-
-### ❓ Why is swallowing errors in an `HttpClient` observable with `catchError(() => of(null))` dangerous in Angular apps?
-
-### 📝 Answer
-
-You convert a failure into a “valid” value (null), so:
-
-- Interceptors / global error handlers might not run
-- UI might treat `null` as legit data
-  Better: rethrow or wrap errors in a domain model: `catchError(err => of({ error: true, err }))`.
-
----
-
-### ❓ Why is `takeUntilDestroyed()` (or `takeUntil(this.destroy$)`) not sufficient by itself to avoid all leaks?
-
-### 📝 Answer
-
-It only handles subscription lifecycle, not:
-
-- Globally shared hot observables that never complete
-- Cached `shareReplay` values
-- Manually created subjects kept in singletons
-  You must still complete subjects and manage singleton caches.
-
----
-
-### ❓ How does Angular scan the component tree and why does this affect performance?
-
-### 📝 Answer
-
-Angular organizes the application into a **component tree**.
-Change detection always starts at the root and proceeds top-down through parent and child components.
-
-If many components are checked unnecessarily, performance degrades, which is why limiting change detection is critical in large applications.
-
----
-
 ### ❓ If no async event happens, will Angular still run change detection?
 
 ### 📝 Answer
@@ -1046,7 +979,7 @@ No. Change detection is triggered only by events detected by Angular, such as as
 
 ---
 
-### ❓ Is change detection asynchronous because HTTP calls are async?
+### ❓ Is Angular’s change detection asynchronous just because HTTP calls are async?
 
 ### 📝 Answer
 
@@ -1054,7 +987,7 @@ No. Change detection itself is synchronous, even though it is triggered by async
 
 ---
 
-### ❓ Why was change detection considered problematic before signals were introduced?
+### ❓ Why was Angular’s change detection considered problematic before signals were introduced?
 
 ### 📝 Answer
 
@@ -1081,235 +1014,11 @@ Signals also work in **zone-less Angular**, making change detection more predict
 
 ---
 
-### ❓ Differences between template-driven and reactive forms?
-
-### 📝 Answer
-
-Template-driven: form logic in template, simpler, uses `ngModel`. Reactive: form model in TypeScript, more explicit, scalable, and testable using `FormGroup`, `FormControl`, `FormArray`.
-
----
-
-### ❓ What is a `FormGroup` and `FormControl`?
-
-### 📝 Answer
-
-`FormControl` represents a single value and validation state. `FormGroup` is a collection of controls, acting like an object model.
-
----
-
-### ❓ How do you create a custom form control compatible with Angular forms?
-
-### 📝 Answer
-
-Implement `ControlValueAccessor` and optionally `Validator` to integrate with the forms API and be used with `formControlName`/`ngModel`.
-
----
-
-### ❓ Trick: Why is using `[(ngModel)]` with reactive forms generally discouraged?
-
-### 📝 Answer
-
-It mixes paradigms and can cause confusion and unexpected behavior. You should stick to one approach, usually reactive forms for complex forms.
-
----
-
-### ❓ What is `HttpClient` and advantages over old `Http` module?
-
-### 📝 Answer
-
-`HttpClient` returns typed, observable responses, handles JSON automatically, supports interceptors, easier configuration.
-
----
-
-### ❓ What are HTTP interceptors used for?
-
-### 📝 Answer
-
-To inspect/modify requests and responses globally (e.g. auth headers, logging, error handling, retries).
-
----
-
-### ❓ Trick: In what order do multiple interceptors execute?
-
-### 📝 Answer
-
-They execute in the order they are provided for outgoing requests, and in reverse order for incoming responses.
-
----
-
-### ❓ How do you handle global HTTP errors?
-
-### 📝 Answer
-
-Use an interceptor to catch errors in `catchError`, and possibly a global error handler (`ErrorHandler`) for non-HTTP errors.
-
----
-
-### ❓ How do you usually handle application-wide state in Angular?
-
-### 📝 Answer
-
-Options: services with RxJS (BehaviorSubject, signals), NgRx, Akita, NGXS, or custom state management patterns.
-
----
-
-### ❓ When would you prefer NgRx over simple services with subjects/signals?
-
-### 📝 Answer
-
-For large, complex apps that need predictable, testable state changes, time-travel debugging, and strict one-way data flow.
-
----
-
-### ❓ How do you avoid multiple HTTP calls when multiple subscribers listen to the same Observable?
-
-### 📝 Answer
-
-Use sharing operators like `shareReplay` or convert to a signal/store, or cache results in services.
-
----
-
-### ❓ What is AOT compilation and why is it useful?
-
-### 📝 Answer
-
-Ahead-of-time compiles Angular templates during build, reducing bundle size, catching template errors early, and improving startup time.
-
----
-
-### ❓ What is Angular Universal?
-
-### 📝 Answer
-
-A solution for server-side rendering (SSR) Angular apps to improve first paint and SEO for crawlers.
-
----
-
-### ❓ What is hydration in Angular?
-
-### 📝 Answer
-
-The process of reusing server-rendered DOM on the client and “wiring it up” to Angular, reducing re-rendering on startup.
-
----
-
-### ❓ Trick: Why might you still need `meta` tags service even with SSR?
-
-### 📝 Answer
-
-Dynamic pages or client-side navigation need meta tags updated after initial load for social previews and some crawlers.
-
----
-
-### ❓ Trick: Is binding to `[innerHTML]` always safe?
-
-### 📝 Answer
-
-No. It’s a common XSS vector if you bind untrusted input. Only use with sanitized/trusted content.
-
-Here is a **clean, well-organized, interview-ready Markdown**, rewritten exactly as you asked — with the question starting from **“Consider the below scenario, what will be the output”**, and a crisp, logical answer.
-
----
-
-### ❓ Trick: Consider the below scenario. What will be the output?
-
-**Global styles (`styles.css`)**
-
-```css
-div[_ngcontent-c1] {
-  color: red;
-}
-```
-
-**Child component (compiled HTML)**
-
-```html
-<div _ngcontent-c1>Hello from Child</div>
-```
-
-**Parent component (compiled HTML)**
-
-```html
-<div _ngcontent-c7>Hello from Parent</div>
-<app-child _ngcontent-c7></app-child>
-```
-
-**Parent component styles**
-
-```css
-div[_ngcontent-c1] {
-  color: blue;
-}
-```
-
-### 📝 Answer
-
-**Child Output: Color -> Red**
-
-1. The child element is rendered as:
-   ```html
-   <div _ngcontent-c1>Hello from Child</div>
-   ```
-2. The global stylesheet contains:
-   ```css
-   div[_ngcontent-c1] {
-     color: red;
-   }
-   ```
-3. Global styles are **not scoped** by Angular.
-4. The selector **exactly matches** the child element.  
-   ➡️ Therefore, the browser applies `color: red` to the child text.
-
-5. The parent component uses **default ViewEncapsulation (Emulated)**.
-6. Angular rewrites the parent CSS internally as:
-   ```css
-   div[_ngcontent-c1][_ngcontent-c7] {
-     color: blue;
-   }
-   ```
-7. This selector requires the element to have **both** attributes:
-   - `_ngcontent-c1` (child scope)
-   - `_ngcontent-c7` (parent scope)
-8. The child element only has `_ngcontent-c1`.
-
-➡️ The selector does **not match**, so the parent style is ignored.
-
-✅ **Final Conclusion**
-
-- **Child text is red** → applied by global styles
-- **Parent component styles are not applied** → blocked by Angular’s view encapsulation
-
----
-
 ### ❓ What is `ngZone: 'noop'` mode and when might you use it?
 
 ### 📝 Answer
 
 It disables Zone.js-based auto change detection. You then trigger detection manually; useful for high-performance use cases or integrating with other reactive systems.
-
----
-
-### ❓ How do you structure a large Angular project?
-
-### 📝 Answer
-
-By domain/feature modules or feature folders, shared/core modules, clear layering (components → services → data layer), consistent naming, and enforcing boundaries.
-
----
-
-### ❓ How do smart vs dumb (container vs presentational) components help?
-
-### 📝 Answer
-
-Smart components handle data fetching and state; dumb components focus on UI and inputs/outputs. This improves reusability and testability.
-
----
-
-### ❓ What are some anti-patterns you watch out for in Angular code?
-
-### 📝 Answer
-
-Business logic in components instead of services, massive god components, heavy logic in templates, subscriptions without unsubscribe, using `any` everywhere, too many global singletons.
 
 ---
 
@@ -1321,7 +1030,7 @@ Because the callback can run outside Zone.js, Angular doesn’t know a value cha
 
 ---
 
-### ❓ Why is `async` pipe often preferred over manual `subscribe` in components, especially for UI streams?
+### ❓ Why is async pipe often preferred over manual subscribe in components?
 
 ### 📝 Answer
 
@@ -1342,71 +1051,6 @@ OnPush checks on input changes, events, and async pipe emissions. If you mutate 
 
 ---
 
-### ❓ Why is using `valueChanges.pipe(debounceTime(...)).subscribe(...)` for autocomplete sometimes problematic?
-
-### 📝 Answer
-
-If you forget to unsubscribe, you leak subscriptions across component recreations. Also, ignoring `distinctUntilChanged()` can cause redundant server calls; ignoring `switchMap` can cause out-of-order responses and stale UI.
-
----
-
-### ❓ In reactive forms, how can combining `valueChanges` of multiple controls lead to subtle bugs?
-
-### 📝 Answer
-
-Using `combineLatest` directly can:
-
-- Emit immediately with current values, not just changes
-- Cause validation loops if you patch values in the subscription
-  Fix: use `distinctUntilChanged()`, `auditTime()`, and ensure `patchValue({},{ emitEvent:false })` in loops.
-
----
-
-### ❓ What’s the difference between using `switchMap` and `concatMap` on an `HttpClient` stream triggered by user input?
-
-### 📝 Answer
-
-`switchMap`: cancels previous requests, good for typeahead search.
-`concatMap`: ueues requests, ensures order, but user may wait for stale calls to finish. Choosing the wrong one can cause stale UI or unnecessary load.
-
----
-
-### ❓ How can combining `ActivatedRoute` streams (`params`, `queryParams`, `data`) incorrectly lead to missed emissions?
-
-### 📝 Answer
-
-Using `withLatestFrom` when you actually need continuous combination can mean some streams never emit until others emit first. For route state, `combineLatest` (with proper start values) usually reflects URL changes better.
-
----
-
-### ❓ In a global store using RxJS, why is using `Subject` for state updates instead of `BehaviorSubject` or `ReplaySubject(1)` problematic?
-
-### 📝 Answer
-
-Late subscribers get no current value, only future ones, causing components to render with missing state. State should be replayable so components can bootstrap correctly.
-
----
-
-### ❓ In a `@Directive` using host listeners and RxJS streams, why can leaking subscriptions be especially nasty?
-
-### 📝 Answer
-
-Directives attach to many elements, so each leaked subscription multiplies. Over time this can:
-
-- Degrade performance
-- Cause ghost event handling for removed elements
-  You must always tie directive subscriptions to directive lifecycle (`takeUntilDestroyed`, `ngOnDestroy`).
-
----
-
-### ❓ Why do some RxJS operators behave differently in Angular tests vs. production, especially around timers?
-
-### 📝 Answer
-
-Tests may use fakeAsync / Jasmine clock or `TestScheduler`, while production uses real timers. Operators like `debounceTime`, `delay`, `interval` rely on schedulers. Inconsistent use of `TestScheduler` or forgetting to flush fake timers leads to flaky tests.
-
----
-
 ### ❓ How can using `observeOn(asyncScheduler)` inside Angular services unintentionally affect change detection?
 
 ### 📝 Answer
@@ -1415,108 +1059,41 @@ It shifts emissions to microtask / macrotask queues that might not be inside Ang
 
 ---
 
-### ❓ What’s tricky about using a custom RxJS operator that swallows errors inside Angular services?
-
-### 📝 Answer
-
-If the operator `catchError`-s and returns a replacement observable:
-
-- Callers may be unaware an error occurred
-- Global interceptors / logging might not see it
-  Better: log and rethrow or map to a typed “error state” instead of silently “healing” streams.
+## Forms
 
 ---
 
-### ❓ Why is writing a custom operator that internally subscribes (instead of returning a new observable) an anti-pattern in Angular?
+### ❓ Differences between template-driven and reactive forms?
 
 ### 📝 Answer
 
-Hidden `subscribe()`:
-
-- Breaks pipeability
-- Hides lifecycle from component/service
-- Makes teardown impossible to control
-  Custom operators should be pure functions returning new observables.
+Template-driven: form logic in template, simpler, uses `ngModel`. Reactive: form model in TypeScript, more explicit, scalable, and testable using `FormGroup`, `FormControl`, `FormArray`.
 
 ---
 
-### ❓ Why can using a single shared hot observable (e.g. via `share()` or a `Subject`) for both UI and side-effects cause race conditions?
+### ❓ What are `FormGroup` and `FormControl`?
 
 ### 📝 Answer
 
-Multiple subscribers may:
-
-- Start listening at different times
-- Depend on ordering of emissions
-  Since hot observables are timing-sensitive, side-effects can run before UI is ready or vice versa. Use explicit pipelines for side-effects (e.g. `tap` + `subscribe` in a dedicated service) and keep UI streams deterministic.
+`FormControl` represents a single value and validation state. `FormGroup` is a collection of controls, acting like an object model.
 
 ---
 
-### ❓ Why can returning a non-completing observable from a resolver or canActivate guard break navigation?
+### ❓ Why is using `[(ngModel)]` with reactive forms generally discouraged?
 
 ### 📝 Answer
 
-Router waits for completion from guards/resolvers. If the observable never completes (e.g., a subject or `interval` without `take(1)`), navigation hangs forever. Always ensure guards/resolvers complete (e.g. `take(1)`, `first()`).
+It mixes paradigms and can cause confusion and unexpected behavior. You should stick to one approach, usually reactive forms for complex forms.
 
 ---
 
-### ❓ Why is `catchError(() => of(false))` in a `canActivate` guard dangerous?
+### ❓ How do you create a custom form control compatible with Angular forms?
 
 ### 📝 Answer
 
-It treats _all_ errors as “deny access”:
-
-- Hides backend / network failures
-- Makes debugging harder
-- Better: log properly, show an error page, and return meaningful navigation decisions.
+Implement `ControlValueAccessor` and optionally `Validator` to integrate with the forms API and be used with `formControlName`/`ngModel`.
 
 ---
-
-### ❓ In an Angular application, we want to remove trailing and leading spaces from all user input fields. We want to avoid calling trim() in every component, and we don’t want to use directives or pipes that must be applied to each field individually. How would you design a centralized solution?
-
-### 📝 Answer
-
-There are two approaches:
-
-**Approach 1:**
-
-If the application uses NgRx, sanitize the data inside the effect, before making the HTTP call.
-
-```ts
-saveUser$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(saveUser),
-    map((action) => ({
-      ...action,
-      user: trimStringsDeep(action.user),
-    })),
-    switchMap((action) => this.userService.save(action.user))
-  )
-);
-```
-
-**Approach 2:**
-
-If trimming is a generic requirement for all outgoing data, enforce it globally using an HTTP interceptor.
-
-```ts
-@Injectable()
-export class TrimInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    if (req.body) {
-      const sanitizedBody = trimStringsDeep(req.body);
-      req = req.clone({ body: sanitizedBody });
-    }
-    return next.handle(req);
-  }
-}
-```
-
-```ts
-providers: [
-  { provide: HTTP_INTERCEPTORS, useClass: TrimInterceptor, multi: true },
-];
-```
 
 ### ❓ what is the main purpose of using ControlValueAccessor in angular?
 
@@ -1524,16 +1101,12 @@ providers: [
 
 In Angular, the **main purpose of using `ControlValueAccessor`** is to **connect a custom component to Angular Forms** so that it behaves like a native form control (`input`, `select`, etc.).
 
-#### In simple terms
-
 `ControlValueAccessor (CVA)` acts as a **bridge** between:
 
 - **Angular Forms API** (`FormControl`, `ngModel`, validation, touched/dirty states)
 - **Your custom UI component**
 
 Without CVA, Angular **cannot read from or write to** your custom form component.
-
-#### Why it exists
 
 Angular forms expect every form control to know how to:
 
@@ -1544,8 +1117,6 @@ Angular forms expect every form control to know how to:
 
 Native inputs already do this.
 **Custom components do not — unless you implement `ControlValueAccessor`.**
-
-#### What ControlValueAccessor enables
 
 When you implement CVA, your component can:
 
@@ -1559,16 +1130,12 @@ When you implement CVA, your component can:
   - Validators
   - `touched`, `dirty`, `disabled` states
 
-#### Core methods and what they do
-
 | Method                         | Purpose                                   |
 | ------------------------------ | ----------------------------------------- |
 | `writeValue(value)`            | Angular → Component (set value from form) |
 | `registerOnChange(fn)`         | Component → Angular (notify value change) |
 | `registerOnTouched(fn)`        | Component → Angular (mark as touched)     |
 | `setDisabledState(isDisabled)` | Enable/disable control                    |
-
-#### When you should use ControlValueAccessor
 
 Use it **when building custom form components**, such as:
 
@@ -1581,7 +1148,7 @@ Use it **when building custom form components**, such as:
 
 If the component **accepts user input and should participate in a form**, CVA is the correct solution.
 
-#### Example scenario
+💡 Example
 
 You create a `<custom-toggle>` component.
 
@@ -1605,7 +1172,7 @@ With CVA ✅
 
 1. Custom Input Component (with ControlValueAccessor)
 
-#### `custom-input.component.ts`
+**`custom-input.component.ts`**
 
 ```ts
 import { Component, forwardRef } from "@angular/core";
@@ -1810,5 +1377,411 @@ This can:
 So `multi: true` means:
 
 > “Add my accessor to the list — don’t replace others.”
+
+---
+
+### ❓ How would you globally trim leading and trailing spaces from user input fields in Angular?
+
+### 📝 Answer
+
+There are two approaches:
+
+**Approach 1:**
+
+If the application uses NgRx, sanitize the data inside the effect, before making the HTTP call.
+
+```ts
+saveUser$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(saveUser),
+    map((action) => ({
+      ...action,
+      user: trimStringsDeep(action.user),
+    })),
+    switchMap((action) => this.userService.save(action.user))
+  )
+);
+```
+
+**Approach 2:**
+
+If trimming is a generic requirement for all outgoing data, enforce it globally using an HTTP interceptor.
+
+```ts
+@Injectable()
+export class TrimInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    if (req.body) {
+      const sanitizedBody = trimStringsDeep(req.body);
+      req = req.clone({ body: sanitizedBody });
+    }
+    return next.handle(req);
+  }
+}
+```
+
+```ts
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: TrimInterceptor, multi: true },
+];
+```
+
+---
+
+### ❓ Why is using `valueChanges.pipe(debounceTime(...)).subscribe(...)` for autocomplete sometimes problematic?
+
+### 📝 Answer
+
+If you forget to unsubscribe, you leak subscriptions across component recreations. Also, ignoring `distinctUntilChanged()` can cause redundant server calls; ignoring `switchMap` can cause out-of-order responses and stale UI.
+
+---
+
+### ❓ In reactive forms, how can combining `valueChanges` of multiple controls lead to subtle bugs?
+
+### 📝 Answer
+
+Using `combineLatest` directly can:
+
+- Emit immediately with current values, not just changes
+- Cause validation loops if you patch values in the subscription
+  Fix: use `distinctUntilChanged()`, `auditTime()`, and ensure `patchValue({},{ emitEvent:false })` in loops.
+
+---
+
+## HTTP & RxJS
+
+---
+
+### ❓ What is `HttpClient`, and how is it better than the old `Http` module?
+
+### 📝 Answer
+
+`HttpClient` returns typed, observable responses, handles JSON automatically, supports interceptors, easier configuration.
+
+---
+
+### ❓ What are HTTP interceptors used for?
+
+### 📝 Answer
+
+To inspect/modify requests and responses globally (e.g. auth headers, logging, error handling, retries).
+
+---
+
+### ❓ In what order are multiple HTTP interceptors executed?
+
+### 📝 Answer
+
+They execute in the order they are provided for outgoing requests, and in reverse order for incoming responses.
+
+---
+
+### ❓ Is the `async` pipe always a complete replacement for manual unsubscription?
+
+### 📝 Answer
+
+Only in templates. Subscriptions created in code (e.g. in `ngOnInit`) must still be manually managed/unsubscribed.
+
+---
+
+### ❓ Why is subscribing to `ActivatedRoute.params` inside `ngOnInit` considered a code smell?
+
+### 📝 Answer
+
+If you manually subscribe:
+
+- You need manual unsubscribe
+- Reused components across route changes can accumulate subscriptions
+  Better: `this.route.params.pipe(takeUntil(destroy$))` or `this.route.params` via `async` pipe or `router.events` composition.
+
+---
+
+### ❓ Why is exposing a `BehaviorSubject` directly from a service considered a design smell?
+
+### 📝 Answer
+
+Consumers can emit directly, breaking encapsulation and invariants. Prefer exposing `asObservable()` or `readonly` signals/selectors, and keep writable subjects private.
+
+---
+
+### ❓ Why can using `shareReplay(1)` on an `HttpClient` request cause memory leaks across route changes?
+
+### 📝 Answer
+
+`shareReplay(1)` by default never completes the subject it holds and doesn’t reset on unsubscribe. If the source never completes or is hot, the replayed value sticks in memory. Use `shareReplay({ bufferSize: 1, refCount: true })` and ensure the source completes, or use `takeUntil(destroy$)` before `shareReplay`.
+
+---
+
+### ❓ Why is swallowing errors in an `HttpClient` observable with `catchError(() => of(null))` dangerous in Angular apps?
+
+### 📝 Answer
+
+You convert a failure into a “valid” value (null), so:
+
+- Interceptors / global error handlers might not run
+- UI might treat `null` as legit data
+  Better: rethrow or wrap errors in a domain model: `catchError(err => of({ error: true, err }))`.
+
+---
+
+### ❓ Why is `takeUntilDestroyed()` (or `takeUntil(this.destroy$)`) not sufficient by itself to avoid all leaks?
+
+### 📝 Answer
+
+It only handles subscription lifecycle, not:
+
+- Globally shared hot observables that never complete
+- Cached `shareReplay` values
+- Manually created subjects kept in singletons
+  You must still complete subjects and manage singleton caches.
+
+---
+
+### ❓ How do you handle global HTTP errors?
+
+### 📝 Answer
+
+Use an interceptor to catch errors in `catchError`, and possibly a global error handler (`ErrorHandler`) for non-HTTP errors.
+
+---
+
+### ❓ How do you avoid multiple HTTP calls when multiple subscribers listen to the same Observable?
+
+### 📝 Answer
+
+Use sharing operators like `shareReplay` or convert to a signal/store, or cache results in services.
+
+---
+
+### ❓ What’s the difference between using `switchMap` and `concatMap` on an `HttpClient` stream triggered by user input?
+
+### 📝 Answer
+
+`switchMap`: cancels previous requests, good for typeahead search.
+`concatMap`: ueues requests, ensures order, but user may wait for stale calls to finish. Choosing the wrong one can cause stale UI or unnecessary load.
+
+---
+
+### ❓ How can combining `ActivatedRoute` streams (`params`, `queryParams`, `data`) incorrectly lead to missed emissions?
+
+### 📝 Answer
+
+Using `withLatestFrom` when you actually need continuous combination can mean some streams never emit until others emit first. For route state, `combineLatest` (with proper start values) usually reflects URL changes better.
+
+---
+
+### ❓ In a global store using RxJS, why is using `Subject` for state updates instead of `BehaviorSubject` or `ReplaySubject(1)` problematic?
+
+### 📝 Answer
+
+Late subscribers get no current value, only future ones, causing components to render with missing state. State should be replayable so components can bootstrap correctly.
+
+---
+
+### ❓ In a `@Directive` using host listeners and RxJS streams, why can leaking subscriptions be especially nasty?
+
+### 📝 Answer
+
+Directives attach to many elements, so each leaked subscription multiplies. Over time this can:
+
+- Degrade performance
+- Cause ghost event handling for removed elements
+  You must always tie directive subscriptions to directive lifecycle (`takeUntilDestroyed`, `ngOnDestroy`).
+
+---
+
+### ❓ Why do some RxJS operators behave differently in Angular tests vs. production, especially around timers?
+
+### 📝 Answer
+
+Tests may use fakeAsync / Jasmine clock or `TestScheduler`, while production uses real timers. Operators like `debounceTime`, `delay`, `interval` rely on schedulers. Inconsistent use of `TestScheduler` or forgetting to flush fake timers leads to flaky tests.
+
+---
+
+### ❓ Why can using a single shared hot observable (e.g. via `share()` or a `Subject`) for both UI and side-effects cause race conditions?
+
+### 📝 Answer
+
+Multiple subscribers may:
+
+- Start listening at different times
+- Depend on ordering of emissions
+  Since hot observables are timing-sensitive, side-effects can run before UI is ready or vice versa. Use explicit pipelines for side-effects (e.g. `tap` + `subscribe` in a dedicated service) and keep UI streams deterministic.
+
+---
+
+## Performance & Architecture
+
+---
+
+### ❓ What techniques do you use to optimize Angular application performance?
+
+### 📝 Answer
+
+`OnPush` change detection, trackBy in `*ngFor`, lazy loading routes/components, preloading strategies, pure pipes, avoiding heavy work in templates, memoization, CDRef control.
+
+---
+
+### ❓ How would you analyze and debug performance issues in a large Angular application?
+
+### 📝 Answer
+
+Use Angular DevTools, browser performance profiler, change detection profiling, logging of lifecycle hooks, and analyzing network/bundle size.
+
+---
+
+### ❓ How do smart vs dumb (container vs presentational) components help in Angular architecture?
+
+### 📝 Answer
+
+Smart components handle data fetching and state; dumb components focus on UI and inputs/outputs. This improves reusability and testability.
+
+---
+
+### ❓ What Angular anti-patterns do you actively watch out for?
+
+### 📝 Answer
+
+Business logic in components instead of services, massive god components, heavy logic in templates, subscriptions without unsubscribe, using `any` everywhere, too many global singletons.
+
+---
+
+### ❓ How do you usually handle application-wide state in Angular?
+
+### 📝 Answer
+
+Options: services with RxJS (BehaviorSubject, signals), NgRx, Akita, NGXS, or custom state management patterns.
+
+---
+
+### ❓ When would you prefer NgRx over simple services with subjects/signals?
+
+### 📝 Answer
+
+For large, complex apps that need predictable, testable state changes, time-travel debugging, and strict one-way data flow.
+
+---
+
+### ❓ What is AOT compilation and why is it useful?
+
+### 📝 Answer
+
+Ahead-of-time compiles Angular templates during build, reducing bundle size, catching template errors early, and improving startup time.
+
+---
+
+### ❓ How do you structure a large Angular project?
+
+### 📝 Answer
+
+By domain/feature modules or feature folders, shared/core modules, clear layering (components → services → data layer), consistent naming, and enforcing boundaries.
+
+---
+
+### ❓ Is binding to `[innerHTML]` always safe?
+
+### 📝 Answer
+
+No. It’s a common XSS vector if you bind untrusted input. Only use with sanitized/trusted content.
+
+Here is a **clean, well-organized, interview-ready Markdown**, rewritten exactly as you asked — with the question starting from **“Consider the below scenario, what will be the output”**, and a crisp, logical answer.
+
+---
+
+## Angular Universal (SSR) & Rendering
+
+---
+
+### ❓ What is Angular Universal?
+
+### 📝 Answer
+
+A solution for server-side rendering (SSR) Angular apps to improve first paint and SEO for crawlers.
+
+---
+
+### ❓ What is hydration in Angular?
+
+### 📝 Answer
+
+The process of reusing server-rendered DOM on the client and “wiring it up” to Angular, reducing re-rendering on startup.
+
+---
+
+### ❓ Why might you still need `meta` tags service even with SSR?
+
+### 📝 Answer
+
+Dynamic pages or client-side navigation need meta tags updated after initial load for social previews and some crawlers.
+
+---
+
+### ❓ Consider the below scenario. What will be the output?
+
+**Global styles (`styles.css`)**
+
+```css
+div[_ngcontent-c1] {
+  color: red;
+}
+```
+
+**Child component (compiled HTML)**
+
+```html
+<div _ngcontent-c1>Hello from Child</div>
+```
+
+**Parent component (compiled HTML)**
+
+```html
+<div _ngcontent-c7>Hello from Parent</div>
+<app-child _ngcontent-c7></app-child>
+```
+
+**Parent component styles**
+
+```css
+div[_ngcontent-c1] {
+  color: blue;
+}
+```
+
+### 📝 Answer
+
+**Child Output: Color -> Red**
+
+1. The child element is rendered as:
+   ```html
+   <div _ngcontent-c1>Hello from Child</div>
+   ```
+2. The global stylesheet contains:
+   ```css
+   div[_ngcontent-c1] {
+     color: red;
+   }
+   ```
+3. Global styles are **not scoped** by Angular.
+4. The selector **exactly matches** the child element.  
+   ➡️ Therefore, the browser applies `color: red` to the child text.
+
+5. The parent component uses **default ViewEncapsulation (Emulated)**.
+6. Angular rewrites the parent CSS internally as:
+   ```css
+   div[_ngcontent-c1][_ngcontent-c7] {
+     color: blue;
+   }
+   ```
+7. This selector requires the element to have **both** attributes:
+   - `_ngcontent-c1` (child scope)
+   - `_ngcontent-c7` (parent scope)
+8. The child element only has `_ngcontent-c1`.
+
+➡️ The selector does **not match**, so the parent style is ignored.
+
+✅ **Final Conclusion**
+
+- **Child text is red** → applied by global styles
+- **Parent component styles are not applied** → blocked by Angular’s view encapsulation
 
 ---
