@@ -599,14 +599,10 @@ Use `concatMap` for ordered steps, `catchError` for per-step retry logic, maybe 
 ---
 
 ### ❓ You are given two REST APIs in an Angular application:
-
-### https://jsonplaceholder.typicode.com/users → returns 10 user records
-
-### https://jsonplaceholder.typicode.com/photos → returns multiple photo records
-
-### Both APIs contain an id field.
-
-### How would you fetch data from both APIs, match users with photos using the id, and merge only the matched photo records into each user object?
+> - https://jsonplaceholder.typicode.com/users → returns 10 user records
+> - https://jsonplaceholder.typicode.com/photos → returns multiple photo records  
+> Both APIs contain an id field.  
+> How would you fetch data from both APIs, match users with photos using the id, and merge only the matched photo records into each user object?
 
 ### 📝 Answer
 
