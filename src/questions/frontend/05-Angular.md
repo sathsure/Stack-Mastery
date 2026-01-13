@@ -27,8 +27,6 @@ Through environment files and build configurations; or via runtime configuration
 
 ## Components, Templates & Data Binding
 
----
-
 ### ❓ What types of data binding does Angular support?
 
 ### 📝 Answer
@@ -229,8 +227,6 @@ Structural directives like `*ngIf`, `*ngFor`
 
 ## Lifecycle Hooks
 
----
-
 ### ❓ What are Angular lifecycle hooks, and when are the most commonly used ones triggered?
 
 ### 📝 Answer
@@ -376,8 +372,6 @@ export class ChildComponent
 
 ## Directives & Structural Directives
 
----
-
 ### ❓ How do `*ngIf` and `*ngFor` work conceptually in Angular?
 
 <img width="1857" height="475" alt="image" src="https://github.com/user-attachments/assets/254306d8-0b77-4e87-8b29-ffdc975f43c6" />
@@ -505,8 +499,6 @@ Standalone components can be used without declaring them in an NgModule. They re
 
 ## View & DOM Interaction
 
----
-
 ### ❓ What is `@ViewChild`, and in what scenarios would you use it?
 
 ### 📝 Answer
@@ -556,8 +548,6 @@ Directly accessing the DOM through `ElementRef` can expose the application to se
 ---
 
 ## Pipes
-
----
 
 ### ❓ What are Angular pipes, and what is the difference between pure and impure pipes?
 
@@ -703,8 +693,6 @@ Angular will never mark a pipe impure by default.
 
 ## Dependency Injection (DI)
 
----
-
 ### ❓ How does Angular’s dependency injection system and hierarchy work?
 
 ### 📝 Answer
@@ -824,8 +812,6 @@ export class LazyModule {}
 
 ## Routing
 
----
-
 ### ❓ What are the core concepts of Angular routing?
 
 ### 📝 Answer
@@ -895,8 +881,6 @@ It treats _all_ errors as “deny access”:
 ---
 
 ## Change Detection & Zones
-
----
 
 ### ❓ How does Angular’s change detection mechanism work, and how did it evolve from AngularJS?
 
@@ -1060,8 +1044,6 @@ It shifts emissions to microtask / macrotask queues that might not be inside Ang
 ---
 
 ## Forms
-
----
 
 ### ❓ Differences between template-driven and reactive forms?
 
@@ -1450,8 +1432,6 @@ Using `combineLatest` directly can:
 
 ## HTTP & RxJS
 
----
-
 ### ❓ What is `HttpClient`, and how is it better than the old `Http` module?
 
 ### 📝 Answer
@@ -1612,8 +1592,6 @@ Multiple subscribers may:
 
 ## Performance & Architecture
 
----
-
 ### ❓ What techniques do you use to optimize Angular application performance?
 
 ### 📝 Answer
@@ -1689,8 +1667,6 @@ Here is a **clean, well-organized, interview-ready Markdown**, rewritten exactly
 ---
 
 ## Angular Universal (SSR) & Rendering
-
----
 
 ### ❓ What is Angular Universal?
 
