@@ -840,6 +840,8 @@ list.add("Python");
 
 ### ❓ Difference between `Collection` and `Collections`
 
+### 📝 Answer
+
 | **Collection**                                                   | **Collections**                                                        |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | **Interface**                                                    | **Utility class (`final`)**                                            |
@@ -891,7 +893,7 @@ _Output_
 
 ❌ Compiles and throws ClassCastException at runtime.
 
-_Explanation_
+🧠 _Explanation_
 
 - `Collections.sort()` accepts a `List`, not a `Collection`.
 - Reference type mismatch
@@ -914,6 +916,8 @@ void sort(List<T> list)
 ---
 
 ### ❓ Difference between `List`, `Set`, and `Map`
+
+### 📝 Answer
 
 | **Feature**    | **List**                                                                                               | **Set**                                                                                                                 | **Map**                                                                                                                            |
 | -------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -1246,286 +1250,693 @@ while (it.hasNext()) {
 
 ---
 
-### 4. Why does `Map` not extend `Collection`?
+### ❓ Why does `Map` not extend `Collection`?
 
-**Answer:**
-Because `Map` stores **key-value pairs**, not individual elements.
+### 📝 Answer
 
-👉 _Senior Insight:_ Operations like `add()` or `iterator()` don’t semantically apply.
+`Map` does **not** extend `Collection` because a **Map does not store single elements** — it stores **key–value pairs**.
 
----
+A `Collection` represents:
 
-### 5. Difference between `ArrayList` and `LinkedList`
+```
+[element, element, element]
+```
 
-| Feature       | ArrayList     | LinkedList         |
-| ------------- | ------------- | ------------------ |
-| Structure     | Dynamic array | Doubly linked list |
-| Access        | Fast (O(1))   | Slow (O(n))        |
-| Insert/Delete | Slow          | Fast               |
+A `Map` represents:
+
+```
+[key → value, key → value]
+```
+
+These are **fundamentally different data models**.
+
+1️⃣ Why `Collection` methods don’t fit `Map`
+
+If `Map` extended `Collection`, it would inherit methods like:
 
 ```java
-List<Integer> list = new LinkedList<>();
-list.add(10);
+add(E e)
+remove(E e)
+iterator()
+```
+
+But these don’t make sense for key–value pairs:
+
+| Collection Method | Problem for Map                     |
+| ----------------- | ----------------------------------- |
+| `add(E e)`        | Add **what**? Key? Value? Both?     |
+| `remove(E e)`     | Remove by key or by value?          |
+| `iterator()`      | Iterate over keys? values? entries? |
+
+Rather than forcing `Map` into `Collection`, Java provides **views**:
+
+```java
+map.keySet()      // Collection of keys
+map.values()      // Collection of values
+map.entrySet()    // Set of key-value pairs
 ```
 
 ---
 
-## 🔹 INTERMEDIATE LEVEL (Performance & Internals)
+### ❓ Difference Between `ArrayList` and `LinkedList`
 
-### 6. How does `HashMap` work internally?
+### 📝 Answer
 
-**Answer:**
+| Feature                  | ArrayList                                            | LinkedList                                         |
+| ------------------------ | ---------------------------------------------------- | -------------------------------------------------- |
+| Internal structure       | Uses a **dynamic array**                             | Uses a **doubly linked list**                      |
+| How data is stored       | Elements are stored **next to each other** in memory | Each element is stored in a **separate node**      |
+| Random access (`get(i)`) | ✅ Very fast because index is directly calculated    | ❌ Slow because it must traverse from start/end    |
+| Add at end (`add(e)`)    | ✅ Fast (usually)                                    | ✅ Fast                                            |
+| Insert/Delete in middle  | ❌ Slow because elements must be shifted             | ⚠️ Faster than ArrayList _after reaching position_ |
+| Traversal                | Faster due to better cache locality                  | Slower due to node hopping                         |
+| Memory usage             | Less memory (only data)                              | More memory (data + 2 pointers)                    |
+| Queue/Deque support      | ❌ Not supported                                     | ✅ Supported (`addFirst`, `removeLast`, etc.)      |
 
-1. Key’s `hashCode()` is calculated
-2. Index = `hash % capacity`
-3. Stored as **Node<K,V>**
-4. Collision handled using:
+**Queue** - _First In, First Out_, The first element added is the first one removed
+**Stack** - _Last In, First Out_, The last element added is removed first
+**Deque** - _Double-Ended Queue_, You can add or remove elements **from both front and end**
+**Shift** - Remove the **first element**
+**Unshift** - Add an element **at the beginning**
 
-   - Linked List (before Java 8)
-   - Red-Black Tree (Java 8+ if > 8 entries)
+1️⃣ Why `LinkedList` supports Queue and Deque?
+
+In Java, the `LinkedList` class already implements the `Queue` and `Deque` interface
 
 ```java
-map.put("A", 1);
+Deque<Integer> dq = new LinkedList<>();
 ```
 
-👉 _Senior Focus:_ Collision handling + treeification threshold.
+- `LinkedList` can add/remove elements from **front and end easily**
+- It just changes pointers, no shifting needed
 
----
+**Operation Cost Comparison**
 
-### 7. Difference between `HashMap`, `LinkedHashMap`, `TreeMap`
+| Operation         | ArrayList | LinkedList | Reason                                                            |
+| ----------------- | --------- | ---------- | ----------------------------------------------------------------- |
+| Add at end        | ✅ O(1)   | ✅ O(1)    | No shifting                                                       |
+| Remove from end   | ✅ O(1)   | ✅ O(1)    | Just remove last                                                  |
+| Add at front      | ❌ O(n)   | ✅ O(1)    | Array shifts, list changes pointer                                |
+| Remove from front | ❌ O(n)   | ✅ O(1)    | Array shifts, list changes pointer                                |
+| `get(index)`      | ✅ O(1)   | ❌ O(n)    | ArrayList → direct index access, LinkedList → must traverse nodes |
 
-| Map           | Order                  | Performance     |
-| ------------- | ---------------------- | --------------- |
-| HashMap       | No order               | Fastest         |
-| LinkedHashMap | Insertion/Access order | Slightly slower |
-| TreeMap       | Sorted                 | O(log n)        |
+2️⃣ Why `ArrayDeque` is often better than `LinkedList`
 
-```java
-Map<Integer, String> map = new TreeMap<>();
+ArrayDeque is often preferred over LinkedList for `Queue`, `Stack`, and `Deque` operations because it is faster, more memory-efficient, and ArrayDeque uses a resizable **circular array**, not a normal array and not linked nodes.
+
+in simple terms:
+
+- The array is treated like a circle
+- Front and rear wrap around when they reach the end
+- No elements need to be shifted
+
+_Visual Representation_
+
+```
+Start
+[ _ , _ , _ , _ , _ ]  → Empty Array
+head=0, tail=0
+
+addLast(10)
+[10, _ , _ , _ , _ ]
+head=0, tail=1
+
+addLast(20)
+[10, 20, _ , _ , _ ]
+head=0, tail=2
+
+removeFirst()
+[ _ , 20, _ , _ , _ ]
+head=1, tail=2
+
+addLast(30)
+[ _ , 20, 30, _ , _ ]
+head=1, tail=3
+
+addLast(40)
+[ _ , 20, 30, 40, _ ]
+head=1, tail=4
+
+addLast(50)
+[ _ , 20, 30, 40, 50 ]
+head=1, tail=0  (wrap)
+
+addLast(60) → array full (nextTail == head) → resize the array → Elements are copied
+[20, 30, 40, 50, 60, _ , _ , _ , _ , _ ]
+head=0, tail=5
+
 ```
 
+> `ArrayList` is best for access, `LinkedList` is good for frequent front operations, and `ArrayDeque` is the best choice for queues and stacks.
+
 ---
 
-### 8. What is fail-fast vs fail-safe iterator?
+### ❓ How does `HashMap` work internally?
 
-**Fail-Fast**
+### 📝 Answer
 
-- Throws `ConcurrentModificationException`
-- Example: `ArrayList`, `HashMap`
+A HashMap stores data in key–value pairs and allows fast insertion, deletion, and lookup (on average O(1) time).
 
-**Fail-Safe**
+Internally, a HashMap consists of:
 
-- Works on cloned copy
-- Example: `ConcurrentHashMap`
+- An array of buckets
+- Each bucket can store:
+  1. Linked List (Java 7 & earlier)
+  2. Red-Black Tree (Java 8+, when collisions are high)
 
-```java
-Iterator<Integer> it = list.iterator();
-list.add(5); // Exception
+Each stored entry is called a Node:
+
 ```
-
----
-
-### 9. Difference between `Iterator` and `ListIterator`
-
-| Feature    | Iterator        | ListIterator |
-| ---------- | --------------- | ------------ |
-| Direction  | Forward only    | Both         |
-| Add/Set    | ❌              | ✔            |
-| Applies to | All collections | Only List    |
-
----
-
-### 10. How does `equals()` and `hashCode()` affect HashSet?
-
-**Answer:**
-
-- `hashCode()` → bucket location
-- `equals()` → duplicate check
-
-```java
-class Employee {
-    int id;
-
-    public int hashCode() { return id; }
-    public boolean equals(Object o) {
-        return this.id == ((Employee)o).id;
-    }
+Node {
+  int hash;
+  Key key;
+  Value value;
+  Node next;
 }
 ```
 
-👉 _Senior Mistake:_ Overriding one without the other.
+🔍 Step-by-Step:
 
----
+1. Hashing the Key
 
-## 🔹 ADVANCED LEVEL (Concurrency & Design)
+When you insert `map.put("apple", 10);`
 
-### 11. Difference between `Comparable` and `Comparator`
+- The key’s `hashCode()` method is called
+- Hash is processed to reduce collisions
 
-| Comparable    | Comparator    |
-| ------------- | ------------- |
-| Natural order | Custom order  |
-| `compareTo()` | `compare()`   |
-| Inside class  | Outside class |
+2. Finding the Bucket Index
 
-```java
-Collections.sort(list, (a, b) -> b - a);
+The hash is converted into an array index: `index = hash & (capacity - 1)`
+
+Example:
+
+```
+capacity = 16
+hash = 21
+index = 21 & 15 = 5
 ```
 
----
+So the entry goes into **bucket 5**.
 
-### 12. How does `ConcurrentHashMap` work internally?
+3. Handling Collisions
 
-**Answer:**
+If multiple keys map to the **same index**, a **collision** occurs.
 
-- Java 7 → Segment locking
-- Java 8+ → Bucket-level locking + CAS
+- If key exists → value is updated
+- If key is different → new node is added
 
-👉 Allows **high concurrency with minimal blocking**
+4. Java 8 Optimization (Treeification)
 
-```java
-Map<Integer, String> map = new ConcurrentHashMap<>();
-```
+If:
 
----
+- A bucket has **more than 8 entries**
+- Capacity is **at least 64**
 
-### 13. Why is `HashMap` not thread-safe?
+Then:
+👉 The linked list is converted into a **Red-Black Tree**
 
-- No synchronization
-- Race conditions
-- Infinite loop risk (pre-Java 8 rehashing)
+This improves lookup time:
 
----
+- From **O(n)** → **O(log n)**
 
-### 14. Difference between `SynchronizedMap` and `ConcurrentHashMap`
-
-| SynchronizedMap | ConcurrentHashMap |
-| --------------- | ----------------- |
-| Full lock       | Partial lock      |
-| Slower          | Faster            |
-| Fail-fast       | Fail-safe         |
-
----
-
-### 15. What is the time complexity of common operations?
-
-| Structure  | Get      | Add      | Remove   |
-| ---------- | -------- | -------- | -------- |
-| ArrayList  | O(1)     | O(1)\*   | O(n)     |
-| LinkedList | O(n)     | O(1)     | O(1)     |
-| HashMap    | O(1)     | O(1)     | O(1)     |
-| TreeMap    | O(log n) | O(log n) | O(log n) |
-
----
-
-## 🔹 EXPERT LEVEL (Deep Internals & Edge Cases)
-
-### 16. Explain resizing in HashMap
-
-- Default capacity = **16**
-- Load factor = **0.75**
-- Resize when size > (capacity × load factor)
-
-👉 Resizing is **expensive (rehashing)**
-
----
-
-### 17. Why are immutable keys recommended in HashMap?
-
-**Answer:**
-If key changes after insertion:
-
-- `hashCode()` changes
-- Entry becomes unreachable
+5. How Data Is Retrieved (get)
 
 ```java
-map.put(new StringBuilder("key"), "value"); // BAD
+map.get("apple");
 ```
 
----
+    - Compute `hashCode()` of `"apple"`
+    - Find bucket index
+    - Traverse in the Linked list **or** Red-Black Tree
+    - Use `equals()` to find exact key
+    - if `equals()` is false, it is called a **hash collision**. Two keys can have the same hashCode() but equals() can return false.
+    - HashMap keeps searching
+    - If key matches → Returns **the value**
+    - If key not matches → Returns **null**
 
-### 18. What is `WeakHashMap`?
+6. Resizing (Rehashing)
 
-- Keys are weakly referenced
-- GC removes entries when key is no longer referenced
+When Number of entries > **capacity × load factor (0.75)**
 
-```java
-Map<Object, String> map = new WeakHashMap<>();
-```
+Then:
 
-👉 Used in **caching frameworks**
+- Capacity doubles (e.g., 16 → 32)
+- All entries are **rehashed**
+- Improves performance by reducing collisions
 
----
+7. Time Complexity
 
-### 19. Difference between `CopyOnWriteArrayList` and `ArrayList`
-
-| CopyOnWrite                        | ArrayList |
-| ---------------------------------- | --------- |
-| Thread-safe                        | Not       |
-| No ConcurrentModificationException | Yes       |
-| Write expensive                    | Cheap     |
-
----
-
-### 20. How would you choose the right Collection?
-
-**Decision Rule**
-
-- Fast search → `HashMap`
-- Sorted data → `TreeMap`
-- Insertion order → `LinkedHashMap`
-- Thread-safe reads → `ConcurrentHashMap`
-- Frequent inserts → `LinkedList`
-
-### ❓ How do you choose between List, Set, and Map?
-
-- What factors influence your choice?
-- How does access pattern affect this decision?
-
----
-
-### ❓ How does HashMap work internally?
-
-- What happens when two keys have the same hash?
-- How does Java 8 optimize HashMap?
-- What is the impact of a bad hashCode implementation?
-
----
-
-### ❓ Difference between HashMap, LinkedHashMap, and TreeMap?
-
-- When would you use TreeMap despite slower performance?
-- Memory vs ordering trade-offs?
+| Operation | Average | Worst Case |
+| --------- | ------- | ---------- |
+| put()     | O(1)    | O(log n)   |
+| get()     | O(1)    | O(log n)   |
+| remove()  | O(1)    | O(log n)   |
 
 ---
 
 ### ❓ How does ConcurrentHashMap work internally?
 
-- How is it different from Hashtable?
-- Why is it more scalable?
+### 📝 Answer
+
+`ConcurrentHashMap` does NOT use `HashMap` internally.
+ConcurrentHashMap uses an array of buckets, just like HashMap. Each bucket holds entries for keys that hash to the same index.
+
+When a thread reads from a ConcurrentHashMap, it usually does not lock anything at all. It simply reads the value. This allows many threads to read at the same time, which makes it very fast.
+
+When a thread writes (put or remove), it locks only the bucket where the key belongs—not the entire map. So:
+
+- Thread A can update bucket #2
+- Thread B can update bucket #7 at the same time
+- They do not block each other
+
+---
+
+### ❓ Difference between `HashMap`, `LinkedHashMap`, `TreeMap`
+
+### 📝 Answer
+
+| `Feature`                       | `HashMap`                       | `LinkedHashMap`                                                | `TreeMap`                                                  |
+| ------------------------------- | ------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Ordering**                    | Does **not** maintain any order | Maintains **insertion order** (or **access order** if enabled) | Maintains keys in **sorted order** (natural or comparator) |
+| **How order is achieved**       | No ordering logic               | Uses a **doubly linked list** connecting entries               | Uses a **Red-Black Tree** to keep keys sorted              |
+| **Internal Data Structure**     | Array + Linked List / Tree      | HashMap + **Doubly Linked List**                               | **Red-Black Tree**                                         |
+| **Time Complexity (get / put)** | O(1) average, O(n) worst        | O(1) average, O(n) worst                                       | O(log n) always                                            |
+| **Performance Impact**          | 🚀 Fastest due to no ordering   | ⚡ Slightly slower (extra pointers for order)                  | 🐢 Slower due to tree balancing                            |
+| **Null Keys**                   | One null key allowed            | One null key allowed                                           | ❌ Not allowed (sorting needs comparison)                  |
+| **Null Values**                 | Allowed                         | Allowed                                                        | Allowed                                                    |
+
+```java
+Map<Integer, String> map = new TreeMap<>();
+```
+
+- Use `HashMap` when **fast access matters** and **ordering is irrelevant**.
+- Use `LinkedHashMap` when **insertion order must be preserved**.
+- Use `TreeMap` when **keys must stay sorted** automatically.
+
+Thread-safety: **(ConcurrentHashMap and Hashtable)**
+
+- Use `Hashtable` only for **legacy synchronized map requirements**.
+- `Hashtable` is synchronized (Only one thread can read or write at a time)
+- Use `ConcurrentHashMap` when **multiple threads update data concurrently**.
+- `ConcurrentHashMap`is not fully synchronized.
+  - Reads (get) are non-blocking.
+  - Writes lock only a small portion if two threads modify the same bucket
+- Both `ConcurrentHashMap` and `Hashtable` does not allow `null` for either `key` or `value`
+
+```java
+Map<Integer, String> map = new HashMap<>();
+map.put(3, "C");
+map.put(1, "A");
+map.put(2, "B");
+
+System.out.println(map); // Output: {1=A, 2=B, 3=C}   // or any order
+```
+
+```java
+Map<Integer, String> map = new LinkedHashMap<>();
+map.put(3, "C");
+map.put(1, "A");
+map.put(2, "B");
+
+System.out.println(map); // Output: {3=C, 1=A, 2=B}
+```
+
+```java
+Map<Integer, String> map = new TreeMap<>();
+map.put(3, "C");
+map.put(1, "A");
+map.put(2, "B");
+
+System.out.println(map); // Output: {1=A, 2=B, 3=C}
+```
+
+```java
+Map<Integer, String> map = new ConcurrentHashMap<>();
+map.put(1, "A");
+map.put(2, "B");
+
+System.out.println(map); // Output: {1=A, 2=B} (Thread-safe)
+```
+
+```java
+Map<Integer, String> map = new Hashtable<>();
+map.put(1, "A");
+map.put(2, "B");
+
+System.out.println(map); // Output: {2=B, 1=A}
+```
+
+---
+
+### ❓ What is fail-fast vs fail-safe iterator?
+
+### 📝 Answer
+
+A **fail-fast iterator** immediately **throws `ConcurrentModificationException`** if the collection is structurally modified **after the iterator is created**, except through the iterator itself.
+
+- Detects bugs early
+- Works on the **original collection**
+- Not thread-safe
+
+**Examples:** `ArrayList`, `HashMap`, `HashSet`
+
+```java
+Iterator<Integer> it = list.iterator();
+list.add(5);   // structural modification
+it.next();     // ❌ ConcurrentModificationException
+```
+
+```java
+List<Integer> list = new ArrayList<>();
+list.add(1);
+list.add(2);
+
+for (int i : list) {
+    list.add(3); // ❌ ConcurrentModificationException
+}
+```
+
+🧠 Explanation
+
+1. Iterator stores collection’s **modCount** at creation
+2. `list.add(5)` changes **modCount**
+3. `it.next()` detects mismatch
+4. Exception is thrown → **fail-fast behavior**
+
+A **fail-safe iterator** allows modification during iteration because it **iterates over a cloned (snapshot) copy** of the collection.
+
+- No exception thrown
+- Thread-safe
+- Slightly slower, higher memory usage
+
+**Examples:** `CopyOnWriteArrayList`, `ConcurrentHashMap`
+
+```java
+Iterator<Integer> it = list.iterator();
+while (it.hasNext()) {
+    int i = it.next();
+    list.add(3);   // structural change
+}
+
+```
+
+```java
+List<Integer> list = new CopyOnWriteArrayList<>();
+list.add(1);
+list.add(2);
+
+for (int i : list) {
+    list.add(3); // NO exception
+}
+```
+
+---
+
+### ❓ Difference between `Iterator` and `ListIterator`
+
+### 📝 Answer
+
+| Feature                 | `Iterator`                               | `ListIterator`                                                      |
+| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **Traversal direction** | Forward only (`hasNext()`, `next()`)     | Both directions (`hasNext()/next()` and `hasPrevious()/previous()`) |
+| **Add elements**        | ❌ Not supported                         | ✔ `add(E e)`                                                        |
+| **Replace elements**    | ❌ Not supported                         | ✔ `set(E e)`                                                        |
+| **Remove elements**     | ✔ `remove()`                             | ✔ `remove()`                                                        |
+| **Index access**        | ❌ No index info                         | ✔ `nextIndex()` / `previousIndex()`                                 |
+| **Collection support**  | All Collections (`List`, `Set`, `Queue`) | Only `List` implementations                                         |
+| **Starting position**   | Always at beginning                      | Can start at any index                                              |
+| **Typical use case**    | Simple forward traversal                 | Bidirectional traversal & modification                              |
+
+**`Iterator` Example (Forward)**
+
+```java
+List<String> list = new ArrayList<>(List.of("A", "B", "C"));
+Iterator<String> it = list.iterator();
+while (it.hasNext()) {
+   String val = it.next();
+   if (val.equals("B")) {
+        it.remove(); // allowed
+    }
+}
+System.out.println("Final List: " + list); // Output: Final List: [A, C]
+```
+
+**`ListIterator` Example (Forward + Backward)**
+
+```java
+List<String> list = new ArrayList<>(List.of("A", "B", "C"));
+ListIterator<String> it = list.listIterator();
+// Forward traversal
+while (it.hasNext()) {
+    String val = it.next();
+    if (val.equals("B")) {
+        it.set("BB");      // replace
+        it.add("D");       // add after B
+    }
+}
+System.out.println(list); // Output: [A, BB, D, C]
+
+ // Backward traversal
+while (it.hasPrevious()) {
+    System.out.println(it.previous()); // Output: C, D, BB, A
+}
+```
+
+**Starting `ListIterator` at a Specific Index**
+
+```java
+List<String> list = List.of("A", "B", "C", "D");
+ListIterator<String> it = list.listIterator(2);
+
+System.out.println(it.next()); // Output: C
+System.out.println(it.previousIndex()); // Output: 1
+```
+
+---
+
+### ❓ Difference between `Comparable` and `Comparator`
+
+### 📝 Answer
+
+| Feature           | **Comparable**                                  | **Comparator**              |
+| ----------------- | ----------------------------------------------- | --------------------------- |
+| Purpose           | Defines **natural/default ordering** of objects | Defines **custom ordering** |
+| Package           | `java.lang`                                     | `java.util`                 |
+| Method            | `compareTo(T o)`                                | `compare(T o1, T o2)`       |
+| Where implemented | **Inside the class** whose objects are compared | **Outside the class**       |
+
+**Example 1: Using Comparable**
+
+```java
+class Student implements Comparable<Student> {
+    int roll;
+    String name;
+
+    Student(int roll, String name) {
+        this.roll = roll;
+        this.name = name;
+    }
+
+    @Override
+    public int compareTo(Student s) {
+        return this.roll - s.roll;   // ascending order
+    }
+
+    @Override
+    public String toString() {
+        return roll + " " + name;
+    }
+}
+
+List<Student> list = new ArrayList<>();
+list.add(new Student(3, "Ravi"));
+list.add(new Student(1, "Amit"));
+list.add(new Student(2, "Neha"));
+Collections.sort(list);
+System.out.println(list); // Output: [1 Amit, 2 Neha, 3 Ravi]
+
+
+```
+
+> `String` implements `Comparable<String>` by default.
+> `Integer` implements `Comparable<Integer>` by default.
+
+**Example 2: Using Comparator**
+
+```java
+class Student {
+    int roll;
+    String name;
+
+    Student(int roll, String name) {
+        this.roll = roll;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return roll + " " + name;
+    }
+}
+
+List<Student> list = new ArrayList<>();
+list.add(new Student(3, "Ravi"));
+list.add(new Student(1, "Amit"));
+list.add(new Student(2, "Neha"));
+
+Comparator<Student> nameComparator = (a, b) -> a.name.compareTo(b.name);
+Collections.sort(list, nameComparator);
+System.out.println(list); // Output: [1 Amit, 2 Neha, 3 Ravi]
+
+
+```
+
+1️⃣ Can a class implement **multiple Comparables**?
+
+❌ **No**
+
+```java
+class A implements Comparable<A>, Comparable<B> { } // ❌ illegal
+```
+
+📌 Reason: `Comparable` defines **only one natural ordering**.
+
+2️⃣ Can a class have **multiple Comparators**?
+
+✅ **Yes**
+
+```java
+Comparator<Student> byName = (a, b) -> a.name.compareTo(b.name);
+Comparator<Student> byRoll = (a, b) -> a.roll - b.roll;
+```
+
+📌 Reason: Comparators define **external & multiple** sorting logic.
+
+3️⃣ Will `Collections.sort()` work **without Comparable**?
+
+❌ **No**
+
+```java
+Collections.sort(list); // requires Comparable
+```
+
+📌 Reason: Works **only if elements implement `Comparable`**
+
+4️⃣ Will `Collections.sort(list, comparator)` work **without Comparable**?
+
+✅ **Yes**
+
+```java
+Collections.sort(list, comparator);
+```
+
+📌 Reason: Comparable is **not required** when Comparator is provided.
+
+5️⃣ Is `Comparator` a **functional interface**?
+
+✅ **Yes**
+
+```java
+Comparator<Integer> c = (a, b) -> b - a;
+```
+
+📌 Reason: Because it has **one abstract method**: `compare()`.
+
+6️⃣ Which has **higher priority**: Comparable or Comparator?
+
+🏆 **Comparator**
+
+```java
+Collections.sort(list, comparator);
+```
+
+📌 Reason: Comparator **overrides natural ordering**.
+
+7️⃣ Does `Comparator` allow sorting in **reverse order** easily?
+
+✅ **Yes**
+
+```java
+Collections.sort(list, Comparator.reverseOrder());
+```
+
+### ❓ What is `WeakHashMap`?
+
+### 📝 Answer
+
+A WeakHashMap is a special Map where the **keys** are weakly referenced
+If a key is not used anywhere else, Java’s Garbage Collector (GC) can delete it
+
+```java
+Map<Object, String> map = new WeakHashMap<>();
+
+Object key1 = new Object();
+Object key2 = new Object();
+map.put(key1, "Value 1");
+map.put(key2, "Value 2");
+
+System.out.println("Before GC: " + map); // Output: Before GC: {java.lang.Object@7344699f=Value 2, java.lang.Object@251a69d7=Value 1}
+
+key1 = null; // Remove strong reference to key1
+
+System.gc(); // Request garbage collection for demonstration purposes (Runs Automatically)
+try { Thread.sleep(1000); } catch (Exception e) {} // Give GC some time
+
+System.out.println("After GC: " + map); // Output: After GC: {java.lang.Object@7344699f=Value 2}
+```
+
+**Use `WeakHashMap`** to store cached data only as long as the key is in use
+
+> WeakHashMap automatically removes entries when keys are no longer used anywhere else.
 
 ---
 
 ### ❓ When would you prefer immutable collections?
 
-- What are the trade-offs?
+### 📝 Answer
 
----
+Immutable collections is preferred when you want safety, simplicity, and predictability, especially in modern Java applications.
 
-## 3️⃣ Core Java – equals(), hashCode(), Comparable
+An immutable collection is a collection that cannot be changed after it is created.
 
-### ❓ Why must equals() and hashCode() be consistent?
+Once you put data in it:
 
-- What breaks if they aren’t?
-- How does this affect HashMap and HashSet?
+- ❌ you cannot add
+- ❌ you cannot remove
+- ❌ you cannot update
 
----
+```java
+List<String> list = List.of("A", "B", "C");
+list.add("D"); // ❌ throws UnsupportedOperationException
 
-### ❓ Difference between Comparable and Comparator?
+```
 
-- When do you use one over the other?
-- Real-world example?
+🤔 When is this useful?
 
----
+1.  When multiple threads read the same data
+
+In multi-threaded programs, bugs usually come from shared mutable data.
+
+With immutable collections:
+
+- No locks needed
+- No synchronization
+- No race conditions
+
+```java
+List<String> config = List.of("READ", "WRITE", "DELETE");
+// Safe to share across threads forever
+```
+
+2. When data represents configuration or constants
+
+Configuration should not change at runtime.
+
+```java
+Map<String, String> config =
+        Map.of("url", "db.prod", "timeout", "30");
+
+```
 
 ### ❓ What are common mistakes in equals() implementations?
 
