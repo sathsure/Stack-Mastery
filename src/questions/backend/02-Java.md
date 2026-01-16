@@ -537,6 +537,8 @@ Variable access depends on reference type. Java does not override variables. Thi
 
 ### ❓ How do you apply OOP principles in real-world systems?
 
+### 📝 Answer
+
 - Where have you used abstraction effectively?
 
   1. When code depends on the interface, not the implementation.
@@ -561,6 +563,8 @@ Variable access depends on reference type. Java does not override variables. Thi
 
 ### ❓ Have you ever violated OOP principles intentionally?
 
+### 📝 Answer
+
 Yes, Skipped abstractions to keep code simple and readable
 
 ```java
@@ -576,6 +580,8 @@ class FileCleaner {
 ---
 
 ### ❓ What design principles do you follow while writing Java code?
+
+### 📝 Answer
 
 Design principles while writing Java code:
 
@@ -593,7 +599,7 @@ Design principles while writing Java code:
 
 SOLID is a set of 5 object-oriented design principles that help write clean, maintainable, and scalable code:
 
-1. SRP – Single Responsibility Principle
+1. **SRP – Single Responsibility Principle**
 
 Definition: A class should have only one reason to change.
 
@@ -631,7 +637,7 @@ What happens is:
 - Changes are isolated
 - Code is easier to understand and safer to modify
 
-2. OCP – Open/Closed Principle
+2. **OCP – Open/Closed Principle**
 
 Definition: Classes should be open for extension, closed for modification.
 
@@ -670,7 +676,7 @@ What happens is:
 - New behavior is added by adding new classes
 - Old, tested code remains stable
 
-3. LSP – Liskov Substitution Principle
+3. **LSP – Liskov Substitution Principle**
 
 Definition: Subclasses must be usable without breaking parent behavior.
 
@@ -713,7 +719,7 @@ What happens is:
 - Only birds that can actually fly implement FlyingBird
 - Ostrich is no longer forced to implement invalid behavior
 
-4. ISP – Interface Segregation Principle
+4. **ISP – Interface Segregation Principle**
 
 Definition: Clients should not be forced to implement unused methods.
 
@@ -752,7 +758,7 @@ What happens is:
 - A class implements only what it uses
 - No unused or dummy methods
 
-5. DIP – Dependency Inversion Principle
+5. **DIP – Dependency Inversion Principle**
 
 Definition: Depend on abstractions, not concrete classes.
 
@@ -811,6 +817,664 @@ SRP (Single Responsibility Principle)
 ---
 
 ## 2️⃣ Core Java – Collections Framework
+
+![Collections Image](/src/assets/backend/java-collections.png)
+
+### ❓ What is the Collections Framework?
+
+### 📝 Answer
+
+Definition: A unified architecture to store, retrieve, and manipulate groups of objects.
+
+Main components:
+
+- Interfaces → List, Set, Queue, Map
+- Implementations → ArrayList, HashSet, HashMap, etc.
+- Algorithms → sort(), search(), shuffle() (via Collections class)
+
+```java
+List<String> list = new ArrayList<>();
+list.add("Java");
+list.add("Python");
+```
+
+### ❓ Difference between `Collection` and `Collections`
+
+| **Collection**                                                   | **Collections**                                                        |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Interface**                                                    | **Utility class (`final`)**                                            |
+| Used to **store and manage a group of objects**                  | Used to **operate on Collection objects**                              |
+| Defines **basic operations** like `add()`, `remove()`, `size()`  | Provides **static helper methods** like `sort()`, `reverse()`, `max()` |
+| Implemented by classes like `ArrayList`, `HashSet`, `LinkedList` | Not implemented or extended by any class                               |
+| Part of the **Collections Framework hierarchy**                  | Not part of the hierarchy; acts as a **helper**                        |
+| Allows **polymorphism** (`Collection ref = new ArrayList()`)     | Cannot be instantiated                                                 |
+
+> **`Collection` stores data, `Collections` processes data.**
+
+```java
+// Collection
+Collection<String> names = new ArrayList<>();
+names.add("Java");
+names.add("Python");
+names.remove("Python");
+System.out.println(names); // [Java]
+
+Collection<Integer> numbers = new HashSet<>();
+numbers.add(10);
+numbers.add(20);
+System.out.println(numbers); // [20, 10]
+
+// Collections
+List<Integer> list = new ArrayList<>();
+list.add(3);
+list.add(1);
+list.add(2);
+
+Collections.sort(list);
+System.out.println(list); // [1, 2, 3]
+```
+
+1️⃣ What will be the output of the following code?
+
+> ```java
+> Collection<Integer> c = new ArrayList<>();
+> c.add(3);
+> c.add(1);
+> c.add(2);
+>
+> Collections.sort(c);
+> System.out.println(c);
+>
+> ```
+
+_Output_
+
+❌ Compiles and throws ClassCastException at runtime.
+
+_Explanation_
+
+- `Collections.sort()` accepts a `List`, not a `Collection`.
+- Reference type mismatch
+
+```java
+public static <T extends Comparable<? super T>>
+void sort(List<T> list)
+
+```
+
+1. Why does Collections.sort() accept List but not Collection?
+
+- Sorting requires index-based access
+- Only `List` guarantees positional access `(get(int index))`
+- `Collection` could be a `Set` or `Queue`, where ordering or indexing doesn’t exist
+
+> Collection → generic container
+> List → ordered, index-based container
+
+---
+
+### ❓ Difference between `List`, `Set`, and `Map`
+
+| **Feature**    | **List**                                                                                               | **Set**                                                                                                                 | **Map**                                                                                                                            |
+| -------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Duplicates** | Allows duplicate elements. The same value can appear multiple times at different indexes.              | Does **not** allow duplicates. If you try to add a duplicate, it is ignored.                                            | Duplicate **keys** are not allowed (new value replaces old), but **values** can be duplicated.                                     |
+| **Order**      | Maintains **insertion order**. Elements are stored and retrieved in the same sequence they were added. | Order **depends on implementation**: `HashSet` → no order, `LinkedHashSet` → insertion order, `TreeSet` → sorted order. | Does **not guarantee order** by default (`HashMap`). Some implementations maintain order (`LinkedHashMap`) or sorting (`TreeMap`). |
+| **Access**     | Elements are accessed using a **numeric index** (position-based).                                      | No index available; elements are accessed using **iteration or search**.                                                | Values are accessed using a **key**, not by position or index.                                                                     |
+
+```java
+Map<Integer, String> map = new HashMap<>();
+map.put(1, "Java");
+```
+
+1️⃣ What will be the output of the following code?
+
+> ```java
+> List<Integer> list = new ArrayList<>();
+> list.add(10);
+> list.add(20);
+> list.remove(10);
+> ```
+
+_Output_
+
+❌ it throws java.lang.IndexOutOfBoundsException at `list.remove(10);`
+
+🧠 _Explanation_
+
+List has two overloaded remove() methods:
+
+- remove(int index)
+- remove(Object o)
+
+Because `10` is a primitive `int`, JVM tries to remove the element at index 10, but the list size is only `2`.
+
+✅ _Correct Way_
+
+```java
+list.remove(Integer.valueOf(10));
+```
+
+> Remove by index → remove(index)
+> Remove by value (Wrapper Object) → remove(Integer.valueOf(x))
+
+2️⃣ What will be the output of the following code?
+
+```java
+List<String> list = new ArrayList<>();
+list.add("A");
+list.add("B");
+
+for (String s : list) {
+    list.remove(s);
+}
+System.out.println(list);
+```
+
+_Output_
+
+❌ it throws java.util.ConcurrentModificationException at `list.remove(s);`
+
+🧠 _Explanation_
+
+- Enhanced for-loop uses an **Iterator internally**
+- Modifying the list directly breaks iterator contract
+
+✅ _Correct Way_
+
+```java
+Iterator<String> it = list.iterator();
+while (it.hasNext()) {
+    it.next();
+    it.remove();
+}
+System.out.println(list); // []
+```
+
+_Alternate 1_
+
+❌ Traditional for loop — Does NOT throw exception
+
+```java
+List<String> list = new ArrayList<>();
+list.add("A");
+list.add("B");
+
+for (int i = 0; i < list.size(); i++) {
+    list.remove(i);
+}
+System.out.println(list); // [B] - No exception, but wrong Output
+
+```
+
+- When you remove index `0`, elements shift left
+- `"B"` moves to index `0`
+- Loop increments `i` → skips `"B"`
+
+✅ _Correct Way_
+
+```java
+for (int i = list.size() - 1; i >= 0; i--) {
+    list.remove(i);
+}
+System.out.println(list); // []
+
+```
+
+- Removing from the end
+- No shifting issues
+
+_Alternate 2_
+
+✅ while loop with index — Safe
+
+```java
+int i = 0;
+while (i < list.size()) {
+    list.remove(i);
+}
+System.out.println(list); // []
+```
+
+- After removal, next element shifts to same index
+- Index is not incremented
+
+3️⃣ What will be the output of the following code?
+
+```java
+Set<Integer> set = new HashSet<>();
+set.add(10);
+set.add(20);
+set.add(10);
+System.out.println(set);
+```
+
+_Output_
+
+```
+[20, 10]   // or [10, 20]
+```
+
+🧠 _Explanation_
+
+- `HashSet`:
+
+  - ❌ Does NOT maintain insertion order
+  - ❌ Does NOT allow duplicates
+
+- Order is **hash-based**, not predictable
+
+✔️ If order matters
+
+```java
+Set<Integer> set = new LinkedHashSet<>();
+```
+
+4️⃣ What will be the output of the following code?
+
+```java
+class Employee {
+    int id;
+    Employee(int id) { this.id = id; }
+}
+
+Set<Employee> set = new HashSet<>();
+set.add(new Employee(1));
+set.add(new Employee(1));
+System.out.println(set.size());
+```
+
+_Output_
+
+```
+2
+```
+
+🧠 _Explanation_
+
+Although both Employee objects have the same id value, Java treats them as different objects because:
+
+- `HashSet` uses two methods to detect duplicates:
+  1. `hashCode()` → to find the bucket
+  2. `equals()` → to check equality inside the bucket
+- In this class, neither `equals()` nor `hashCode()` is overridden
+- So Java uses the default implementations from Object
+
+Default behavior compares memory references, not data
+
+> Each `new Employee(1)` is a different object in memory, so both are added to the set.
+
+✅ _Correct Way_
+
+```java
+class Employee {
+    int id;
+    Employee(int id) { this.id = id; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // this refers to: The object already present in the HashSet. o refers to: The new object being added to the HashSet.
+        if (!(o instanceof Employee)) return false; // Ensures the other object is of the correct type before comparing data
+        Employee e = (Employee) o;
+        return id == e.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+}
+
+Set<Employee> set = new HashSet<>();
+set.add(new Employee(1));
+set.add(new Employee(1));
+System.out.println(set.size()); // 1
+
+```
+
+🧠 What happens when you call set.add()? **(Equals and Hashcode)**
+
+- HashSet internally uses a HashMap
+- First time when calling `add(new Employee(1))`
+  1. It first calls `hashCode()` of the object
+  2. Finds an empty bucket
+  3. Stores the object
+  4. ❌ equals() is NOT called
+- Second time when calling `add(new Employee(1))`
+  1. Calls hashCode() of the new object
+  2. Finds the target bucket and checks if bucket is empty
+  3. if bucket has elements, ✔️ equals() is called
+
+5️⃣ What will be the output of the following code?
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put(null, 1);
+map.put(null, 2);
+System.out.println(map);
+```
+
+_Output_
+
+```
+{null=2}
+```
+
+🧠 _Explanation_
+
+In Java, a `HashMap` has these important properties:
+
+- It allows one `null` key.
+- It allows multiple `null` values.
+- Keys must be unique — inserting a value with an existing key **overwrites** the old value.
+
+In the above code,
+
+- `null` is allowed as a key in `HashMap` and becomes `{null=1}`
+- The new value `(2)` replaces the old value `(1)` and becomes `{null=2}`
+- the second `put()` **overwrites** the first value.
+
+6️⃣ What will be the output of the following code?
+
+```java
+Map<StringBuilder, String> map   new HashMap<>();
+
+StringBuilder key = new StringBuilder("A");
+map.put(key, "Value");
+
+key.append("B");
+
+System.out.println(map.get(key));
+```
+
+_Output_
+
+```
+null
+```
+
+🧠 _Explanation_
+
+- `StringBuilder` is **mutable**
+- `map.put(key, "Value");` = `HashMap` stores exactly 1 key–value pair based on `"A"`
+- Key = reference to a StringBuilder object
+- modifying the same key object from `"A"` → `"AB"`
+- `map.get(key);`, generate a Hash based on `"AB"` and check in the bucket.
+- Since there is no content for `"AB"`, the output result is `null`
+
+✅ _Correct Way_
+
+```java
+Map<String, String> map = new HashMap<>();
+String key = "A";
+map.put(key, "Value");
+```
+
+> String is immutable, StringBuilder is mutable.
+> HashMap requires keys to be immutable.
+
+7️⃣ What will be the output of the following code?
+
+```java
+Map<Integer, String> map = new HashMap<>();
+map.put(1, "A");
+map.put(2, "B");
+
+for (Integer key : map.keySet()) {
+    map.remove(key);
+}
+System.out.println(map);
+```
+
+_Output_
+
+❌ it throws java.util.ConcurrentModificationException
+
+🧠 _Explanation_
+
+- Enhanced for-loop uses an **Iterator internally**
+- Modifying the Map directly breaks iterator contract
+
+✅ _Correct Way_
+
+```java
+Iterator<Integer> it = map.keySet().iterator();
+while (it.hasNext()) {
+    it.next();
+    it.remove();
+}
+```
+
+---
+
+### 4. Why does `Map` not extend `Collection`?
+
+**Answer:**
+Because `Map` stores **key-value pairs**, not individual elements.
+
+👉 _Senior Insight:_ Operations like `add()` or `iterator()` don’t semantically apply.
+
+---
+
+### 5. Difference between `ArrayList` and `LinkedList`
+
+| Feature       | ArrayList     | LinkedList         |
+| ------------- | ------------- | ------------------ |
+| Structure     | Dynamic array | Doubly linked list |
+| Access        | Fast (O(1))   | Slow (O(n))        |
+| Insert/Delete | Slow          | Fast               |
+
+```java
+List<Integer> list = new LinkedList<>();
+list.add(10);
+```
+
+---
+
+## 🔹 INTERMEDIATE LEVEL (Performance & Internals)
+
+### 6. How does `HashMap` work internally?
+
+**Answer:**
+
+1. Key’s `hashCode()` is calculated
+2. Index = `hash % capacity`
+3. Stored as **Node<K,V>**
+4. Collision handled using:
+
+   - Linked List (before Java 8)
+   - Red-Black Tree (Java 8+ if > 8 entries)
+
+```java
+map.put("A", 1);
+```
+
+👉 _Senior Focus:_ Collision handling + treeification threshold.
+
+---
+
+### 7. Difference between `HashMap`, `LinkedHashMap`, `TreeMap`
+
+| Map           | Order                  | Performance     |
+| ------------- | ---------------------- | --------------- |
+| HashMap       | No order               | Fastest         |
+| LinkedHashMap | Insertion/Access order | Slightly slower |
+| TreeMap       | Sorted                 | O(log n)        |
+
+```java
+Map<Integer, String> map = new TreeMap<>();
+```
+
+---
+
+### 8. What is fail-fast vs fail-safe iterator?
+
+**Fail-Fast**
+
+- Throws `ConcurrentModificationException`
+- Example: `ArrayList`, `HashMap`
+
+**Fail-Safe**
+
+- Works on cloned copy
+- Example: `ConcurrentHashMap`
+
+```java
+Iterator<Integer> it = list.iterator();
+list.add(5); // Exception
+```
+
+---
+
+### 9. Difference between `Iterator` and `ListIterator`
+
+| Feature    | Iterator        | ListIterator |
+| ---------- | --------------- | ------------ |
+| Direction  | Forward only    | Both         |
+| Add/Set    | ❌              | ✔            |
+| Applies to | All collections | Only List    |
+
+---
+
+### 10. How does `equals()` and `hashCode()` affect HashSet?
+
+**Answer:**
+
+- `hashCode()` → bucket location
+- `equals()` → duplicate check
+
+```java
+class Employee {
+    int id;
+
+    public int hashCode() { return id; }
+    public boolean equals(Object o) {
+        return this.id == ((Employee)o).id;
+    }
+}
+```
+
+👉 _Senior Mistake:_ Overriding one without the other.
+
+---
+
+## 🔹 ADVANCED LEVEL (Concurrency & Design)
+
+### 11. Difference between `Comparable` and `Comparator`
+
+| Comparable    | Comparator    |
+| ------------- | ------------- |
+| Natural order | Custom order  |
+| `compareTo()` | `compare()`   |
+| Inside class  | Outside class |
+
+```java
+Collections.sort(list, (a, b) -> b - a);
+```
+
+---
+
+### 12. How does `ConcurrentHashMap` work internally?
+
+**Answer:**
+
+- Java 7 → Segment locking
+- Java 8+ → Bucket-level locking + CAS
+
+👉 Allows **high concurrency with minimal blocking**
+
+```java
+Map<Integer, String> map = new ConcurrentHashMap<>();
+```
+
+---
+
+### 13. Why is `HashMap` not thread-safe?
+
+- No synchronization
+- Race conditions
+- Infinite loop risk (pre-Java 8 rehashing)
+
+---
+
+### 14. Difference between `SynchronizedMap` and `ConcurrentHashMap`
+
+| SynchronizedMap | ConcurrentHashMap |
+| --------------- | ----------------- |
+| Full lock       | Partial lock      |
+| Slower          | Faster            |
+| Fail-fast       | Fail-safe         |
+
+---
+
+### 15. What is the time complexity of common operations?
+
+| Structure  | Get      | Add      | Remove   |
+| ---------- | -------- | -------- | -------- |
+| ArrayList  | O(1)     | O(1)\*   | O(n)     |
+| LinkedList | O(n)     | O(1)     | O(1)     |
+| HashMap    | O(1)     | O(1)     | O(1)     |
+| TreeMap    | O(log n) | O(log n) | O(log n) |
+
+---
+
+## 🔹 EXPERT LEVEL (Deep Internals & Edge Cases)
+
+### 16. Explain resizing in HashMap
+
+- Default capacity = **16**
+- Load factor = **0.75**
+- Resize when size > (capacity × load factor)
+
+👉 Resizing is **expensive (rehashing)**
+
+---
+
+### 17. Why are immutable keys recommended in HashMap?
+
+**Answer:**
+If key changes after insertion:
+
+- `hashCode()` changes
+- Entry becomes unreachable
+
+```java
+map.put(new StringBuilder("key"), "value"); // BAD
+```
+
+---
+
+### 18. What is `WeakHashMap`?
+
+- Keys are weakly referenced
+- GC removes entries when key is no longer referenced
+
+```java
+Map<Object, String> map = new WeakHashMap<>();
+```
+
+👉 Used in **caching frameworks**
+
+---
+
+### 19. Difference between `CopyOnWriteArrayList` and `ArrayList`
+
+| CopyOnWrite                        | ArrayList |
+| ---------------------------------- | --------- |
+| Thread-safe                        | Not       |
+| No ConcurrentModificationException | Yes       |
+| Write expensive                    | Cheap     |
+
+---
+
+### 20. How would you choose the right Collection?
+
+**Decision Rule**
+
+- Fast search → `HashMap`
+- Sorted data → `TreeMap`
+- Insertion order → `LinkedHashMap`
+- Thread-safe reads → `ConcurrentHashMap`
+- Frequent inserts → `LinkedList`
 
 ### ❓ How do you choose between List, Set, and Map?
 
