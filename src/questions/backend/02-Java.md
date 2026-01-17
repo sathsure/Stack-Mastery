@@ -1938,45 +1938,521 @@ Map<String, String> config =
 
 ```
 
-### ❓ What are common mistakes in equals() implementations?
+---
 
-- How do you avoid them?
+## 3️⃣ Equals and Hashcode
+
+### ❓ How do equals() and hashCode() work together?
+
+### 📝 Answer
+
+- `equals() `is a normal instance method and can be called independently.
+
+  ```java
+  User u1 = new User(1);
+  User u2 = new User(1);
+
+  u1.equals(u2); // Works even if hashCode() is not overridden
+  ```
+
+- `hashCode()` is used only by hash-based collections (HashMap, HashSet).
+
+In hash-based collections:
+
+- `hashCode()` determines the bucket
+- `equals()` compares objects inside the bucket
+
+1️⃣ **`hashCode()` is overridden but `equals()` is not**
+
+❌ Logical equality fails.
+
+```java
+class User {
+    int id;
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+    // equals() NOT overridden
+}
+
+User u1 = new User(1);
+User u2 = new User(1);
+
+System.out.println(u1.equals(u2)); // false
+```
+
+- `equals()` falls back to `Object.equals()`
+- `Object.equals()` default behavior is **reference comparison (== operator)**
+
+2️⃣ `equals()` is overridden but `hashCode()` is not
+
+❌ Hash-based collections break.
+
+```java
+class User {
+    int id;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        return id == ((User) o).id;
+    }
+    // hashCode() NOT overridden
+}
+Set<User> set = new HashSet<>();
+set.add(new User(1));
+
+System.out.println(set.contains(new User(1))); // false ❌
+```
+
+- Default `hashCode()` is memory-based
+- Objects go into **different buckets**
+- `equals()` is never called
 
 ---
 
-## 4️⃣ Java 8+ Features (Streams, Optional, Lambda)
+## 4️⃣ Java 8+ Features
 
-### ❓ Why were Streams introduced in Java?
+### ❓ What major changes did Java 8 introduce?
 
-- How do Streams differ from collections?
-- Are Streams always better than loops?
+### 📝 Answer
+
+Java 8 introduced a paradigm shift from purely **imperative**, object-oriented style toward a **functional-style** programming model, while still remaining fully object-oriented.
+
+However, it’s important to note:
+
+❗ Java is not a functional programming language
+✔️ Java 8 supports functional-style programming
+
+1️⃣ **Functional Interface**
+
+A functional interface is an interface that has **exactly one abstract method**.
+It is mainly used to support **lambda expressions**.
+
+🎯 **Key Understanding**
+
+- Only **one abstract method**
+- Can have **multiple default and static methods**
+- `@FunctionalInterface` is optional but recommended
+
+```java
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);   // single abstract method
+
+    default void log() {
+        System.out.println("Calculating...");
+    }
+
+    static void info() {
+        System.out.println("Calculator Interface");
+    }
+}
+```
+
+1. Can a functional interface extend another interface?
+
+✅ **Yes**, if total abstract methods = **1**
+
+```java
+interface A {
+    void show();
+}
+
+@FunctionalInterface
+interface B extends A {
+    // no new abstract method
+}
+```
+
+2️⃣ **Lambda Expression**
+
+A lambda expression provides an **inline implementation** of a functional interface and helps reduce boilerplate code.
+
+🎯 **Key Understanding**
+
+- Replaces anonymous classes
+- Enables passing behavior as data
+- Works only with functional interfaces
+
+```java
+// Functional Interface:
+
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+class MyClass implements Calculator {
+    @Override
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    Calculator c = new MyClass();
+    System.out.println(c.add(10, 20));
+}
+
+// (or)
+
+Calculator c = new Calculator() {
+    @Override
+    public int add(int a, int b) {
+        return a + b;
+    }
+};
+
+System.out.println(c.add(10, 20));
+
+// *******************
+// Lambda Expression:
+
+Calculator c = (a, b) -> a + b;
+System.out.println(c.add(10, 20));
+```
+
+3️⃣ **Stream API**
+
+Stream API is used to **process collections of data in a functional style**.
+
+🎯 **Key Understanding**
+
+- Streams **do not store data**
+- Streams **do not modify the source**
+- Supports **lazy evaluation**
+- Can run **sequential or parallel**
+
+```java
+List<Integer> list = List.of(1, 2, 3, 4, 5);
+
+list.stream()
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * n)
+    .forEach(System.out::println); // Output: 4 16
+```
+
+4️⃣ **Method References**
+
+Method reference is a **shorter way of writing a lambda expression** when the lambda only calls an existing method.
+
+🎯 **Key Understanding**
+
+- Improves readability
+- No additional logic allowed
+- Uses `::` operator
+
+```java
+list.forEach(System.out::println);
+
+// ****************
+// Equivalent lambda:
+list.forEach(n -> System.out.println(n));
+```
+
+5️⃣ **Optional**
+
+`Optional` is a container object used to **represent presence or absence of a value**.
+
+🎯 **Key Understanding**
+
+- Helps avoid explicit null checks
+- Does NOT automatically prevent NPE
+- Best used as a **return type**
+
+```java
+Optional<String> name1 = Optional.of("Dev");        // ❌ NPE if null
+Optional<String> name2 = Optional.ofNullable(null); // ✅ allows null
+Optional<String> name3 = Optional.empty();          // empty Optional
+
+```
+
+1. What will be the output of the following code? **(orElse() vs orElseGet())**
+
+```java
+Optional<String> name = Optional.of("Dev");
+
+String value = name.orElse(getDefault());
+System.out.println(value);
+
+static String getDefault() {
+    System.out.println("Default called");
+    return "Default";
+}
+
+```
+
+```
+Default called
+Dev
+```
+
+🧠 _Explanation_
+
+- orElse() always executes the argument even when value is present.
+- use `orElseGet()` → `name.orElseGet(() -> getDefault());`
+
+2. What will be the output of the following code? **(Optional get())**
+
+```java
+Optional<String> name = Optional.empty();
+System.out.println(name.get());
+```
+
+❌ Throws NoSuchElementException
+
+6️⃣ **Default & Static Methods in Interface**
+
+Java 8 allows interfaces to have default and static methods with implementation.
+
+- To add new methods without breaking existing implementations
+
+```java
+interface Vehicle {
+
+    default void start() {
+        System.out.println("Vehicle started");
+    }
+
+    static void service() {
+        System.out.println("Vehicle serviced");
+    }
+}
+```
+
+1. Can a class override a default method?
+
+✅ Yes. Class method always wins.
+
+2. What happens if two interfaces have same default method?
+
+❌ Compile-time error
+
+✅ Fix - override the default method
+
+```java
+class C implements A, B {
+
+  @Override
+  public void show() {
+    A.super.show();
+  }
+}
+```
+
+3. Can default methods call other methods?
+
+✅ Yes
+
+```java
+interface A {
+    default void show() {
+        helper();
+    }
+
+    private void helper() { // Java 9+
+        System.out.println("Helper");
+    }
+}
+```
+
+4. Why static methods in interfaces?
+
+To provide utility/helper methods related to the interface.
+
+❌ Problem before Java 8
+
+static methods require to be implemented in an Utility class which allow **forced Inheritance**
+
+```java
+class Vehicle {
+
+    static Vehicle car() {
+        return new Car();
+    }
+}
+class Car extends Vehicle { }   // ❌ forced inheritance
+class Car extends Machine extends Vehicle // ❌ Java allows only one superclass.
+```
+
+✅ Interface solves this cleanly
+
+```java
+interface Vehicle {
+
+    static Vehicle car() {
+        return new Car();
+    }
+}
+class Car implements Vehicle { }          // ✅ no inheritance lock
+class ElectricCar extends Machine implements Vehicle { } // ✅ still allowed
+
+```
+
+7️⃣ Simple Coding Round Problems
+
+```java
+// 1. Find even numbers
+list.stream().filter(n -> n % 2 == 0).forEach(System.out::println);
+
+// 2. Find maximum number
+int max = list.stream().max(Integer::compareTo).get();
+
+// 3. Find sum of all numbers
+int sum = list.stream().mapToInt(Integer::intValue).sum();
+
+// 4. Count elements greater than 10
+long count = list.stream().filter(n -> n > 10).count();
+
+// 5. Convert List → Set
+Set<Integer> set = list.stream().collect(Collectors.toSet());
+
+// 6. Convert List → Map
+Map<String, Integer> map = list.stream().collect(Collectors.toMap(s -> s, String::length));
+
+// 7. Sort in descending order
+list.stream().sorted(Comparator.reverseOrder()).forEach(System.out::println);
+
+// 8. Find second highest number
+int secondMax = list.stream().distinct().sorted(Comparator.reverseOrder()).skip(1).findFirst().get();
+
+// 9. Group employees by department
+Map<String, List<Employee>> map = list.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+
+// 10. Filtered list using Parallel Stream
+List<Integer> result = list.parallelStream().filter(n -> n > 10).collect(Collectors.toList());
+```
 
 ---
 
-### ❓ When should Streams NOT be used?
+## Java Access Levels
 
-- Debugging concerns?
-- Performance concerns?
+### Explain all Java access levels?
 
----
+### 📝 Answer
 
-### ❓ How do parallel streams work internally?
+Java provides **four access levels** to control visibility and encapsulation.
+They apply to classes, methods, variables, and constructors, but with rules and exceptions.
 
-- When are they dangerous?
-- CPU-bound vs IO-bound tasks?
+| Modifier            | Keyword        | Visibility                |
+| ------------------- | -------------- | ------------------------- |
+| **Public**          | `public`       | Everywhere                |
+| **Protected**       | `protected`    | Same package + subclasses |
+| **Package-Private** | _(no keyword)_ | Same package only         |
+| **Private**         | `private`      | Same class only           |
 
----
+❗ Rules to remember
 
-### ❓ How do you use Optional correctly?
+1. **Class Level (Top-Level Classes)**
 
-- Where should Optional NOT be used?
-- Why is Optional discouraged as a field?
+`public` - File name **must exactly match** the class name and accessible from **any package**
 
----
+```java
+public class MyClass {}   // File name must be MyClass.java
+```
 
-### ❓ How do lambdas impact readability and debugging?
+`Package-Private` (no modifier) - File name **can be anything** and accessible **only within the same package**
 
-- Have you seen misuse of lambdas?
+```java
+class MyClass {} // File name can be anything
+```
+
+`protected` ❌
+`private` ❌
+
+- **Not allowed** for top-level classes
+
+2. **Constructor Level**
+
+```java
+public class Parent {
+    private Parent() {
+        System.out.println("private constructor");
+    }
+
+    Parent(int x) {
+        System.out.println("package-private constructor");
+    }
+
+    protected Parent(String s) {
+        System.out.println("protected constructor");
+    }
+
+    public Parent(double d) {
+        System.out.println("public constructor");
+    }
+}
+
+public class Child extends Parent {
+    Child() {
+        // super();              // ❌ ERROR → private constructor not accessible
+        // super(10);            // ❌ ERROR → package-private (different package)
+        super("hello");          // ✅ allowed → protected constructor
+        // super(10.5);          // ✅ allowed → public constructor
+    }
+}
+
+```
+
+3. **Interface Level**
+
+Interface Declaration is same as [class-level](#L2350)
+
+Interface Members: (❗Implicit rules)
+
+- Variables → `public static final`
+- Methods → `public` (by default)
+- `default` & `static` methods → always `public`
+- `private` methods → allowed **only as helper methods** (Java 9+)
+
+4. **Access of parent members inside a subclass**
+
+`public` - Always accessible
+
+`protected`
+
+- Accessible in:
+
+  - Same package
+  - Subclasses in different packages (via inheritance)
+
+```java
+package zoo;
+
+public class Animal {
+    protected void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+public class Dog {
+    public static void main(String[] args) {
+        Animal a = new Animal();
+        a.eat(); // ✅ allowed: same package
+    }
+}
+```
+
+```java
+package pets;
+
+import zoo.Animal;
+
+public class Cat extends Animal {
+    public void test() {
+        eat(); // ✅ allowed: subclass access
+    }
+
+    public static void main(String[] args) {
+        Animal a = new Animal();
+        a.eat(); // ❌ not-allowed: compile-time error
+    }
+}
+```
+
+`Package-Private` - Accessible **only within same package**
+`private` - Not accessible in subclass
 
 ---
 
@@ -1984,28 +2460,61 @@ Map<String, String> config =
 
 ### ❓ How do you design exception handling in large Java applications?
 
-- How do you avoid exception clutter?
-- Where should exceptions be handled?
+### 📝 Answer
+
+**Define clear exception layers**
+
+```java
+try {
+    orderRepository.save(order);
+} catch (SQLException e) {
+    throw new OrderPersistenceException("Failed to save order", e);
+}
+```
+
+**Use a global exception handling mechanism**
+
+For large apps (especially Spring-based):
+
+- Centralize handling using: `@ControllerAdvice` (REST)
+- Convert exceptions into: Proper HTTP status codes
 
 ---
 
 ### ❓ Checked vs unchecked exceptions – what is your strategy?
 
-- Why are checked exceptions controversial?
-- When do you still use them?
+### 📝 Answer
 
----
+**Checked exceptions**
+Exceptions that the Java compiler checks at **compile time**.
+If a method throws a checked exception, the programmer must either handle it using a **try-catch block** or declare it in the method signature using the `throws` keyword; otherwise, the code will not compile.
 
-### ❓ How do you design custom exceptions?
+Examples: IOException, SQLException, FileNotFoundException, ClassNotFoundException.
 
-- What information should exceptions carry?
-- Logging vs rethrowing?
+```java
+try {
+    throw new Exception("Checked exception");
+} catch (Exception e) {
+    // must be handled
+}
 
----
+// or
 
-### ❓ How do exceptions affect performance?
+void checkedMethod() throws Exception { // must be declared using throws
+    throw new Exception("Checked exception");
+}
+```
 
-- Have you faced performance issues due to exceptions?
+**Unchecked exceptions**
+Exceptions that occurs at **runtime**.
+Examples: NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException (e.g., division by zero), and IllegalArgumentException
+
+```java
+void uncheckedMethod() {
+    throw new RuntimeException("Unchecked exception");
+    // any code here is NEVER executed
+}
+```
 
 ---
 
@@ -2013,242 +2522,401 @@ Map<String, String> config =
 
 ### ❓ Why do you prefer immutable objects?
 
-- How does immutability help concurrency?
-- What are the drawbacks?
+### 📝 Answer
+
+Immutable Object - An object whose state cannot change after it is created.
+
+Useful for **Thread Safety** (Without Synchronization)
 
 ---
 
 ### ❓ How do you design immutable classes?
 
-- What common mistakes break immutability?
+### 📝 Answer
+
+✅ Rules for Designing an Immutable Class
+
+- Declare the class as `final`
+- Make all fields `private final`
+- No setters
+- Initialize fields via constructor
+- Perform defensive copying
+- Never expose mutable internal state
+
+```java
+public final class Employee {
+
+    private final int id;
+    private final List<String> skills;
+
+    public Employee(int id, List<String> skills) {
+        this.id = id;
+        this.skills = List.copyOf(skills); // Defensive copy
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<String> getSkills() {
+        return Collections.unmodifiableList(skills); // Return unmodifiable view
+    }
+}
+```
+
+1️⃣ Why **Defensive Copying** Matters
+
+❌ Wrong Implementation
+
+```java
+this.skills = skills;
+```
+
+Caller can mutate: `skills.add("Hacking");` . Use `List.copyOf(skills);`
 
 ---
 
-### ❓ When is mutability acceptable or required?
+### ❓ How Do You Design a Singleton Class?
 
-- Real-world examples?
+### 📝 Answer
+
+Singleton - A class that allows only one instance throughout the application lifecycle.
+
+```java
+public class Singleton {
+
+    private static final Singleton INSTANCE = new Singleton();
+
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        return INSTANCE;
+    }
+}
+```
+
+1️⃣ Can Cloning Break Singleton?
+
+✅ Yes, unless prevented.
+
+```java
+@Override
+protected Object clone() throws CloneNotSupportedException {
+    throw new CloneNotSupportedException();
+}
+```
+
+> Singleton guarantees one instance per class loader, not per JVM.
 
 ---
 
-## 7️⃣ Concurrency & Multithreading (Very Important)
+## 7️⃣ Concurrency & Multithreading
 
 ### ❓ How do you handle concurrency in Java applications?
 
-- How do you avoid shared mutable state?
-- What concurrency bugs have you faced?
+### 📝 Answer
+
+🎯 **Key Understanding**
+
+- Prefer immutability
+- Minimize shared mutable state
+- Use high-level concurrency utilities
+- Design for correctness first, performance second
+
+Core Tools & When to Use Them:
+
+**synchronized**
+
+```java
+class Counter {
+    private int count = 0;
+
+    synchronized void increment() { // Only one thread can execute increment() at a time.
+        count++;
+    }
+}
+```
+
+**ReentrantLock**
+
+```java
+Lock lock = new ReentrantLock(); // More control than synchronized
+
+void process() {
+    lock.lock(); // explicitly call lock() to acquire the lock
+    try {
+        // critical section
+    } finally {
+        lock.unlock(); // explicitly call unlock() to release it
+    }
+}
+```
+
+**ExecutorService**
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(2);
+
+executor.submit(() -> {
+    System.out.println("Task running in thread pool");
+});
+
+executor.shutdown();
+```
+
+- Automatically handles the lifecycle of threads (creation, scheduling, execution, and reuse), avoiding the overhead of creating a new thread for every task.
+
+**CompletableFuture**
+
+```java
+CompletableFuture
+    .supplyAsync(() -> "Hello")
+    .thenApply(result -> result + " World")
+    .thenAccept(System.out::println);
+```
+
+Non-Blocking Execution - Tasks run on separate threads (by default, the common ForkJoinPool) allowing the main thread to continue its work, thus preventing idle waiting.
+
+**ConcurrentHashMap**
+
+Usage - [Internal Implementation](#L1540)
+Coding - [Coding Example](#L1574)
 
 ---
 
-### ❓ synchronized vs ReentrantLock?
+### ❓ Deadlocks – How do they occur and how do you prevent them?
 
-- When do you prefer one over the other?
-- Fairness and try-lock use cases?
+### 📝 Answer
+
+Deadlocks occur when processes get stuck in a waiting cycle, each holding a resource the other needs.
+For a deadlock to happen, all four of these conditions must be met simultaneously:
+
+1. Mutual exclusion - At least one resource must be non-sharable, meaning only one process can use it at a time.
+2. Hold and wait - A process holds at least one resource while waiting for another resource held by a different process
+3. No preemption - Resources cannot be forcibly taken (preempted) from a process; they must be released voluntarily.
+4. Circular wait - A chain of processes forms where each process waits for a resource held by the next process in the chain, creating a loop.
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(2);
+Object lockA = new Object();
+Object lockB = new Object();
+
+// Task 1
+executor.submit(() -> {
+    synchronized (lockA) {
+        System.out.println("Task-1 locked lockA");
+        synchronized (lockB) {
+            System.out.println("Task-1 locked lockB");
+        }
+    }
+});
+
+// Task 2
+executor.submit(() -> {
+    synchronized (lockB) {
+        System.out.println("Task-2 locked lockB");
+        synchronized (lockA) {
+            System.out.println("Task-2 locked lockA");
+        }
+    }
+});
+```
+
+✅ Prevention (Use `ReentrantLock` - Both tasks must follow the exact order.)
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(2);
+
+ReentrantLock lockA = new ReentrantLock();
+ReentrantLock lockB = new ReentrantLock();
+
+// Task 1
+executor.submit(() -> {
+    lockA.lock();
+    try {
+        System.out.println("Task-1 locked lockA");
+        lockB.lock();
+        try {
+            System.out.println("Task-1 locked lockB");
+        } finally {
+            lockB.unlock();
+        }
+    } finally {
+        lockA.unlock();
+    }
+});
+
+// Task 2
+executor.submit(() -> {
+    lockA.lock();
+    try {
+        System.out.println("Task-2 locked lockA");
+        lockB.lock();
+        try {
+            System.out.println("Task-2 locked lockB");
+        } finally {
+            lockB.unlock();
+        }
+    } finally {
+        lockA.unlock();
+    }
+});
+```
+
+> Deadlock happens because of inconsistent lock ordering.
+> The fix is to enforce a global lock order across all threads.
 
 ---
 
-### ❓ What are volatile variables?
+## JVM Deep Dive
 
-- When are they insufficient?
-- Difference between visibility and atomicity?
+### ❓ Explain JVM memory structure. Heap vs Stack vs Metaspace
 
----
+### 📝 Answer
 
-### ❓ How does ExecutorService work?
+| Area           | What Lives Here               |
+| -------------- | ----------------------------- |
+| **Stack**      | Local variables, method calls |
+| **Heap**       | Objects, arrays               |
+| **Metaspace**  | Class metadata                |
+| **Code Cache** | JIT compiled code             |
 
-- Why is it preferred over creating threads manually?
-- How do you size thread pools?
+```java
+public class MemoryDemo { // Metaspace (class metadata)
 
----
+    static int staticCount = 100; // Metaspace (static field)
 
-### ❓ How do Concurrent collections work internally?
+    public static void main(String[] args) { // Stack (method call)
 
-- Difference between CopyOnWriteArrayList and synchronizedList?
+        int localPrimitive = 10;      // Stack (local primitive)
+        Object localReference;        // Stack (reference variable)
 
----
+        Object obj = new Object();    // Heap (object)
+        int[] numbers = new int[5];   // Heap (array)
+        String str = new String("Hi");// Heap (object)
 
-### ❓ Deadlocks – how do they occur and how do you prevent them?
+        localReference = str;         // Stack -> Heap reference
 
-- Detection strategies?
-- Design-time prevention?
+        demoMethod(obj);              // Stack (method call)
+    }
 
----
+    static void demoMethod(Object param) { // Stack (new stack frame)
 
-## 8️⃣ JVM Deep Dive (Senior Expectation)
+        Object localObj;              // Stack (local reference)
+        localObj = new Object();      // Heap (object)
 
-### ❓ Explain JVM memory structure.
+        int x = 5;                    // Stack (local primitive)
+    }
+}
 
-- Heap vs Stack vs Metaspace
-- What lives where?
+```
 
 ---
 
 ### ❓ How does Garbage Collection work?
 
-- Minor vs Major GC?
-- Stop-the-world events?
+### 📝 Answer
 
----
-
-### ❓ Types of GC algorithms you are aware of?
-
-- G1, CMS, ZGC – when to use which?
-- Trade-offs?
+It works by identifying **"dead"** objects (those with no references) through marking reachable ones from **"roots"** (like the stack), sweeping away the unmarked ones, and sometimes compacting live objects to prevent fragmentation, making memory efficient
 
 ---
 
 ### ❓ What causes memory leaks in Java?
 
-- Even with GC, why do leaks happen?
-- How do you diagnose them?
+### 📝 Answer
 
----
+Memory leaks in Java occur when an application unintentionally holds references to objects that are no longer needed
 
-### ❓ How do you analyze OutOfMemoryError?
+Common causes include:
 
-- Tools you have used?
-- Heap dump analysis experience?
+**Static references** - Referencing a large or heavy object with a static field
 
----
+```java
+private static final List<Object> cache = new ArrayList<>(); // ❌ objects stay alive for entire JVM lifetime
 
-### ❓ How does JVM tuning work at a high level?
-
-- Which parameters have you tuned?
-- What mistakes to avoid?
-
----
-
-## 9️⃣ Java Performance & Optimization
-
-### ❓ How do you approach performance optimization in Java?
-
-- Measure-first strategy?
-- Tools used?
-
----
-
-### ❓ Object creation cost – when does it matter?
-
-- GC pressure?
-- Pooling objects – good or bad?
-
----
-
-### ❓ String vs StringBuilder vs StringBuffer?
-
-- Real-world impact?
-
----
-
-### ❓ How does autoboxing affect performance?
-
-- Where have you seen issues?
-
----
-
-## 🔟 Advanced Java Topics
-
-### ❓ How does class loading work in Java?
-
-- Parent delegation model?
-- Custom class loaders?
-
----
-
-### ❓ Reflection – when do you use it and why?
-
-- Performance impact?
-- Security implications?
-
----
-
-### ❓ Serialization – problems and alternatives?
-
-- Why is Java serialization discouraged?
-
----
-
-### ❓ How does Java handle backward compatibility?
-
-- How do you manage versioning?
-
----
-
-## 1️⃣1️⃣ Java + Spring Integration (Very Common)
-
-### ❓ How does Spring manage object lifecycle differently from plain Java?
-
-- Inversion of Control impact?
-
----
-
-### ❓ How does dependency injection improve testability?
-
-- Constructor vs field injection?
-
----
-
-### ❓ How do proxies work in Spring?
-
-- JDK dynamic proxy vs CGLIB?
-- Impact on final methods?
-
----
-
-### ❓ How do transactions work internally in Spring?
-
-- Propagation types?
-- Rollback rules?
-
----
-
-### ❓ How do Spring annotations impact performance?
-
-- Reflection cost?
-- Startup time?
-
----
-
-## 1️⃣2️⃣ Mock Senior Interview – Deep Pressure Questions
-
-### ❓ If you had to redesign your last Java application today, what would you change?
-
-- What technical debt did you accept earlier?
-- Why?
-
----
-
-### ❓ What is the worst production bug you caused?
-
-- How did you debug it?
-- What did you learn?
-
----
-
-### ❓ How do you balance clean code vs delivery pressure?
-
-- When do you compromise?
-
----
-
-### ❓ How do you mentor junior developers in Java?
-
-- Code reviews?
-- Design discussions?
-
----
-
-### ❓ What Java feature do you avoid and why?
-
-- Experience-based reasoning?
-
----
-
-### ❓ What’s something you disagree with Java community best practices on?
-
-- Why?
-
----
-
+private static final Map<Object, String> cache = new WeakHashMap<>(); // ✅  entries removed when keys are no longer strongly referenced
 ```
 
+**Unclosed resources** - Forgetting to close streams (file, network, etc.), database connections (Use `try-with-resources`)
+
+```java
+FileInputStream fis = new FileInputStream("data.txt"); // ❌ Resource not closed
+
+try (FileInputStream fis = new FileInputStream("data.txt")) { // ✅ try-with-resources → resource automatically closed even on exception
+    // use fis
+} catch (ExceptionType e) {
+    // Handle exceptions
+}
 ```
+
+**Unbounded collections** - Continuously adding objects to collections (like ArrayList, HashMap, HashSet)
+
+```java
+static List<Object> cache = new ArrayList<>(); // ❌ Static unbounded collection → no GC → leak
+
+public void add() {
+    cache.add(new Object());
+}
+
+// Option 1:
+List<Object> cache = new ArrayList<>(); // ✅ Make it non-static
+
+// Option 2:
+static Map<Object, Boolean> cache = new WeakHashMap<>(); // ✅ Use weak references if static is required
+
+// Option 3:
+public static void clearCache() {
+    cache.clear(); // ✅ Explicit cleanup when no longer needed
+}
+```
+
+**Improper equals() and hashCode() implementations** : without correctly implementing equals() and hashCode() methods can lead to duplicate objects being added
+
+---
+
+# 🆕 Major Java Features (9 → 21)
+
+---
+
+## Java 9
+
+- Module System (JPMS)
+- JShell
+
+## Java 10
+
+- `var` (local type inference)
+
+## Java 11
+
+- New String APIs
+- HTTP Client (standard)
+
+## Java 14
+
+- Records (preview)
+
+## Java 15
+
+- Text Blocks
+
+## Java 16
+
+- Records (stable)
+
+## Java 17 (LTS)
+
+- Sealed classes
+- Strong encapsulation
+
+## Java 19
+
+- Virtual Threads (preview)
+
+## Java 21 (LTS)
+
+- Virtual Threads (stable)
+- Structured Concurrency
+- Pattern Matching (final)
+
+---
