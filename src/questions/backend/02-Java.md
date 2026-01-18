@@ -540,22 +540,18 @@ Variable access depends on reference type. Java does not override variables. Thi
 ### 📝 Answer
 
 - Where have you used abstraction effectively?
-
   1. When code depends on the interface, not the implementation.
   2. Loose coupling between two classes
 
 - When does inheritance become harmful?
-
   1. Due to Deep Hierarchies
   2. Due to Tight Coupling
 
 - When do you prefer composition over inheritance?
-
   1. To achieve flexible behavior
   2. When behavior must change at runtime
 
 - Can you give an example where strict OOP caused problems?
-
   1. Deep inheritance hierarchies that are hard to understand.
   2. Breaking simple logic into many interfaces and classes when they aren’t needed.
 
@@ -1061,7 +1057,6 @@ _Output_
 🧠 _Explanation_
 
 - `HashSet`:
-
   - ❌ Does NOT maintain insertion order
   - ❌ Does NOT allow duplicates
 
@@ -2414,7 +2409,6 @@ Interface Members: (❗Implicit rules)
 `protected`
 
 - Accessible in:
-
   - Same package
   - Subclasses in different packages (via inheritance)
 
@@ -2874,49 +2868,414 @@ public static void clearCache() {
 
 ---
 
-# 🆕 Major Java Features (9 → 21)
+### ❓ Major Java Features (9 → 21)
 
----
+### 📝 Answer
 
-## Java 9
+1️⃣ **Java Module System (Java 9)**
 
-- Module System (JPMS)
-- JShell
+❌ Problems:
 
-## Java 10
+- Classpath hell (version conflicts, missing dependencies)
+- No encapsulation (any public class accessible everywhere)
+- Hard to scale large applications
+- JDK itself was monolithic
 
-- `var` (local type inference)
+✅ The Java Module System provides a way to organize Java code into `modules`. A module is a named, self-describing unit of code that:
 
-## Java 11
+- Contains packages
+- Declares what it needs
+- Declares what it exposes
+- Each module has a `module-info.java` file.
 
-- New String APIs
-- HTTP Client (standard)
+**Rules**
 
-## Java 14
+- Every module **must have a unique name**
+- Use `exports` to make packages visible
+- Use `requires` to depend on other modules
+- Unexported packages are **not accessible**
 
-- Records (preview)
+```java
+/* Module: com.example.utils */
 
-## Java 15
+// module-info.java
+module com.example.utils {
+    exports com.example.utils;  // export the package
+}
 
-- Text Blocks
+// MathUtil.java
+package com.example.utils;
 
-## Java 16
+public class MathUtil {
+    public static int add(int a, int b) {
+        return a + b;
+    }
+}
 
-- Records (stable)
+/* Module: com.example.app */
+// module-info.java
+module com.example.app {
+    requires com.example.utils;  // import the package
+}
 
-## Java 17 (LTS)
+// Main.java
+package com.example.app;
 
-- Sealed classes
-- Strong encapsulation
+import com.example.utils.MathUtil; // works if package is exported and consuming module requires it
 
-## Java 19
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(MathUtil.add(2, 3));
+    }
+}
+```
 
-- Virtual Threads (preview)
+- A **package** contains multiple classes (and interfaces, enums, etc.).
+- A **module** contains multiple packages (and resources).
 
-## Java 21 (LTS)
+> **Public classes** are accessible **everywhere** on the classpath.
+> In Java 9 named **modules**, access is **restricted** to exported packages only.
 
-- Virtual Threads (stable)
-- Structured Concurrency
-- Pattern Matching (final)
+2️⃣ **Immutable Collection Factories (Java 9)**
 
----
+Provide a simple, concise, and safe way to create **immutable collections** (List, Set, Map) using factory methods.
+
+```java
+List<String> names = List.of("Alice", "Bob", "Charlie");
+// names.add("David"); // throws UnsupportedOperationException
+
+Set<Integer> ids = Set.of(1, 2, 3);
+// Set.of(1, 2, 2); // throws IllegalArgumentException - Java detects duplicate element 2
+
+Map<Integer, String> map = Map.of(1, "One", 2, "Two"); // Supports up to 10 entries only
+Map<Integer, String> bigMap = Map.ofEntries( // Supports any number of entries
+    Map.entry(1, "One"),
+    Map.entry(2, "Two"),
+    Map.entry(3, "Three")
+);
+```
+
+3️⃣ **`var` (Java 10)**
+
+`var` lets the compiler infer the type of a **local variable**. Reduce boiler-plate code.
+
+```java
+// Before Java 10:
+Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
+
+// With var:
+var map = new HashMap<String, List<Integer>>();
+```
+
+Where it can be used
+
+- Local variables inside methods
+- Index variables in loops
+- Enhanced for loops
+
+```java
+// Must be initialized
+var x = 10;      // valid
+var y;           // ❌ invalid
+var x = null;    // ❌ Cannot be null
+
+// Only for local variables
+class A {
+    var x = 10;  // ❌ not allowed (fields)
+}
+
+// Initializer must give a clear type
+var list = List.of(1, 2, 3); // valid
+var arr = {}; // ❌ array initializer needs an explicit type
+int[] arr = {}; // ✅ Specify the array type directly
+
+int[] arr = {1,2};
+System.out.println(Arrays.toString(arr)); // Output: [1, 2]
+```
+
+4️⃣ **String Enhancements (Java 11)**
+
+❌ Before Java 11, developers frequently wrote custom or verbose code for:
+
+- Checking blank strings
+- Removing whitespace correctly (Unicode-aware)
+- Repeating strings
+- Splitting strings into lines
+
+These enhancements reduce boilerplate code and improve readability and correctness.
+
+| Method              | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| `isBlank()`         | Checks if string is empty or contains only whitespace |
+| `lines()`           | Converts a string into a stream of lines              |
+| `strip()`           | Removes leading & trailing Unicode whitespace         |
+| `stripLeading()`    | Removes leading Unicode whitespace                    |
+| `stripTrailing()`   | Removes trailing Unicode whitespace                   |
+| `repeat(int count)` | Repeats the string `count` times                      |
+
+```java
+String s = "   ";
+System.out.println(s.isBlank()); // true
+
+String text = "Java\nSpring\nHibernate";
+text.lines().forEach(System.out::println);
+// Output
+// Java
+// Spring
+// Hibernate
+
+String s = "  Java  ";
+System.out.println(s.strip());          // "Java"
+System.out.println(s.stripLeading());   // "Java  "
+System.out.println(s.stripTrailing());  // "  Java"
+
+String s = "Hi ";
+System.out.println(s.repeat(3)); // Hi Hi Hi
+```
+
+5️⃣ **HTTP Client (Java 11)**
+
+HttpClient in Java 11 is a modern API to send HTTP requests and receive responses (REST calls, APIs, microservices communication) in a simple, efficient, and non-blocking way.
+
+```java
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.github.com")).GET().build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+
+❌ Problem
+
+- Old `HttpURLConnection` was complex
+- External libraries for HTTP
+
+✅ Solution
+
+- Create one HttpClient and reuse it
+- Use send() for synchronous calls
+- Use sendAsync() for asynchronous calls
+
+6️⃣ **Switch Expressions (Java 12–14)**
+
+To make `switch` more **concise, expressive, and less error-prone** by allowing it to be used as an expression (returns a value), not just a statement.
+
+❌ Traditional `switch`:
+
+- Was statement-only (no direct return value)
+- Required break to avoid fall-through
+- Led to verbose and bug-prone code
+
+```java
+// Simple Expression Form
+int day = 3;
+String dayType = switch (day) {
+    case 1, 7 -> "Weekend";
+    case 2, 3, 4, 5, 6 -> "Weekday";
+    default -> "Invalid day";
+};
+System.out.println(dayType); // Output: Weekday
+
+// Block with yield
+int marks = 85;
+String result = switch (marks / 10) {
+    case 10, 9 -> "Excellent";
+    case 8 -> {
+        System.out.println("Good performance");
+        yield "Very Good";
+    }
+    default -> "Needs Improvement";
+};
+System.out.println(result);
+// Output:
+// Good performance
+// Very Good
+```
+
+**Key Rules About yield**
+
+- Used only in **switch expressions**
+- Used inside `{}` blocks
+- Replaces `break` + value-return logic
+- Cannot be used in **traditional switch statements**
+
+> default is NOT mandatory - If the compiler can prove that all possible values are covered
+> default IS mandatory - If not all possible values are covered
+
+7️⃣ **Text Blocks (Java 15)**
+
+Text Blocks provide a clean, readable way to write multi-line string literals in Java
+
+❌ Before Java 15, multi-line strings required:
+
+- \n for new lines
+- Escaping quotes (\")
+- String concatenation (+)
+
+This made code hard to read, error-prone, and noisy, especially for JSON, SQL, HTML, or XML.
+
+✅ Rules to Write Text Blocks
+
+- Start and end with `"""`
+- Content begins on a **new line**
+- Indentation is **automatically normalized**
+- Trailing newline is included by default
+- Escape sequences like `\n`, `\t`, `\"` still work
+- To avoid a newline at end, use `\`
+
+```java
+// Before
+String json = "{\n" +
+              "  \"name\": \"Dev\",\n" +
+              "  \"role\": \"Developer\"\n" +
+              "}";
+
+// After
+String json = """
+    {
+      "name": "Dev",
+      "role": "Developer"
+    }
+    """;
+```
+
+8️⃣ **Records (Java 16)**
+
+❌ Before Java 16, simple data classes required lots of boilerplate:
+
+- Fields
+- Constructor
+- Getters
+- equals(), hashCode(), toString()
+
+✅ Records are a special kind of Java **class** designed to model **immutable data carriers**.
+
+```java
+// Traditional Class
+class User {
+    private final String name;
+    private final int age;
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+
+    @Override
+    public boolean equals(Object o) { /* boilerplate */ }
+
+    @Override
+    public int hashCode() { /* boilerplate */ }
+
+    @Override
+    public String toString() { /* boilerplate */ }
+}
+
+// Same Using Record
+public record User(String name, int age) { }
+
+// Using the Record
+User user = new User("Dev", 25);
+System.out.println(user.name());   // Dev
+System.out.println(user.age());    // 25
+```
+
+9️⃣ **Sealed Classes (Java 17)**
+
+Sealed classes **restrict which classes or interfaces can extend or implement them**.
+
+❌ Before Java 17, inheritance was:
+
+- Too open (public / protected classes → anyone could extend)
+- Too closed (final → no extension at all)
+
+✅ Rules to Write Sealed Classes
+
+- A sealed class/interface must declare permitted subclasses using `permits`
+- All permitted subclasses must:
+  - Be in the same module (or same package if no module)
+  - Explicitly declare `final`, `sealed`, or `non-sealed`
+- Sealed classes cannot be anonymous
+- `permits` is optional if subclasses are in the same file
+
+```java
+// Sealed Class
+public sealed abstract class Shape permits Circle, Rectangle, Triangle {}
+
+// Permitted Subclasses
+public final class Circle extends Shape {}
+
+public non-sealed class Triangle extends Shape {}
+
+public sealed class Rectangle extends Shape permits Square {}
+
+public final class Square extends Rectangle {}
+```
+
+| Keyword      | Meaning                                                         |
+| ------------ | --------------------------------------------------------------- |
+| `final`      | **No further inheritance allowed**                              |
+| `sealed`     | **Inheritance allowed only to explicitly permitted subclasses** |
+| `non-sealed` | **Inheritance is open again** (Anyone may extend from here)     |
+
+🔟 **Pattern Matching (`instanceof` [Java 16] & `switch` [Java 21])**
+
+Pattern Matching allows **testing a value’s type and binding it to a variable in one step**
+
+❌ Traditional Java required:
+
+- Explicit type checks
+- Manual casting
+- Verbose if-else or switch logic
+
+1. Pattern Matching with `instanceof`
+
+```java
+// Without Pattern Matching
+if (obj instanceof String) {
+    String s = (String) obj;
+    System.out.println(s.length());
+}
+
+// With Pattern Matching
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}
+```
+
+2. Pattern Matching with `switch`
+
+```java
+record Success(String data) {}
+record ValidationError(String message) {}
+
+// Before
+static String handleResponse(Object response) {
+    if (response == null) {
+        return "No response received";
+    }
+    if (response instanceof Success) {
+        Success s = (Success) response;
+        return "Success: " + s.data();
+    }
+    if (response instanceof ValidationError) {
+        ValidationError v = (ValidationError) response;
+        return "Validation failed: " + v.message();
+    }
+    return "Unknown response";
+}
+
+// After
+static String handleResponse(Object response) {
+    return switch (response) {
+        case Success s -> "Success: " + s.data();
+        case ValidationError v -> "Validation failed: " + v.message();
+        case null -> "No response received";
+        default -> "Unknown response type";
+    };
+}
+```
+
+> Use `instanceof` pattern matching for simple type checks
+> Use `switch` pattern matching for multiple type-based branches
