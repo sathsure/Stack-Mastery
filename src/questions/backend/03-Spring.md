@@ -626,7 +626,7 @@ public class MyApplication {}
 
 🔹8. `@ComponentScan`
 
-**“Find components in packages”**
+**Find components in packages**
 
 - Scans packages
 - Registers bean definitions for:
@@ -872,7 +872,7 @@ public class AppConfig {
 
 **Spring Boot Actuator** is a production-ready feature of Spring Boot that helps you **monitor, manage, and inspect your application** while it is running.
 
-> Actuator answers “How is my application behaving right now?”
+> Actuator answers How is my application behaving right now?
 
 | Endpoint             | Purpose                      |
 | -------------------- | ---------------------------- |
@@ -1342,7 +1342,7 @@ class User {
 
 > Cascade saves you from writing extra `save()` calls.
 
-6. `orphanRemoval` — “Delete row when relationship is removed”
+6. `orphanRemoval` — Delete row when relationship is removed
 
 `orphanRemoval` deletes a child row when it is removed from the parent collection.
 
@@ -1366,7 +1366,7 @@ class User {
 - Child is NOT deleted automatically from the children list (`List<UserCourse>`)
 - Explicitly must be deleted `childRepository.delete(child);` in case of deletion of a child.
 
-7. `EAGER` vs `LAZY` — “When should data be loaded?”
+7. `EAGER` vs `LAZY` — When should data be loaded?
 
 FetchType.EAGER
 
@@ -1487,7 +1487,7 @@ SELECT * FROM users ORDER BY created_at DESC
 LIMIT 5 OFFSET 0;
 ```
 
-👉 OFFSET = “Skip rows”
+👉 OFFSET = Skip rows
 👉 OFFSET RULES → **OFFSET = pageNumber × pageSize (Spring Data JPA does this automatically)**
 
 ```
@@ -1543,9 +1543,9 @@ stream…
 | `Slice<T>` | You only need **next/previous data**, not total count (infinite scroll) |
 | `List<T>`  | Data is **small** and pagination is not required                        |
 
-> Page → “Tell me how many total records exist”
-> Slice → “Just tell me if there is a next page”
-> List → “Give me everything”
+> Page → Tell me how many total records exist
+> Slice → Just tell me if there is a next page
+> List → Give me everything
 
 🔹 1. Use Page when Data size is large / UI needs page numbers
 
@@ -1568,7 +1568,7 @@ stream…
     SELECT COUNT(*) FROM users;
     ```
 
-🔹 2. Use Slice when Data is large and need to know “is there a next page?”
+🔹 2. Use Slice when Data is large and need to know is there a next page?
 
     ```java
     /* ------REPOSITORY ----- */
@@ -1815,3 +1815,551 @@ class User implements Serializable {
 | **Spring Web Layer**                 | Spring MVC, Spring WebFlux (Reactive)                                   |
 | **Spring Security**                  | Authentication, Authorization, CSRF protection, OAuth2, JWT             |
 | **Spring AOP**                       | Logging, Security, Transactions, Auditing                               |
+
+---
+
+## Spring Security
+
+### ❓ What is Spring Security and why do we need it??
+
+### 📝 Answer
+
+**Spring Security** is a **framework that handles authentication, authorization, and protection against security vulnerabilities** in Spring-based applications.
+
+Without Spring Security:
+
+- We would manually write login logic
+- We would manually protect URLs
+- We might forget edge cases like CSRF, session fixation, etc.
+
+Spring Security solves this using **filters**, **contexts**, and **standard security patterns**.
+
+---
+
+### ❓ Explain authentication vs authorization with a real example.
+
+### 📝 Answer
+
+- **Authentication** answers: _Who are you?_
+- **Authorization** answers: _What are you allowed to do?_
+
+**Example:**
+
+- Logging in with username/password → Authentication
+- Accessing `/admin/deleteUser` → Authorization
+
+👉 Authentication happens **before** authorization.
+
+---
+
+### ❓ Can authorization happen without authentication?
+
+### 📝 Answer
+
+👉 **No.**
+Authorization **always depends on authentication**.
+
+Spring Security **never checks permissions for an anonymous user unless explicitly allowed** (`permitAll()`).
+
+---
+
+### ❓ What happens when we add spring-boot-starter-security?
+
+### 📝 Answer
+
+Spring Security automatically:
+
+- Secures all endpoints
+- Creates a default login page
+- Creates a default user
+- Prints a generated password in logs
+
+This is called **auto-configuration**.
+
+---
+
+### ❓ Explain Spring Security architecture.
+
+### 📝 Answer
+
+Spring Security works using a **Filter Chain**.
+
+**Flow:**
+
+1. HTTP request enters application
+2. Goes through **Security Filters**
+3. Authentication is performed
+4. Authorization decision is made
+5. Request allowed or rejected
+
+Each filter has **one responsibility**.
+
+---
+
+### ❓ What is SecurityFilterChain?
+
+### 📝 Answer
+
+It defines **how requests are secured**:
+
+- Which URLs are protected
+- Which authentication method is used
+- Which filters are enabled
+
+```java
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().authenticated()
+        )
+        .formLogin();
+    return http.build();
+}
+```
+
+---
+
+### ❓ Why is WebSecurityConfigurerAdapter removed?
+
+### 📝 Answer
+
+Because:
+
+- It was **monolithic**
+- Hard to customize
+- Violated composition over inheritance
+
+Now Spring Security prefers **component-based configuration** using beans.
+
+---
+
+### ❓ How do you allow public and secured endpoints?
+
+```java
+http.authorizeHttpRequests(auth -> auth
+    .requestMatchers("/login", "/public").permitAll()
+    .requestMatchers("/admin/**").hasRole("ADMIN")
+    .anyRequest().authenticated()
+);
+```
+
+**Explanation:**
+Rules are evaluated **top-down**.
+The first match wins.
+
+---
+
+### ❓ Why is /admin accessible even after removing hasRole?
+
+### 📝 Answer
+
+Because:
+
+- You may have **method-level security**
+- Or a **global rule** like `anyRequest().authenticated()`
+
+Spring Security rules are **additive**, not exclusive.
+
+---
+
+### ❓ Difference between roles and authorities?
+
+### 📝 Answer
+
+- Roles are **coarse-grained**
+- Authorities are **fine-grained**
+
+```java
+hasRole("ADMIN")       // internally ROLE_ADMIN
+hasAuthority("DELETE")
+```
+
+👉 Roles are just authorities with a `ROLE_` prefix.
+
+---
+
+### ❓ Can a user have authorities without roles?
+
+### 📝 Answer
+
+✅ **Yes**
+Spring Security doesn’t require roles at all.
+
+### ❓ Explain UserDetailsService.
+
+### 📝 Answer
+
+It is responsible for **loading user data** during authentication.
+
+Spring Security:
+
+1. Gets username
+2. Calls `loadUserByUsername`
+3. Compares password
+4. Builds Authentication object
+
+```java
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return new User(
+            "admin",
+            passwordEncoder.encode("1234"),
+            List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        );
+    }
+}
+```
+
+---
+
+### ❓ When is UserDetailsService NOT called?
+
+### 📝 Answer
+
+- JWT-based authentication
+- OAuth2 resource server
+- Pre-authenticated requests
+
+Because authentication is **already done elsewhere**.
+
+---
+
+### ❓ Why do we need PasswordEncoder?
+
+### 📝 Answer
+
+Because:
+
+- Plain text passwords are insecure
+- Hashing prevents password leaks
+- BCrypt adds salt + adaptive hashing
+
+```java
+@Bean
+PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+---
+
+### ❓ Why does login fail even with correct password?
+
+### 📝 Answer
+
+Common reasons:
+
+- Password not encoded
+- Encoder mismatch
+- `{noop}` missing for plain text
+- Different encoder used at save vs login
+
+---
+
+### ❓ Explain JWT authentication flow.
+
+### 📝 Answer
+
+1. User logs in
+2. Server generates JWT
+3. Client stores token
+4. Token sent with each request
+5. Server validates token
+
+👉 No session stored on server.
+
+---
+
+### ❓ JWT Filter Example
+
+```java
+public class JwtFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain)
+            throws IOException, ServletException {
+
+        String header = request.getHeader("Authorization");
+
+        if (header != null && header.startsWith("Bearer ")) {
+            // validate token
+            // set authentication in SecurityContext
+        }
+
+        chain.doFilter(request, response);
+    }
+}
+```
+
+---
+
+### ❓ Why OncePerRequestFilter?
+
+### 📝 Answer
+
+To prevent **multiple executions** of the same filter in a single request lifecycle.
+
+---
+
+### ❓ How does Spring Security store authentication?
+
+### 📝 Answer
+
+Using **SecurityContext** stored in:
+
+- Session (stateful)
+- ThreadLocal
+- JWT token (stateless)
+
+---
+
+### ❓ How would you secure microservices?
+
+### 📝 Answer
+
+- API Gateway authentication
+- JWT validation at gateway
+- Token propagation
+- Central auth server
+- Zero trust architecture
+
+---
+
+### ❓ Is JWT always better than sessions?
+
+### 📝 Answer
+
+❌ **No**
+
+JWT drawbacks:
+
+- Token revocation is hard
+- Token size increases
+- Security risks if leaked
+
+Sessions are better for:
+
+- Small apps
+- Admin dashboards
+
+---
+
+### ❓ Explain CSRF.
+
+### 📝 Answer
+
+CSRF happens when:
+
+- User is authenticated
+- Browser auto-sends cookies
+- Attacker triggers state-changing action
+
+Disable only for stateless APIs:
+
+```java
+http.csrf(csrf -> csrf.disable());
+```
+
+---
+
+### ❓ Why CSRF is not needed for JWT?
+
+### 📝 Answer
+
+Because JWT is:
+
+- Not stored in cookies
+- Explicitly sent in headers
+
+---
+
+### ❓ How do you test secured endpoints?
+
+```java
+@WithMockUser(roles = "ADMIN")
+@Test
+void adminTest() {
+    // secured test
+}
+```
+
+---
+
+### ❓ If Spring Security fails completely, what’s your debugging approach?
+
+### 📝 Answer
+
+1. Enable debug logs
+2. Check filter chain
+3. Verify password encoding
+4. Inspect SecurityContext
+5. Validate token/session
+
+---
+
+Below are **interview-ready answers** to the two most **confusing + high-frequency Spring Security questions**, explained **clearly, deeply, and with code**.
+I’ll also include **trick follow-ups** interviewers often ask.
+
+---
+
+### ❓ Difference between CORS and CSRF?
+
+### 📝 Answer
+
+- **CORS** is a **browser security mechanism** that controls _which origins can call your API_
+- **CSRF** is an **attack** that exploits _authenticated users via cookies_
+
+👉 They solve **completely different problems**
+
+🔹 CORS (Cross-Origin Resource Sharing)
+
+A **browser-enforced rule** that prevents JavaScript on one origin from calling another origin **unless explicitly allowed**.
+
+**Key point:**
+👉 CORS is **not a Spring Security feature**
+👉 It is enforced by the **browser**, not the backend
+
+**Example:**
+
+```text
+Frontend: http://localhost:3000
+Backend:  http://api.company.com
+```
+
+Browser blocks the request unless backend allows it.
+
+🔹 CSRF (Cross-Site Request Forgery)
+
+A **security attack** where a malicious site tricks a logged-in user’s browser into sending authenticated requests.
+
+**Why it works:**
+
+- Browser automatically sends cookies
+- Server trusts cookies
+- Attacker exploits that trust
+
+**❓ I disabled CSRF but still get CORS error. Why?**
+
+Because **CSRF and CORS are unrelated**.
+
+- CSRF → server-side protection
+- CORS → browser-side restriction
+
+Disabling CSRF **does nothing** for CORS issues.
+
+✅ CORS Configuration
+
+```java
+@Bean
+CorsConfigurationSource corsSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:3000"));
+    config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+}
+```
+
+✅ CSRF Disable (Only for Stateless APIs)
+
+```java
+http.csrf(csrf -> csrf.disable());
+```
+
+**❓ Is CSRF possible with JWT?**
+
+❌ No — **if JWT is stored in headers**, not cookies.
+
+---
+
+### ❓ OAuth2 vs JWT?
+
+### 📝 Answer
+
+- **OAuth2** is an **authorization framework**
+- **JWT** is a **token format**
+
+👉 They are **not competitors**
+👉 OAuth2 often **uses JWT**
+
+**🧠 Correct Mental Model (Very Important)**
+
+> ❗ OAuth2 answers: **Who can access what?**
+> ❗ JWT answers: **How do we represent that access?**
+
+🔹 OAuth2 Explained
+
+**OAuth2 is about delegation of access**
+
+**Example:**
+
+> Let Google authenticate the user, but let _my app_ access their profile.
+
+OAuth2 defines:
+
+- Authorization flows
+- Tokens
+- Roles of participants
+
+**Actors:**
+
+- Resource Owner (user)
+- Client (your app)
+- Authorization Server (Google)
+- Resource Server (API)
+
+🔹 JWT Explained (Interview Level)
+
+**JWT (JSON Web Token)** is:
+
+- A compact token format
+- Self-contained
+- Signed (and sometimes encrypted)
+
+**Structure:**
+
+```text
+header.payload.signature
+```
+
+Contains:
+
+- User info
+- Roles
+- Expiry
+- Issuer
+
+**❓ Can JWT exist without OAuth2?**
+
+✅ **Yes**
+
+Used in:
+
+- Custom login systems
+- Internal microservices
+
+**❓ Can OAuth2 work without JWT?**
+
+✅ **Yes**
+
+Tokens can be:
+
+- Opaque tokens
+- Stored in authorization server
+
+**❓ Is OAuth2 authentication or authorization?**
+
+👉 **Authorization framework**
+
+Authentication is **a side effect**, not the goal.
