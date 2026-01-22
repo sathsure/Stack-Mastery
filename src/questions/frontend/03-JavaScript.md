@@ -259,7 +259,7 @@ console.log(arraysEqual([1, 2, 3], [1, 2, 4])); // false
 ### 📝 Answer
 
 ```js
-const arr = [ [ 1, 2 ], [ 3, 4, [5] ], [ 6, 7 ] ];
+const arr = [ [ 1, 2 ], [ 3, 4, 5 ], [ 6, 7 ] ];
 
 const output = arr.flat();
 console.log(output);
