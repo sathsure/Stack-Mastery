@@ -1863,7 +1863,7 @@ Spring Security **never checks permissions for an anonymous user unless explicit
 
 ---
 
-### ❓ What happens when we add spring-boot-starter-security?
+### ❓ What happens when we add `spring-boot-starter-security`?
 
 ### 📝 Answer
 
@@ -1883,8 +1883,6 @@ This is called **auto-configuration**.
 ### 📝 Answer
 
 Spring Security works using a **Filter Chain**.
-
-**Flow:**
 
 1. HTTP request enters application
 2. Goes through **Security Filters**
@@ -1909,28 +1907,11 @@ It defines **how requests are secured**:
 ```java
 @Bean
 SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().authenticated()
-        )
+    http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
         .formLogin();
     return http.build();
 }
 ```
-
----
-
-### ❓ Why is WebSecurityConfigurerAdapter removed?
-
-### 📝 Answer
-
-Because:
-
-- It was **monolithic**
-- Hard to customize
-- Violated composition over inheritance
-
-Now Spring Security prefers **component-based configuration** using beans.
 
 ---
 
@@ -1986,48 +1967,6 @@ hasAuthority("DELETE")
 ✅ **Yes**
 Spring Security doesn’t require roles at all.
 
-### ❓ Explain UserDetailsService.
-
-### 📝 Answer
-
-It is responsible for **loading user data** during authentication.
-
-Spring Security:
-
-1. Gets username
-2. Calls `loadUserByUsername`
-3. Compares password
-4. Builds Authentication object
-
-```java
-@Service
-public class CustomUserDetailsService implements UserDetailsService {
-
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        return new User(
-            "admin",
-            passwordEncoder.encode("1234"),
-            List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
-        );
-    }
-}
-```
-
----
-
-### ❓ When is UserDetailsService NOT called?
-
-### 📝 Answer
-
-- JWT-based authentication
-- OAuth2 resource server
-- Pre-authenticated requests
-
-Because authentication is **already done elsewhere**.
-
----
-
 ### ❓ Why do we need PasswordEncoder?
 
 ### 📝 Answer
@@ -2036,7 +1975,7 @@ Because:
 
 - Plain text passwords are insecure
 - Hashing prevents password leaks
-- BCrypt adds salt + adaptive hashing
+- BCrypt adds **salt + adaptive hashing**
 
 ```java
 @Bean
@@ -2044,19 +1983,6 @@ PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
 }
 ```
-
----
-
-### ❓ Why does login fail even with correct password?
-
-### 📝 Answer
-
-Common reasons:
-
-- Password not encoded
-- Encoder mismatch
-- `{noop}` missing for plain text
-- Different encoder used at save vs login
 
 ---
 
@@ -2071,10 +1997,6 @@ Common reasons:
 5. Server validates token
 
 👉 No session stored on server.
-
----
-
-### ❓ JWT Filter Example
 
 ```java
 public class JwtFilter extends OncePerRequestFilter {
@@ -2097,9 +2019,7 @@ public class JwtFilter extends OncePerRequestFilter {
 }
 ```
 
----
-
-### ❓ Why OncePerRequestFilter?
+❓ Why OncePerRequestFilter?
 
 ### 📝 Answer
 
@@ -2168,17 +2088,6 @@ http.csrf(csrf -> csrf.disable());
 
 ---
 
-### ❓ Why CSRF is not needed for JWT?
-
-### 📝 Answer
-
-Because JWT is:
-
-- Not stored in cookies
-- Explicitly sent in headers
-
----
-
 ### ❓ How do you test secured endpoints?
 
 ```java
@@ -2203,19 +2112,18 @@ void adminTest() {
 
 ---
 
-Below are **interview-ready answers** to the two most **confusing + high-frequency Spring Security questions**, explained **clearly, deeply, and with code**.
-I’ll also include **trick follow-ups** interviewers often ask.
-
----
-
-### ❓ Difference between CORS and CSRF?
+### ❓ CORS vs CSRF vs OAuth2 vs JWT?
 
 ### 📝 Answer
 
 - **CORS** is a **browser security mechanism** that controls _which origins can call your API_
 - **CSRF** is an **attack** that exploits _authenticated users via cookies_
+- **OAuth2** is an **authorization framework**
+- **JWT** is a **token format**
 
 👉 They solve **completely different problems**
+👉 They are **not competitors**
+👉 OAuth2 often **uses JWT**
 
 🔹 CORS (Cross-Origin Resource Sharing)
 
@@ -2244,60 +2152,6 @@ A **security attack** where a malicious site tricks a logged-in user’s browser
 - Server trusts cookies
 - Attacker exploits that trust
 
-**❓ I disabled CSRF but still get CORS error. Why?**
-
-Because **CSRF and CORS are unrelated**.
-
-- CSRF → server-side protection
-- CORS → browser-side restriction
-
-Disabling CSRF **does nothing** for CORS issues.
-
-✅ CORS Configuration
-
-```java
-@Bean
-CorsConfigurationSource corsSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:3000"));
-    config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowCredentials(true);
-
-    UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return source;
-}
-```
-
-✅ CSRF Disable (Only for Stateless APIs)
-
-```java
-http.csrf(csrf -> csrf.disable());
-```
-
-**❓ Is CSRF possible with JWT?**
-
-❌ No — **if JWT is stored in headers**, not cookies.
-
----
-
-### ❓ OAuth2 vs JWT?
-
-### 📝 Answer
-
-- **OAuth2** is an **authorization framework**
-- **JWT** is a **token format**
-
-👉 They are **not competitors**
-👉 OAuth2 often **uses JWT**
-
-**🧠 Correct Mental Model (Very Important)**
-
-> ❗ OAuth2 answers: **Who can access what?**
-> ❗ JWT answers: **How do we represent that access?**
-
 🔹 OAuth2 Explained
 
 **OAuth2 is about delegation of access**
@@ -2312,14 +2166,7 @@ OAuth2 defines:
 - Tokens
 - Roles of participants
 
-**Actors:**
-
-- Resource Owner (user)
-- Client (your app)
-- Authorization Server (Google)
-- Resource Server (API)
-
-🔹 JWT Explained (Interview Level)
+🔹 JWT Explained
 
 **JWT (JSON Web Token)** is:
 
@@ -2327,39 +2174,167 @@ OAuth2 defines:
 - Self-contained
 - Signed (and sometimes encrypted)
 
-**Structure:**
+```java
+@Configuration
+@EnableWebSecurity // Enables Spring Security for web (HTTP) requests
+public class SecurityConfig {
 
-```text
-header.payload.signature
+    // 1️⃣ API SECURITY (Access Token - JWT - Stateless)
+    @Bean
+    @Order(1)
+    SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
+
+        http
+            .securityMatcher("/api/**")
+
+            // CORS needed for browser-based APIs
+            .cors(cors -> {})
+
+            // JWT in header → no CSRF needed
+            .csrf(csrf -> csrf.disable())
+
+            // Stateless
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            // Authorization
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+
+            // JWT validation
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt());
+
+        return http.build();
+    }
+
+    // 2️⃣ AUTH SECURITY (Refresh Token - Cookie - CSRF Protected)
+    @Bean
+    @Order(2)
+    SecurityFilterChain authSecurityChain(HttpSecurity http) throws Exception {
+
+        http
+            .securityMatcher("/auth/**")
+
+            // CORS often still needed
+            .cors(cors -> {})
+
+            // Cookie-based refresh → CSRF REQUIRED
+            .csrf(csrf -> csrf.enable())
+
+            // Usually no session, but IF_REQUIRED is ok
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/login", "/auth/refresh").permitAll()
+                .anyRequest().authenticated()
+            )
+
+            // Optional: OAuth2 login (Google, GitHub, etc.)
+            .oauth2Login();
+
+        return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() { // Automatically gets called by .cors(cors -> {})
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+}
 ```
 
-Contains:
+❓ _Why `@Order` matters?_
 
-- User info
-- Roles
-- Expiry
-- Issuer
+- Spring Security checks filter chains in order.
+- More specific (`/api/**`) must come first.
 
-**❓ Can JWT exist without OAuth2?**
+❓ What happens when we call `.cors(cors -> {})`?
 
-✅ **Yes**
+Spring Security automatically looks for a `CorsConfigurationSource` bean in the application context and wires it into the `CorsFilter`
 
-Used in:
+❓ _Does Spring MVC CORS config also work here?_
 
-- Custom login systems
-- Internal microservices
+Spring Security **runs before MVC**, so:
 
-**❓ Can OAuth2 work without JWT?**
+- Security CORS config takes precedence
+- **MVC `@CrossOrigin` may be ignored**
 
-✅ **Yes**
+❓ _Is `csrf(csrf -> csrf.disable())` enabled by default?_
 
-Tokens can be:
+Yes. **CSRF protection is enabled by default** in Spring Security for web applications.
+When you add Spring Security:
 
-- Opaque tokens
-- Stored in authorization server
+- CSRF protection is **ON by default**
+- Applies to **state-changing HTTP methods** (POST, PUT, DELETE, PATCH)
+- Uses a CSRF token **stored in session or cookie**
 
-**❓ Is OAuth2 authentication or authorization?**
+❓ _Why CSRF is not needed for JWT?_
+
+CSRF protection is not needed for JWT because **JWT is not automatically sent by the browser**.
+
+CSRF exploits **cookie-based authentication**:
+
+- User logs into a site
+- Browser stores session cookie
+- **Browser automatically sends cookies with every request**
+- Malicious site triggers a request
+- Cookie is sent → request is authenticated
+
+With JWT authentication:
+
+- Token is stored in client-side memory (E.g `useState`, `NgRx`) or localstorage, sessionStorage
+- Not stored in cookies
+- Explicitly sent in headers
+
+❓ _Even JWT refresh token might need help from cookie and CSRF to protect, correct?_
+
+✅ Correct
+
+- Refresh tokens are often stored in **HttpOnly cookies**
+- Cookies are automatically sent by the browser
+- That reintroduces CSRF risk
+- So CSRF protection is required
+
+Access Token - Sent via `Authorization` header, Not automatically sent by the browser, **No CSRF Protection**
+Refresh Token - Automatically sent by the browser, **CSRF protection IS needed**
+
+❓ _Why Access Token in Header and Refresh Token in Cookie?_
+
+You must balance two threats:
+
+- ❌ XSS (JavaScript stealing tokens)
+- ❌ CSRF (browser auto-sending credentials)
+
+| Endpoint type | Auth mechanism   | CSRF          | Session      |
+| ------------- | ---------------- | ------------- | ------------ |
+| `/api/**`     | JWT (header)     | ❌ Not needed | ❌ Stateless |
+| `/auth/**`    | Cookie (refresh) | ✅ Required   | ⚠️ Minimal   |
+
+> You **cannot eliminate both completely** — you minimize damage.
+
+❓ _What SessionCreationPolicy Actually Controls?_
+
+**SessionCreationPolicy** tells Spring Security:
+
+> Should I create / use an **HTTP session** to store authentication?
+
+- `IF_REQUIRED` allows Spring Security to **create and use an HTTP session**, which is typical for stateful authentication.
+- `STATELESS` disables server-side session storage, which is commonly used with **JWT-based authentication**.
+
+  ❓ _Is OAuth2 authentication or authorization?_
 
 👉 **Authorization framework**
-
-Authentication is **a side effect**, not the goal.
