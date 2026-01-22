@@ -259,18 +259,26 @@ console.log(arraysEqual([1, 2, 3], [1, 2, 4])); // false
 ### 📝 Answer
 
 ```js
-var arr = [1, 2, 3, [4, 5], [6, 7], 8, 9];
+const arr = [ [ 1, 2 ], [ 3, 4, [5] ], [ 6, 7 ] ];
 
 const output = arr.flat();
 console.log(output);
 // Expected output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 // ------------ WITHOUT FLAT --------------
-var arr = [1, 2, 3, [4, 5], [6, 7], 8, 9];
+const aa = [ [ 1, 2 ], [ 3, 4, [5] ], [ 6, 7 ] ];
 
-const outputWithoutFlat = [].concat(...arr);
-console.log(outputWithoutFlat);
-// Expected output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+function recursion(arr) {
+    for(let ch of arr) {
+      if(Array.isArray(ch)) {
+        recursion(ch);
+      } else {
+        console.log(ch);
+      }
+  }
+}
+
+recursion(aa);
 ```
 
 ---
