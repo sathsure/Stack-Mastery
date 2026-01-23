@@ -971,6 +971,19 @@ This uses **abstract equality (`==`)**, which **forces type conversion**.
 
 ✅ Result → **true**
 
+❓ What values are falsy in JavaScript?
+
+```js
+false
+0
+-0
+0n
+''
+null
+undefined
+NaN
+```
+
 ---
 
 ### ❓ Why `typeof null === "object"`?

@@ -426,7 +426,10 @@ trackById(index: number, user: any) {
   selector: "[appHighlight]",
 })
 export class HighlightDirective {
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+  ) {}
 
   @Input("appHighlight") color!: string;
 
@@ -434,7 +437,7 @@ export class HighlightDirective {
     this.renderer.setStyle(
       this.el.nativeElement,
       "backgroundColor",
-      this.color
+      this.color,
     );
   }
 }
@@ -644,17 +647,9 @@ Async logic should be handled in services or Observables using the `async` pipe.
 
 ### 📝 Answer
 
-The `async` pipe is marked as pure because it does not run on every change detection cycle.  
-Angular re-evaluates it only when the Observable or Promise emits a new value, not on unrelated UI changes.
+**AsyncPipe** is an impure pipe. Angular marks it as pure: false because it must react to Observable or Promise emissions that occur without reference changes.
 
-So even though it reacts to async data, it still follows pure pipe rules.
-
-**Angular internally:**
-
-- Subscribes to the Observable or Promise
-- Listens for new emissions
-- Marks the view for check when a value is emitted
-- Unsubscribes automatically when the component is destroyed
+🧠 Why AsyncPipe MUST be impure (key reasoning)
 
 ```html
 {{ users$ | async }}
@@ -664,28 +659,21 @@ So even though it reacts to async data, it still follows pure pipe rules.
 users$ = this.userService.getUsers(); // Observable
 ```
 
-This makes it reactive without being impure.
+What happens:
 
----
+- users$ reference never changes
+- Observable emits values over time
+- Angular change detection does not know when the emission happens
 
-### ❓ Can you name a built-in impure pipe in Angular?
+If **AsyncPipe** were pure:
+❌ It would run only once
+❌ UI would never update
 
-### 📝 Answer
+So Angular makes it impure so it can:
 
-Angular does not provide any default impure pipes.  
-All built-in Angular pipes are pure by default, including date, currency, json, and even the async pipe.
-
-**What Angular considers truly “impure”**
-
-Only pipes with:
-
-```ts
-@Pipe({ pure: false })
-```
-
-are impure.
-
-Angular will never mark a pipe impure by default.
+- Stay subscribed
+- Detect emissions
+- Trigger view updates
 
 ---
 
@@ -1012,19 +1000,6 @@ Because the callback can run outside Zone.js, Angular doesn’t know a value cha
 
 ---
 
-### ❓ Why is async pipe often preferred over manual subscribe in components?
-
-### 📝 Answer
-
-`async` pipe:
-
-- Subscribes/unsubscribes automatically with view lifecycle
-- Avoids memory leaks
-- Triggers change detection correctly
-  Manual `subscribe` requires manual teardown and can be forgotten or mis-ordered.
-
----
-
 ### ❓ In Angular’s `OnPush` component, why can updating a field inside a subscription not update the UI, and what’s the correct pattern?
 
 ### 📝 Answer
@@ -1103,7 +1078,6 @@ When you implement CVA, your component can:
 - Work with **Reactive Forms**
 - Work with **Template-driven Forms**
 - Support:
-
   - `formControlName`
   - `formControl`
   - `ngModel`
@@ -1378,8 +1352,8 @@ saveUser$ = createEffect(() =>
       ...action,
       user: trimStringsDeep(action.user),
     })),
-    switchMap((action) => this.userService.save(action.user))
-  )
+    switchMap((action) => this.userService.save(action.user)),
+  ),
 );
 ```
 
@@ -1759,3 +1733,195 @@ div[_ngcontent-c1] {
 - **Parent component styles are not applied** → blocked by Angular’s view encapsulation
 
 ---
+
+## Angular Build System
+
+### ❓ Explain Angular Building Tools?
+
+### 📝 Answer
+
+1️⃣ Big Picture (one-line)
+
+**Bundler** + **Dev Server** + **Compiler** + **Change Detection** + **Reload strategy** together define how your app is built, served, updated, and rendered during development and production.
+
+2️⃣ Bundlers & Dev Servers
+
+🔹 Webpack
+
+1. **Webpack Bundler** - Takes your JS/TS/CSS/assets and Bundles them into optimized files
+
+2. **Webpack Dev Server** - Runs a local server (Reloads or updates browser)
+
+> 📌 Used heavily by Angular (pre-v17)
+
+🔹 Vite
+
+1. **Vite Dev Server** - Uses native ES modules and Starts instantly (no full bundle on startup)
+
+2. **Vite Bundler** - Vite uses **esbuild** for fast transformations and dependency pre-bundling during development, and uses **Rollup** internally for production builds.
+
+> **esbuild** (primary) + **Rollup** (final optimizations)
+> 📌 Used by Angular v17+
+
+```sql
+Angular 8  → View Engine + Webpack
+Angular 9  → Ivy + Webpack
+Angular 16 → Ivy + esbuild (partial)
+Angular 17+→ Ivy + Vite + esbuild
+Angular 19 → Ivy + Vite + esbuild + Rollup
+```
+
+3️⃣ Angular Rendering Engines (Compilers)
+
+🔹 View Engine (OLD ❌) - Used before Angular 9
+🔹 Ivy Compiler (CURRENT ✅) - Used Angular 9 → present
+
+🔹 JIT (Just-In-Time) - Compilation happens in browser
+🔹 AOT (Ahead-Of-Time) - Compilation happens during build
+
+4️⃣ Comparison: View Engine vs Ivy
+
+| Feature         | View Engine | Ivy          |
+| --------------- | ----------- | ------------ |
+| AOT             | ✅          | ✅           |
+| JIT             | ✅          | ✅           |
+| Tree-shaking    | ❌ Poor     | ✅ Excellent |
+| Build speed     | ❌ Slower   | ✅ Faster    |
+| Bundle size     | ❌ Larger   | ✅ Smaller   |
+| Debugging       | ❌ Hard     | ✅ Easier    |
+| Future features | ❌ No       | ✅ Yes       |
+
+5️⃣ Hot Module Replacement (HMR)
+
+🔹 What is HMR?
+
+- Update code without full page reload
+- Keeps app state (forms, data)
+
+🔹 Who supports it?
+
+| Tool               | HMR               |
+| ------------------ | ----------------- |
+| Webpack Dev Server | Yes               |
+| Vite Dev Server    | Yes (much faster) |
+
+🔹 What happens when you change a file?
+
+- Webpack
+  - Webpack rebuilds the dependency graph
+  - A new bundle or chunk is created
+  - Webpack Dev Server pushes updates via WebSocket
+  - Browser replaces the affected module
+
+- Vite
+  - File is already an ES module
+  - Vite sends only that module
+  - Browser updates without rebundling
+
+6️⃣ How Everything Connects (Simple Flow)
+
+🧠 Old Angular Setup (Before v17)
+
+```arduino
+Code → Ivy Compiler
+     → Webpack Bundler
+     → Webpack Dev Server
+     → Browser
+```
+
+🚀 Modern Angular Setup (v17+)
+
+```arduino
+Code → Ivy Compiler
+     → Vite Dev Server (dev)
+     → Rollup (prod bundling)
+     → Browser
+```
+
+7️⃣ How Compiler and Bundler work together?
+
+- Ivy compiler runs first
+- Ivy converts this into:
+  ✔ Templates compiled
+  ✔ Decorators removed
+  ✔ Angular instructions generated
+  ➡️ Output is pure JavaScript
+- esbuild runs next
+- esbuild now:
+  ✔ Bundles this JS with other JS and TS.
+  ✔ Removes unused code
+  ✔ Splits chunks
+  ✔ Optimizes imports
+  ➡️ Produces final JS files for browser
+
+> 📌 Ivy understands Angular and templates
+> 📌 HTML disappears after Ivy runs
+> 📌 esbuild does not understand Angular decorators
+
+❓ Webpack vs Vite
+👉 Vite is faster because it doesn’t bundle everything upfront.
+
+❓ Ivy vs View Engine
+👉 Ivy is faster, smaller, and more flexible.
+
+❓ AOT vs JIT
+👉 AOT for production, JIT for development.
+
+❓ Dirty checking
+👉 Angular checks bindings on every change detection cycle.
+
+❓ HMR
+👉 Updates modules without reloading the page.
+
+---
+
+## Unit Testing
+
+### ❓ Difference between Jasmine and Jest?
+
+### 📝 Answer
+
+**Jasmine** → Test framework (how you write tests)
+**Karma** → Test runner (where & how tests run)
+**Jest** → All-in-one testing tool (framework + runner)
+
+> 👉 Jasmine + Karma = what Jest already gives you
+
+---
+
+### ❓ What is a spy in unit testing?
+
+### 📝 Answer
+
+A spy tracks calls to functions, arguments, and return values without executing the real implementation.
+
+```ts
+spyOn(service, "getData").and.returnValue(of([]));
+```
+
+- `spyOn()` – Spy on existing method
+- `createSpy()` – Standalone spy
+- `createSpyObj()` – Mock object with multiple methods
+
+### ❓ Can we test private methods in Angular?
+
+### 📝 Answer
+
+Private methods should be tested indirectly through public methods.
+
+```ts
+(component as any).privateMethod();
+```
+
+- **TypeScript** private is **Compile-Time Only**
+- **JavaScript** has **no private keyword**. The method still exists on the object
+
+### ❓ What is Cypress?
+
+### 📝 Answer
+
+Cypress is an end-to-end testing framework that:
+
+- Runs tests in a real browser
+- Simulates real user behavior
+- Is faster and more reliable than Protractor

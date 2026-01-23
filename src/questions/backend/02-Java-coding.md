@@ -357,3 +357,58 @@ public static String reverseWords(String s) {
     return String.join(" ", words);
 }
 ```
+
+---
+
+### ❓ Reverse a LinkedList
+
+### 📝 Answer
+
+```java
+public class Main {
+    public static void main(String[] args) {
+
+        Node node = new Node(1);                 // create head node
+        node.next = new Node(1);                 // link second node
+        node.next.next = new Node(1);            // link third node
+        node.next.next.next = new Node(1);       // link fourth node
+
+        printNode(node);                         // print original list
+
+        node = reverse(node);                    // update head after reversal
+
+        printNode(node);                         // print reversed list
+    }
+
+    static void printNode(Node node) {
+        Node curr = node;                        // start traversal from head
+        while (curr != null) {                   // traverse till end of list
+            System.out.println(curr.data);       // print current node data
+            curr = curr.next;                    // move to next node
+        }
+    }
+
+    static Node reverse(Node node) {
+        Node prev = null;                        // will become new head
+        Node curr = node;                        // start from current head
+
+        while (curr != null) {                   // iterate till list ends
+            Node next = curr.next;               // store next node
+            curr.next = prev;                    // reverse the link
+            prev = curr;                         // move prev forward
+            curr = next;                         // move curr forward
+        }
+        return prev;                             // return new head
+    }
+}
+
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;                        // store node value
+        this.next = null;                        // initialize next as null
+    }
+}
+```

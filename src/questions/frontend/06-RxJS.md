@@ -115,10 +115,17 @@ Both an Observable and an Observer; it can emit values to multiple subscribers.
 
 ### 📝 Answer
 
-- `Subject`: no initial value, broadcasts new values.
-- `BehaviorSubject`: holds current value, new subscribers get the latest value.
-- `ReplaySubject`: replays a buffer of past values to new subscribers.
-- `AsyncSubject`: emits only the last value on completion.
+- `Subject`:
+  - A multicast Observable. It does not store any value.
+  - 👉 New subscribers get only future values, not past ones.
+- `BehaviorSubject`:
+  - A Subject that always has a current value.
+  - 👉 New subscribers immediately receive the latest value.
+- `ReplaySubject`:
+  - A Subject that replays past values to new subscribers.
+  - 👉 You control how many past values to replay.
+- `AsyncSubject`:
+  - emits only the last value on completion.
 
 ---
 
@@ -138,11 +145,50 @@ Yes, but those values are lost (no replay).
 
 ---
 
-### ❓ When would you use `shareReplay` in Angular?
+### ❓ `share` vs `shareReplay` in Angular?
 
 ### 📝 Answer
 
-To cache and share the latest emission (e.g., HTTP data) among multiple subscribers without refetching.
+🔹 share()
+
+```ts
+const src$ = of(0, 1, 2).pipe(share());
+
+src$.subscribe((v) => console.log("A:", v));
+
+setTimeout(() => {
+  src$.subscribe((v) => console.log("B:", v));
+}, 1000);
+```
+
+OUTPUT:
+
+```
+A: 0
+A: 1
+A: 2
+```
+
+🔹 shareReplay(1)
+
+```ts
+const src$ = of(0, 1, 2).pipe(shareReplay(1));
+
+src$.subscribe((v) => console.log("A:", v));
+
+setTimeout(() => {
+  src$.subscribe((v) => console.log("B:", v));
+}, 1000);
+```
+
+OUTPUT:
+
+```
+A: 0
+A: 1
+A: 2
+B: 2 👈 REPLAYED
+```
 
 ---
 
@@ -629,7 +675,7 @@ export class App {
     ]).subscribe((value) => {
       const updatedValue = (value[0] as any[]).map((user) => {
         const photo = (value[1] as any[])?.find(
-          (photo) => photo["id"] === user["id"]
+          (photo) => photo["id"] === user["id"],
         );
 
         return {
