@@ -3279,3 +3279,256 @@ static String handleResponse(Object response) {
 
 > Use `instanceof` pattern matching for simple type checks
 > Use `switch` pattern matching for multiple type-based branches
+
+---
+
+## Java Features:
+
+### ❓ AutoBoxing & AutoUnboxing
+
+### 📝 Answer
+
+- Introduced in Java 5 to support Collections & Generics.
+- **Autoboxing**: Automatic conversion between **primitive → wrapper**
+- **Unboxing**: Automatic conversion between **wrapper → primitive**
+
+```java
+Integer a = 10;   // Autoboxing (int → Integer)
+int b = a;        // Unboxing (Integer → int)
+
+/* What actually happens (compiler level) */
+Integer a = Integer.valueOf(10);
+int b = a.intValue();
+```
+
+1️⃣ **Byte Conversion in Java**
+
+This is called **WIDENING PRIMITIVE CONVERSION**
+
+🧠 **Basic Rule (Must Remember)**
+
+Java follows this **fixed widening order**:
+
+```
+byte  → short → int → long → float → double
+char  → int   → long → float → double
+```
+
+- Conversion is **implicit**
+- **No cast required**
+- **No compile-time error**
+
+✔ Example 1:
+
+```java
+byte b = 10;
+
+int i = b;       // byte → int (widening)
+float f = i;     // int → float
+double d = f;    // float → double
+
+System.out.println(d); // 10.0
+```
+
+✔ Example 2: Valid char Widening:
+
+```java
+char c = 'A';   // Unicode 65
+
+int i = c;      // 65
+long l = c;
+float f = c;
+double d = c;
+```
+
+❌ Invalid Conversions
+
+```java
+byte b = c;     // ❌ compile-time error
+short s = c;    // ❌ compile-time error
+```
+
+✔ Example 3: Direct Conversion (Chain Happens Internally)
+
+```java
+byte b = 10;
+double d = b;  // byte → int → double (internally)
+```
+
+> 💡 Compiler inserts intermediate widening automatically.
+
+byte - 8 bits → `-128` to `127`
+short - 16 bits → `-32,768` to `32,767`
+char - 16 bits → `0` to `65,535`
+int - 32 bits → `-2,147,483,648` to `2,147,483,647`
+long - 64 bits `-9,223,372,036,854,775,808` to `9,223,372,036,854,775,807`
+float - 32-bit floating point
+double - 64-bit floating point
+
+✔ Example 4: Widening vs Autoboxing (Very Important)
+
+```java
+byte b = 10;
+
+Integer i = b;  // byte → int → Integer (widening + boxing)
+Long l = b;     // byte → long → Long
+```
+
+✔ Example 5: Narrowing
+
+```java
+double d = 10.8;
+int i = (int) d;     // 10  (fraction lost)
+
+int x = 130;
+byte b = (byte) x;  // -126 (overflow)
+```
+
+🤔 Why does Java allow `byte → double` but not `double → byte`?
+
+- byte → double is widening (safe range)
+- double → byte is narrowing (data loss risk)
+
+---
+
+### ❓ JVM Internal Question
+
+### 📝 Answer
+
+```java
+Integer x = 100;
+Integer y = 100;
+System.out.println(x == y); // true (cached)
+
+Integer p = 200;
+Integer q = 200;
+System.out.println(p == q); // false (new objects)
+```
+
+👉 **Rule**:
+
+- `==` compares **references**
+- `.equals()` compares **values**
+- JVM caches Integer objects in the range: `-128` to `127`
+
+Runtime behavior:
+
+```java
+x --> cached Integer(100)
+y --> cached Integer(100)
+```
+
+✔ Same object reference
+
+```java
+System.out.println(x == y); // true
+```
+
+🔹 **Real Production Bug**
+
+```java
+Integer count = null;
+int total = count; // NullPointerException (auto-unboxing)
+```
+
+💥 **Why?**
+
+- JVM tries: `count.intValue()` causing **NullPointerException**
+
+🔹 **Performance Impact**
+
+```java
+Long sum = 0L;
+for (long i = 0; i < 1_000_000; i++) {
+     sum += i; // boxing + unboxing every iteration
+}
+```
+
+⚠️ **Hidden cost** → creates unnecessary objects → GC pressure
+
+✅ Better:
+
+```java
+long sum = 0L;
+```
+
+## JVM vs JRE vs JDK
+
+### ❓ JVM Internals
+
+### 📝 Answer
+
+🔹 High-Level View
+
+```
+JDK = JRE + Development Tools
+JRE = JVM + Core Libraries
+JVM = Execution Engine
+```
+
+🔹 **JVM Internal Architecture (Must Know)**
+
+```
+          ┌───────────────┐
+          │  ClassLoader  │
+          └──────┬────────┘
+                 │
+        ┌────────▼────────┐
+        │ Runtime Memory  │
+        │  - Heap         │
+        │  - Stack        │
+        │  - Metaspace   │
+        │  - PC Register │
+        └────────┬────────┘
+                 │
+        ┌────────▼────────┐
+        │ Execution Engine│
+        │  - Interpreter │
+        │  - JIT Compiler│
+        │  - GC          │
+        └────────────────┘
+```
+
+🔹 **JVM Responsibilities**
+
+✔ Loads `.class` files
+✔ Verifies bytecode
+✔ Manages memory & GC
+✔ Executes bytecode
+✔ Ensures platform independence
+
+🔹 **JRE (Runtime Environment)**
+
+Contains:
+
+- JVM
+- Java Core APIs (`java.lang`, `java.util`, etc.)
+- Native libraries
+
+❌ Cannot compile code
+
+🔹 **JDK (Development Kit)**
+
+Contains:
+
+- JRE
+- `javac`, `javadoc`, `jconsole`, `jstack`, `jmap`
+
+**✅ Rules to Remember**
+
+✔ JVM is platform-dependent (**Windows x64 JVM**, **Linux x64 JVM,** **macOS ARM JVM**)
+✔ JRE = runtime only
+✔ JDK needed for development
+✔ Java is platform-independent (Same **.class** file runs on any platform as long as the correct JVM exists)
+
+🤔 **Java Compilation and Runtime Execution**
+
+- JDK’s `javac` compiles all `.java` files into `.class` files (written in **bytecode**)
+- Tomcat Startup
+  - JVM loads `.class` files using the `ClassLoader`
+  - JVM **Interpreter** executes bytecode **instruction by instruction**
+  - JVM monitors execution
+    - Only Frequently executed methods / loops are detected
+    - **JIT** compiles them into native machine code
+
+---
