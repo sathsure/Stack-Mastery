@@ -2338,3 +2338,151 @@ You must balance two threats:
   ❓ _Is OAuth2 authentication or authorization?_
 
 👉 **Authorization framework**
+
+---
+
+### ❓ Checked Exception vs Unchecked Exception
+
+✔ **Checked Exceptions**
+
+- Checked at **compile time**
+- Must be **handled** using `try-catch` **or** declared using `throws`
+
+**Common Checked Exceptions (Important ones to remember)**
+_(All extend `Exception` but NOT `RuntimeException`)_
+
+- **IOException** – File/network I/O failure
+- **SQLException** – Database access error
+- **ClassNotFoundException** – Class not found at runtime loading
+- **InterruptedException** – Thread interrupted during execution
+- **FileNotFoundException** – Not implemented `Cloneable` but `clone()` is called
+
+👉 **You cannot realistically name all checked exceptions**
+(There are **100+**, including custom ones)
+
+✔ **Unchecked Exceptions**
+
+- Checked at **runtime**
+- Occur due to **programming mistakes**
+
+**Very common ones (must remember):**
+_(Extend `RuntimeException`)_
+
+- **NullPointerException** – Accessing object reference that is null
+- **ArrayIndexOutOfBoundsException** – Invalid array index
+- **ArithmeticException** – Invalid arithmetic (divide by zero)
+- **NumberFormatException** – Invalid string to number conversion
+- **ClassCastException** – Invalid object casting
+- **IllegalArgumentException** → wrong input
+- **ConcurrentModificationException** → modify collection during iteration
+
+```java
+class MyChecked extends Exception {}
+class MyUnchecked extends RuntimeException {}
+```
+
+✔ Exception vs Error
+
+| Exception         | Error                 |
+| ----------------- | --------------------- |
+| Recoverable       | Not recoverable       |
+| App-level issues  | JVM-level issues      |
+| Should be handled | Should NOT be handled |
+
+- **OutOfMemoryError** – Heap memory exhausted
+- **StackOverflowError** – Infinite recursion
+- **NoClassDefFoundError** – Class missing at runtime
+- **VirtualMachineError** – JVM internal failure
+
+🤔 **`throw` vs `throws`**
+
+| throw                                  | throws                        |
+| -------------------------------------- | ----------------------------- |
+| Used to **explicitly throw** exception | Used to **declare** exception |
+| Inside method                          | Method signature              |
+| Throws **one exception**               | Can declare **multiple**      |
+
+```java
+throw new IOException();
+void read() throws IOException {}
+```
+
+🤔 **Exception Handling Best Practices (Spring Boot)**
+
+✔ Use **`@RestControllerAdvice` + `@ExceptionHandler`**
+✔ Never expose stack trace to clients
+✔ Create **custom exceptions**
+✔ Map exceptions to proper **HTTP status codes**
+✔ Log errors centrally
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<String> handleNotFound() {
+    return ResponseEntity.status(404).body("Not Found");
+  }
+}
+```
+
+---
+
+### ❓ Spring HATEOAS
+
+❓ Problem Before
+
+- REST APIs returned **only data**
+- Client didn’t know **next actions / URLs**
+
+✅ What it Solves
+
+- Adds **hypermedia links**
+- Makes API **self-discoverable**
+
+🔁 What was used before
+
+- Plain REST + hardcoded URLs
+
+💡 Example
+
+```java
+EntityModel<User> model = EntityModel.of(user);
+model.add(linkTo(methodOn(UserController.class).getAll()).withRel("all-users"));
+```
+
+🧠 In Short
+
+> HATEOAS adds links to REST responses so clients know what to do next.
+
+---
+
+### ❓ Thymeleaf
+
+❓ Problem Before
+
+- JSP had poor Spring integration
+- Not HTML-friendly
+
+✅ What it Solves
+
+- **Server-side HTML rendering**
+- Works naturally with Spring MVC
+
+🔁 What was used before
+
+- JSP, Velocity, FreeMarker
+
+💡 Example
+
+```html
+<p th:text="${user.name}"></p>
+```
+
+```java
+model.addAttribute("user", user);
+```
+
+🧠 In Short
+
+> Thymeleaf is a server-side template engine used to render dynamic HTML in Spring Boot.
