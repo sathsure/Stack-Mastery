@@ -238,6 +238,34 @@ What composition solves
 
 ![CompositionVsInheritance Image](/src/assets/backend/composition-vs-inheritance.png)
 
+🤔🔹 What is a Pointer?
+
+- A variable that **stores the memory address** of another variable
+- Common in **C / C++**
+
+```c
+int x = 10;
+int *p = &x;   // p holds address of x
+```
+
+🤔🔹 Why Java Does NOT use Pointers?
+
+Java **intentionally hides pointers** and uses **references** instead.
+
+| Reason                  | Explanation                       |
+| ----------------------- | --------------------------------- |
+| 🔐 Security             | Prevents direct memory access     |
+| 🧹 Automatic GC         | Garbage Collector manages memory  |
+| 🌍 Platform-independent | No hardware-level memory handling |
+
+```java
+User u = new User(); // u is a reference, not a pointer
+```
+
+> Java does not support pointers to ensure security, prevent memory corruption, and enable automatic garbage collection while still allowing object references.
+
+---
+
 ### ❓ How do you design a system where the same operation behaves differently based on the object type, without changing the calling code?
 
 ### 📝 Answer
@@ -3531,4 +3559,11 @@ Contains:
     - Only Frequently executed methods / loops are detected
     - **JIT** compiles them into native machine code
 
----
+🤔 **Why Java is Platform Independent?**
+
+- Java code is compiled into bytecode (.class)
+- Bytecode runs on JVM, not directly on OS
+- Each OS has its own JVM implementation
+- Same bytecode runs unchanged on any platform
+
+## 👉 “Write Once, Run Anywhere (WORA)”
