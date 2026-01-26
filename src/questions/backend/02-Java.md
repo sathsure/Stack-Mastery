@@ -3566,4 +3566,4 @@ Contains:
 - Each OS has its own JVM implementation
 - Same bytecode runs unchanged on any platform
 
-## 👉 “Write Once, Run Anywhere (WORA)”
+> 👉 “Write Once, Run Anywhere (WORA)”
