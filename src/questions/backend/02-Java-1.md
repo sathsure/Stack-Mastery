@@ -1,4 +1,4 @@
-## 1️⃣ Core Java – OOP & Design Thinking
+## 1️⃣ OOP & Design Thinking
 
 ### ❓ Why OOP was introduced?
 
@@ -840,7 +840,415 @@ SRP (Single Responsibility Principle)
 
 ---
 
-## 2️⃣ Core Java – Collections Framework
+## 2️⃣ Core Java
+
+### ❓ Difference between == and equals()?
+
+### 📝 Answer
+
+`==` compares references **(memory addresses)**.
+`equals()` compares object content **(logical equality)**.
+
+```java
+String a = new String("Java");
+String b = new String("Java");
+
+System.out.println(a == b);      // false (different memory)
+System.out.println(a.equals(b)); // true  (same content)
+```
+
+✔ Always use `equals()` for object comparison
+✔ Use `==` only when reference equality is intended
+
+---
+
+### ❓ String vs StringBuilder vs StringBuffer?
+
+### 📝 Answer
+
+| Feature         | String                     | StringBuilder               | StringBuffer                |
+| --------------- | -------------------------- | --------------------------- | --------------------------- |
+| Mutability      | ❌ Immutable               | ✅ Mutable                  | ✅ Mutable                  |
+| Thread Safe     | ✅ Yes                     | ❌ No                       | ✅ Yes                      |
+| Performance     | ❌ Slow                    | 🚀 Fastest                  | ⚠️ Slower                   |
+| Memory          | ❌ High                    | ✅ Efficient                | ⚠️ Moderate                 |
+| Synchronization | ❌ No                      | ❌ No                       | ✅ Yes                      |
+| Memory          | String Constant Pool (SCP) | object → Heap & value → SCP | object → Heap & value → SCP |
+
+```java
+// BAD: creates multiple objects
+String s = "";
+for(int i = 0; i < 1000; i++) {
+    s = s + i;
+}
+
+// GOOD: single object
+StringBuilder sb = new StringBuilder();
+for(int i = 0; i < 1000; i++) {
+    sb.append(i);
+}
+```
+
+---
+
+### ❓ final vs finally vs finalize?
+
+### 📝 Answer
+
+| Aspect             | `final`                 | `finally`                     | `finalize()`                |
+| ------------------ | ----------------------- | ----------------------------- | --------------------------- |
+| Category           | Keyword                 | Block                         | Method                      |
+| Applies To         | Variable, Method, Class | `try-catch`                   | Object (GC)                 |
+| When Executed      | Compile-time            | Runtime (always)              | GC-time (uncertain)         |
+| Core Purpose       | Prevent modification    | Ensure cleanup                | Last-chance cleanup         |
+| JVM Guarantee      | ✅ Yes                  | ✅ Yes (except `System.exit`) | ❌ No                       |
+| Java Status        | Active & Recommended    | Active & Recommended          | ❌ **Deprecated (Java 9+)** |
+| Modern Alternative | Immutability patterns   | try-with-resources            | `AutoCloseable`, `Cleaner`  |
+
+`final`
+
+```java
+final int MAX = 10;
+// MAX = 20; ❌ Compile-time error
+```
+
+`finally`
+
+```java
+try {
+    int a = 10 / 0;
+} catch (Exception e) {
+    System.out.println("Error");
+} finally {
+    System.out.println("Cleanup always runs");
+}
+```
+
+`finalize()` (❌ Avoid)
+
+```java
+class Demo {
+    protected void finalize() {
+        System.out.println("May or may not run");
+    }
+}
+```
+
+1. What is `AutoCloseable`?
+
+`AutoCloseable` is an interface whose close() method is automatically invoked by the JVM when the resource exits a try-with-resources block.
+
+```java
+try (Resource res = new Resource()) {
+    // use resource
+}
+// res.close() is called automatically
+```
+
+---
+
+### ❓ What are the design patterns that you used in Java?
+
+### 📝 Answer
+
+1️⃣ **Creational Design Patterns**
+
+👉 **Focus:** _How objects are created_
+
+❓ Problem They Solve
+
+- Too many `new` keywords
+- Tight coupling to concrete classes
+- Complex object creation logic
+
+✅ Why They Exist
+
+- Control **object creation**
+- Improve **flexibility and maintainability**
+
+⭐ Common Creational Patterns
+
+🔹 Singleton
+
+**Singleton** restricts object creation to one instance and provides a global access point to it.
+
+```java
+class Singleton {
+    private static Singleton instance;
+    private Singleton() {}
+    public static Singleton getInstance() {
+        if (instance == null)
+            instance = new Singleton();
+        return instance;
+    }
+}
+```
+
+🔹 Factory
+
+Factory creates objects by hiding the `new` keyword and returning an interface-based instance, so the caller depends on behavior, not concrete classes.
+
+✔ Used when:
+
+- Multiple implementations exist
+
+```java
+interface Shape { void draw(); }
+
+class Circle implements Shape {
+    public void draw() { System.out.println("Circle"); }
+}
+
+class ShapeFactory {
+    static Shape getShape() {
+        return new Circle();
+    }
+}
+```
+
+🔹 Builder
+
+**Builder** Pattern is used to create complex objects with many optional fields by building the object step-by-step, making the code readable, flexible, and avoiding constructor overloads.
+
+✔ Used when:
+
+- Constructors become messy
+
+```java
+User user = new User.Builder()
+                .name("Dev")
+                .age(25)
+                .build();
+```
+
+2️⃣ **Structural Design Patterns**
+
+👉 **Focus:** _How classes and objects are composed_
+
+❓ Problem They Solve
+
+- Rigid class structures
+- Difficult to extend functionality
+- Interface incompatibility
+
+✅ Why They Exist
+
+- Improve **flexibility**
+- Reduce **class explosion**
+
+⭐ Common Structural Patterns
+
+🔹 Adapter
+
+**Adapter** allows two incompatible interfaces to work together by converting one interface into another that the client expects, without changing existing code.
+
+✔ Problem:
+
+- Old code doesn’t match new interface
+
+```java
+interface Charger {
+    void charge();
+}
+
+class OldCharger {
+    void plug() {
+        System.out.println("Charging");
+    }
+}
+
+class Adapter implements Charger {
+    OldCharger charger = new OldCharger();
+    public void charge() {
+        charger.plug();
+    }
+}
+```
+
+🔹 Decorator
+
+**Decorator** adds new responsibilities to an object at runtime by wrapping it, without changing the original class or using inheritance.
+
+✔ Problem:
+
+- Inheritance explosion
+
+```java
+interface Coffee {
+    int cost();
+}
+
+class SimpleCoffee implements Coffee {
+    public int cost() { return 50; }
+}
+
+class MilkDecorator implements Coffee {
+    Coffee coffee;
+    MilkDecorator(Coffee coffee) {
+        this.coffee = coffee;
+    }
+    public int cost() {
+        return coffee.cost() + 10;
+    }
+}
+```
+
+🔹 Proxy
+
+**Proxy** acts as a middle layer that controls, restricts, or enhances access to a real object without changing its code.
+
+✔ Used for:
+
+- Security
+- Lazy loading
+
+```java
+class ServiceProxy {
+    RealService service = new RealService();
+    void execute() {
+        service.execute();
+    }
+}
+```
+
+3️⃣ **Behavioral Design Patterns**
+
+👉 **Focus:** _How objects interact and communicate_
+
+❓ Problem They Solve
+
+- Hard-coded logic
+- Too many `if-else`
+- Tight coupling between behaviors
+
+✅ Why They Exist
+
+- Flexible behavior
+- Clean separation of responsibility
+
+⭐ Common Behavioral Patterns
+
+🔹 Strategy
+
+**Strategy pattern** lets us define a family of behaviors, put each one in a separate class, and switch the behavior at runtime instead of using if-else or switch.
+
+✔ Replaces `if-else`
+
+```java
+interface Payment {
+    void pay();
+}
+
+class CardPayment implements Payment {
+    public void pay() {
+        System.out.println("Card Payment");
+    }
+}
+```
+
+🔹 Observer
+
+**Observer Pattern** defines a one-to-many relationship where when one object changes state, all dependent objects are automatically notified and updated, without tight coupling between them.
+
+✔ Used in:
+
+- Events
+- UI updates
+
+```java
+interface Observer {
+    void update();
+}
+```
+
+🔹 Command
+
+**Command pattern** turns a request into an object so the sender and receiver are decoupled, allowing undo/redo, queuing, and delayed execution.
+
+✔ Used in:
+
+- Undo/Redo
+- Queues
+
+```java
+interface Command {
+    void execute();
+}
+```
+
+---
+
+### ❓ Checked Exception vs Unchecked Exception
+
+### 📝 Answer
+
+✔ **Checked Exceptions**
+
+- Checked at **compile time**
+- Must be **handled** using `try-catch` **or** declared using `throws`
+
+**Common Checked Exceptions (Important ones to remember)**
+_(All extend `Exception` but NOT `RuntimeException`)_
+
+- **IOException** – File/network I/O failure
+- **SQLException** – Database access error
+- **ClassNotFoundException** – Class not found at runtime loading
+- **InterruptedException** – Thread interrupted during execution
+- **FileNotFoundException** – Not implemented `Cloneable` but `clone()` is called
+
+👉 **You cannot realistically name all checked exceptions**
+(There are **100+**, including custom ones)
+
+✔ **Unchecked Exceptions**
+
+- Checked at **runtime**
+- Occur due to **programming mistakes**
+
+**Very common ones (must remember):**
+_(Extend `RuntimeException`)_
+
+- **NullPointerException** – Accessing object reference that is null
+- **ArrayIndexOutOfBoundsException** – Invalid array index
+- **ArithmeticException** – Invalid arithmetic (divide by zero)
+- **NumberFormatException** – Invalid string to number conversion
+- **ClassCastException** – Invalid object casting
+- **IllegalArgumentException** → wrong input
+- **ConcurrentModificationException** → modify collection during iteration
+
+```java
+class MyChecked extends Exception {}
+class MyUnchecked extends RuntimeException {}
+```
+
+✔ Exception vs Error
+
+| Exception         | Error                 |
+| ----------------- | --------------------- |
+| Recoverable       | Not recoverable       |
+| App-level issues  | JVM-level issues      |
+| Should be handled | Should NOT be handled |
+
+- **OutOfMemoryError** – Heap memory exhausted
+- **StackOverflowError** – Infinite recursion
+- **NoClassDefFoundError** – Class missing at runtime
+- **VirtualMachineError** – JVM internal failure
+
+🤔 **`throw` vs `throws`**
+
+| throw                                  | throws                        |
+| -------------------------------------- | ----------------------------- |
+| Used to **explicitly throw** exception | Used to **declare** exception |
+| Inside method                          | Method signature              |
+| Throws **one exception**               | Can declare **multiple**      |
+
+```java
+throw new IOException();
+void read() throws IOException {}
+```
+
+---
+
+## 3️⃣ Collections Framework
 
 ![Collections Image](/src/assets/backend/java-collections.png)
 
@@ -899,6 +1307,7 @@ list.add(2);
 Collections.sort(list);
 System.out.println(list); // [1, 2, 3]
 ```
+
 ---
 
 ### ❓ Difference between `List`, `Set`, and `Map`
@@ -915,8 +1324,6 @@ System.out.println(list); // [1, 2, 3]
 Map<Integer, String> map = new HashMap<>();
 map.put(1, "Java");
 ```
-
-
 
 ---
 
@@ -1839,7 +2246,6 @@ Optional<String> name3 = Optional.empty();          // empty Optional
 
 ```
 
-
 6️⃣ **Default & Static Methods in Interface**
 
 Java 8 allows interfaces to have default and static methods with implementation.
@@ -1928,7 +2334,7 @@ class ElectricCar extends Machine implements Vehicle { } // ✅ still allowed
 
 ```
 
-7️⃣ Simple Coding Round Problems
+7️⃣ Simple Coding Examples:
 
 ```java
 // 1. Find even numbers
@@ -1961,6 +2367,348 @@ Map<String, List<Employee>> map = list.stream().collect(Collectors.groupingBy(Em
 // 10. Filtered list using Parallel Stream
 List<Integer> result = list.parallelStream().filter(n -> n > 10).collect(Collectors.toList());
 ```
+
+---
+
+### ❓ `filter()` vs `peek()`
+
+### 📝 Answer
+
+🔹 `filter()`
+
+- **Purpose:** Select elements based on a condition
+- **Type:** Intermediate operation
+- **Returns:** Stream with filtered elements
+
+```java
+List<Integer> nums = Arrays.asList(1, 2, 3, 4);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println); // 2, 4
+```
+
+🔹 `peek()`
+
+- **Purpose:** Debugging (look at elements without changing them)
+- **Type:** Intermediate operation
+- **Should NOT be used for logic**
+
+```java
+nums.stream()
+    .peek(n -> System.out.println("Before: " + n))
+    .filter(n -> n > 2)
+    .forEach(System.out::println);
+```
+
+📌 **Key Difference**
+
+- `filter()` → **changes stream content**
+- `peek()` → **just observes**
+
+---
+
+### ❓ `findFirst()` vs `findAny()`
+
+### 📝 Answer
+
+🔹 `findFirst()`
+
+- Returns **first element**
+- **Order matters**
+- Safer for sequential streams
+
+```java
+nums.stream()
+    .findFirst()
+    .ifPresent(System.out::println);
+```
+
+🔹 `findAny()`
+
+- Returns **any element**
+- Faster in **parallel streams**
+- Order does **not** matter
+
+```java
+nums.parallelStream()
+    .findAny()
+    .ifPresent(System.out::println);
+```
+
+📌 **Key Difference**
+
+- `findFirst()` → deterministic
+- `findAny()` → performance-oriented
+
+---
+
+### ❓ `map()` vs `flatMap()`
+
+### 📝 Answer
+
+🔹 `map()`
+
+- Converts **one element → one element**
+
+```java
+List<String> names = Arrays.asList("java", "spring");
+
+names.stream()
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+```
+
+🔹 `flatMap()`
+
+- Converts **one element → multiple elements**
+- Flattens nested structures
+
+```java
+List<List<String>> list = Arrays.asList(
+    Arrays.asList("A", "B"),
+    Arrays.asList("C", "D")
+);
+
+list.stream()
+    .flatMap(l -> l.stream())
+    .forEach(System.out::println);
+```
+
+📌 **Key Difference**
+
+- `map()` → 1 → 1
+- `flatMap()` → 1 → many → flattened
+
+---
+
+### ❓ Intermediate vs Terminal Operations
+
+### 📝 Answer
+
+🔹 Intermediate Operations
+
+- Return **Stream**
+- Lazy (not executed immediately)
+
+Examples:
+
+- `filter()`
+- `map()`
+- `peek()`
+
+```java
+stream.filter(...).map(...);
+```
+
+🔹 Terminal Operations
+
+- End the stream
+- Produce **result**
+
+Examples:
+
+- `forEach()`
+- `collect()`
+- `findFirst()`
+
+```java
+stream.filter(...).collect(Collectors.toList());
+```
+
+📌 **Rule:**
+❌ Stream without terminal operation = **Nothing happens**
+
+---
+
+### ❓ Types of Functional Interfaces
+
+### 📝 Answer
+
+🔹 Core Functional Interfaces
+
+| Interface           | Method              | Description             | Example               |
+| ------------------- | ------------------- | ----------------------- | --------------------- |
+| `Predicate<T>`      | `boolean test(T)`   | Condition check         | `x -> x > 10`         |
+| `BiPredicate<T,U>`  | `boolean test(T,U)` | Two-input condition     | `(a,b) -> a > b`      |
+| `Function<T,R>`     | `R apply(T)`        | Transform value         | `x -> x * 2`          |
+| `BiFunction<T,U,R>` | `R apply(T,U)`      | Two inputs → one output | `(a,b) -> a + b`      |
+| `Consumer<T>`       | `void accept(T)`    | Consumes value          | `x -> print(x)`       |
+| `BiConsumer<T,U>`   | `void accept(T,U)`  | Consumes two values     | `(k,v) -> print(k+v)` |
+| `Supplier<T>`       | `T get()`           | Supplies value          | `() -> "Hello"`       |
+
+Good catch 👍 — **`BiFunction` and friends are very common Java 8 interview follow-ups**.
+Let’s extend the table **crisply**, then see **simple coding examples** for each.
+
+---
+
+## 1️⃣ What about `BiFunction`?
+
+### 🔹 `BiFunction<T, U, R>`
+
+- Takes **2 inputs**
+- Returns **1 result**
+- Functional method → `R apply(T t, U u)`
+
+```java
+BiFunction<Integer, Integer, Integer> add =
+        (a, b) -> a + b;
+
+System.out.println(add.apply(10, 20)); // 30
+```
+
+📌 **Use Case:**
+When logic needs **two inputs** and produces a result (sum, merge, calculate, etc.)
+
+---
+
+## 2️⃣ Extended Functional Interface Table (Important for Interviews)
+
+| Interface           | Method              | Description             | Example               |
+| ------------------- | ------------------- | ----------------------- | --------------------- |
+| `Predicate<T>`      | `boolean test(T)`   | Condition check         | `x -> x > 10`         |
+| `BiPredicate<T,U>`  | `boolean test(T,U)` | Two-input condition     | `(a,b) -> a > b`      |
+| `Function<T,R>`     | `R apply(T)`        | Transform value         | `x -> x * 2`          |
+| `BiFunction<T,U,R>` | `R apply(T,U)`      | Two inputs → one output | `(a,b) -> a + b`      |
+| `Consumer<T>`       | `void accept(T)`    | Consumes value          | `x -> print(x)`       |
+| `BiConsumer<T,U>`   | `void accept(T,U)`  | Consumes two values     | `(k,v) -> print(k+v)` |
+| `Supplier<T>`       | `T get()`           | Supplies value          | `() -> "Hello"`       |
+
+✅ `Predicate`
+
+```java
+Predicate<Integer> isEven = x -> x % 2 == 0;
+
+System.out.println(isEven.test(4)); // true
+System.out.println(isEven.test(5)); // false
+```
+
+✅ `BiPredicate`
+
+```java
+BiPredicate<Integer, Integer> greater =
+        (a, b) -> a > b;
+
+System.out.println(greater.test(10, 5)); // true
+```
+
+✅ `Function`
+
+```java
+Function<String, Integer> length =
+        s -> s.length();
+
+System.out.println(length.apply("Java")); // 4
+```
+
+✅ `BiFunction`
+
+```java
+BiFunction<String, String, String> concat =
+        (a, b) -> a + b;
+
+System.out.println(concat.apply("Hello ", "Java")); // Hello Java
+```
+
+✅ `Consumer`
+
+```java
+Consumer<String> printer =
+        s -> System.out.println(s);
+
+printer.accept("Java 8"); // Java 8
+```
+
+✅ `BiConsumer`
+
+```java
+BiConsumer<String, Integer> printInfo =
+        (name, age) -> System.out.println(name + " - " + age);
+
+printInfo.accept("Dev", 25);
+```
+
+📌 **Real Use Case:**
+Used heavily with `Map.forEach()`
+
+```java
+Map<String, Integer> map = Map.of("A", 1, "B", 2);
+
+map.forEach((k, v) -> System.out.println(k + ":" + v));
+```
+
+✅ `Supplier`
+
+```java
+Supplier<Double> random =
+        () -> Math.random();
+
+System.out.println(random.get());
+```
+
+📌 **Rule:**
+Functional Interface = **Exactly one abstract method**
+
+---
+
+### ❓ Features of `Optional`
+
+### 📝 Answer
+
+🔹 Why Optional?
+
+- Avoids `NullPointerException`
+- Makes null-handling explicit
+
+🔹 Useful Methods
+
+```java
+Optional<String> opt = Optional.ofNullable("Java");
+
+opt.isPresent();          // true
+opt.get();                // Java
+opt.orElse("Default");    // Java
+opt.orElseGet(() -> "X"); // Java
+opt.ifPresent(System.out::println);
+```
+
+📌 **Best Practice**
+
+- Use `Optional` as **return type**
+- Not for fields or parameters
+
+---
+
+### ❓ Why `Optional` Should NOT Be Used as Method Parameter?
+
+### 📝 Answer
+
+❌ Bad Design
+
+```java
+void printName(Optional<String> name) { }
+```
+
+❌ Problems
+
+- Caller responsibility becomes unclear
+- Breaks readability
+- Adds unnecessary wrapping
+
+✅ Correct Approach
+
+```java
+void printName(String name) {
+    if (name != null) {
+        System.out.println(name);
+    }
+}
+```
+
+📌 **Rule of Thumb**
+
+- ✅ Use `Optional` → **return type**
+- ❌ Avoid `Optional` → **method parameters & fields**
 
 ---
 
@@ -2246,686 +2994,6 @@ protected Object clone() throws CloneNotSupportedException {
 
 ---
 
-## 7️⃣ Concurrency & Multithreading
-
-### ❓ How do you handle concurrency in Java applications?
-
-### 📝 Answer
-
-🎯 **Key Understanding**
-
-- Prefer immutability
-- Minimize shared mutable state
-- Use high-level concurrency utilities
-- Design for correctness first, performance second
-
-Core Tools & When to Use Them:
-
-**synchronized**
-
-```java
-class Counter {
-    private int count = 0;
-
-    synchronized void increment() { // Only one thread can execute increment() at a time.
-        count++;
-    }
-}
-```
-
-**ReentrantLock**
-
-```java
-Lock lock = new ReentrantLock(); // More control than synchronized
-
-void process() {
-    lock.lock(); // explicitly call lock() to acquire the lock
-    try {
-        // critical section
-    } finally {
-        lock.unlock(); // explicitly call unlock() to release it
-    }
-}
-```
-
-**ExecutorService**
-
-```java
-ExecutorService executor = Executors.newFixedThreadPool(2);
-
-executor.submit(() -> {
-    System.out.println("Task running in thread pool");
-});
-
-executor.shutdown();
-```
-
-- Automatically handles the lifecycle of threads (creation, scheduling, execution, and reuse), avoiding the overhead of creating a new thread for every task.
-
-**CompletableFuture**
-
-```java
-CompletableFuture
-    .supplyAsync(() -> "Hello")
-    .thenApply(result -> result + " World")
-    .thenAccept(System.out::println);
-```
-
-Non-Blocking Execution - Tasks run on separate threads (by default, the common ForkJoinPool) allowing the main thread to continue its work, thus preventing idle waiting.
-
-**ConcurrentHashMap**
-
-Usage - [Internal Implementation](#L1540)
-Coding - [Coding Example](#L1574)
-
----
-
-### ❓ Deadlocks – How do they occur and how do you prevent them?
-
-### 📝 Answer
-
-Deadlocks occur when processes get stuck in a waiting cycle, each holding a resource the other needs.
-For a deadlock to happen, all four of these conditions must be met simultaneously:
-
-1. Mutual exclusion - At least one resource must be non-sharable, meaning only one process can use it at a time.
-2. Hold and wait - A process holds at least one resource while waiting for another resource held by a different process
-3. No preemption - Resources cannot be forcibly taken (preempted) from a process; they must be released voluntarily.
-4. Circular wait - A chain of processes forms where each process waits for a resource held by the next process in the chain, creating a loop.
-
-```java
-ExecutorService executor = Executors.newFixedThreadPool(2);
-Object lockA = new Object();
-Object lockB = new Object();
-
-// Task 1
-executor.submit(() -> {
-    synchronized (lockA) {
-        System.out.println("Task-1 locked lockA");
-        synchronized (lockB) {
-            System.out.println("Task-1 locked lockB");
-        }
-    }
-});
-
-// Task 2
-executor.submit(() -> {
-    synchronized (lockB) {
-        System.out.println("Task-2 locked lockB");
-        synchronized (lockA) {
-            System.out.println("Task-2 locked lockA");
-        }
-    }
-});
-```
-
-✅ Prevention (Use `ReentrantLock` - Both tasks must follow the exact order.)
-
-```java
-ExecutorService executor = Executors.newFixedThreadPool(2);
-
-ReentrantLock lockA = new ReentrantLock();
-ReentrantLock lockB = new ReentrantLock();
-
-// Task 1
-executor.submit(() -> {
-    lockA.lock();
-    try {
-        System.out.println("Task-1 locked lockA");
-        lockB.lock();
-        try {
-            System.out.println("Task-1 locked lockB");
-        } finally {
-            lockB.unlock();
-        }
-    } finally {
-        lockA.unlock();
-    }
-});
-
-// Task 2
-executor.submit(() -> {
-    lockA.lock();
-    try {
-        System.out.println("Task-2 locked lockA");
-        lockB.lock();
-        try {
-            System.out.println("Task-2 locked lockB");
-        } finally {
-            lockB.unlock();
-        }
-    } finally {
-        lockA.unlock();
-    }
-});
-```
-
-> Deadlock happens because of inconsistent lock ordering.
-> The fix is to enforce a global lock order across all threads.
-
----
-
-## JVM Deep Dive
-
-### ❓ Explain JVM memory structure. Heap vs Stack vs Metaspace
-
-### 📝 Answer
-
-| Area           | What Lives Here               |
-| -------------- | ----------------------------- |
-| **Stack**      | Local variables, method calls |
-| **Heap**       | Objects, arrays               |
-| **Metaspace**  | Class metadata                |
-| **Code Cache** | JIT compiled code             |
-
-```java
-public class MemoryDemo { // Metaspace (class metadata)
-
-    static int staticCount = 100; // Metaspace (static field)
-
-    public static void main(String[] args) { // Stack (method call)
-
-        int localPrimitive = 10;      // Stack (local primitive)
-        Object localReference;        // Stack (reference variable)
-
-        Object obj = new Object();    // Heap (object)
-        int[] numbers = new int[5];   // Heap (array)
-        String str = new String("Hi");// Heap (object)
-
-        localReference = str;         // Stack -> Heap reference
-
-        demoMethod(obj);              // Stack (method call)
-    }
-
-    static void demoMethod(Object param) { // Stack (new stack frame)
-
-        Object localObj;              // Stack (local reference)
-        localObj = new Object();      // Heap (object)
-
-        int x = 5;                    // Stack (local primitive)
-    }
-}
-
-```
-
----
-
-### ❓ How does Garbage Collection work?
-
-### 📝 Answer
-
-It works by identifying **"dead"** objects (those with no references) through marking reachable ones from **"roots"** (like the stack), sweeping away the unmarked ones, and sometimes compacting live objects to prevent fragmentation, making memory efficient
-
----
-
-### ❓ What causes memory leaks in Java?
-
-### 📝 Answer
-
-Memory leaks in Java occur when an application unintentionally holds references to objects that are no longer needed
-
-Common causes include:
-
-**Static references** - Referencing a large or heavy object with a static field
-
-```java
-private static final List<Object> cache = new ArrayList<>(); // ❌ objects stay alive for entire JVM lifetime
-
-private static final Map<Object, String> cache = new WeakHashMap<>(); // ✅  entries removed when keys are no longer strongly referenced
-```
-
-**Unclosed resources** - Forgetting to close streams (file, network, etc.), database connections (Use `try-with-resources`)
-
-```java
-FileInputStream fis = new FileInputStream("data.txt"); // ❌ Resource not closed
-
-try (FileInputStream fis = new FileInputStream("data.txt")) { // ✅ try-with-resources → resource automatically closed even on exception
-    // use fis
-} catch (ExceptionType e) {
-    // Handle exceptions
-}
-```
-
-**Unbounded collections** - Continuously adding objects to collections (like ArrayList, HashMap, HashSet)
-
-```java
-static List<Object> cache = new ArrayList<>(); // ❌ Static unbounded collection → no GC → leak
-
-public void add() {
-    cache.add(new Object());
-}
-
-// Option 1:
-List<Object> cache = new ArrayList<>(); // ✅ Make it non-static
-
-// Option 2:
-static Map<Object, Boolean> cache = new WeakHashMap<>(); // ✅ Use weak references if static is required
-
-// Option 3:
-public static void clearCache() {
-    cache.clear(); // ✅ Explicit cleanup when no longer needed
-}
-```
-
-**Improper equals() and hashCode() implementations** : without correctly implementing equals() and hashCode() methods can lead to duplicate objects being added
-
----
-
-### ❓ Major Java Features (9 → 21)
-
-### 📝 Answer
-
-1️⃣ **Java Module System (Java 9)**
-
-❌ Problems:
-
-- Classpath hell (version conflicts, missing dependencies)
-- No encapsulation (any public class accessible everywhere)
-- Hard to scale large applications
-- JDK itself was monolithic
-
-✅ The Java Module System provides a way to organize Java code into `modules`. A module is a named, self-describing unit of code that:
-
-- Contains packages
-- Declares what it needs
-- Declares what it exposes
-- Each module has a `module-info.java` file.
-
-**Rules**
-
-- Every module **must have a unique name**
-- Use `exports` to make packages visible
-- Use `requires` to depend on other modules
-- Unexported packages are **not accessible**
-
-```java
-/* Module: com.example.utils */
-
-// module-info.java
-module com.example.utils {
-    exports com.example.utils;  // export the package
-}
-
-// MathUtil.java
-package com.example.utils;
-
-public class MathUtil {
-    public static int add(int a, int b) {
-        return a + b;
-    }
-}
-
-/* Module: com.example.app */
-// module-info.java
-module com.example.app {
-    requires com.example.utils;  // import the package
-}
-
-// Main.java
-package com.example.app;
-
-import com.example.utils.MathUtil; // works if package is exported and consuming module requires it
-
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(MathUtil.add(2, 3));
-    }
-}
-```
-
-- A **package** contains multiple classes (and interfaces, enums, etc.).
-- A **module** contains multiple packages (and resources).
-
-> **Public classes** are accessible **everywhere** on the classpath.
-> In Java 9 named **modules**, access is **restricted** to exported packages only.
-
-2️⃣ **Immutable Collection Factories (Java 9)**
-
-Provide a simple, concise, and safe way to create **immutable collections** (List, Set, Map) using factory methods.
-
-```java
-List<String> names = List.of("Alice", "Bob", "Charlie");
-// names.add("David"); // throws UnsupportedOperationException
-
-Set<Integer> ids = Set.of(1, 2, 3);
-// Set.of(1, 2, 2); // throws IllegalArgumentException - Java detects duplicate element 2
-
-Map<Integer, String> map = Map.of(1, "One", 2, "Two"); // Supports up to 10 entries only
-Map<Integer, String> bigMap = Map.ofEntries( // Supports any number of entries
-    Map.entry(1, "One"),
-    Map.entry(2, "Two"),
-    Map.entry(3, "Three")
-);
-```
-
-3️⃣ **`var` (Java 10)**
-
-`var` lets the compiler infer the type of a **local variable**. Reduce boiler-plate code.
-
-```java
-// Before Java 10:
-Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
-
-// With var:
-var map = new HashMap<String, List<Integer>>();
-```
-
-Where it can be used
-
-- Local variables inside methods
-- Index variables in loops
-- Enhanced for loops
-
-```java
-// Must be initialized
-var x = 10;      // valid
-var y;           // ❌ invalid
-var x = null;    // ❌ Cannot be null
-
-// Only for local variables
-class A {
-    var x = 10;  // ❌ not allowed (fields)
-}
-
-// Initializer must give a clear type
-var list = List.of(1, 2, 3); // valid
-var arr = {}; // ❌ array initializer needs an explicit type
-int[] arr = {}; // ✅ Specify the array type directly
-
-int[] arr = {1,2};
-System.out.println(Arrays.toString(arr)); // Output: [1, 2]
-```
-
-4️⃣ **String Enhancements (Java 11)**
-
-❌ Before Java 11, developers frequently wrote custom or verbose code for:
-
-- Checking blank strings
-- Removing whitespace correctly (Unicode-aware)
-- Repeating strings
-- Splitting strings into lines
-
-These enhancements reduce boilerplate code and improve readability and correctness.
-
-| Method              | Description                                           |
-| ------------------- | ----------------------------------------------------- |
-| `isBlank()`         | Checks if string is empty or contains only whitespace |
-| `lines()`           | Converts a string into a stream of lines              |
-| `strip()`           | Removes leading & trailing Unicode whitespace         |
-| `stripLeading()`    | Removes leading Unicode whitespace                    |
-| `stripTrailing()`   | Removes trailing Unicode whitespace                   |
-| `repeat(int count)` | Repeats the string `count` times                      |
-
-```java
-String s = "   ";
-System.out.println(s.isBlank()); // true
-
-String text = "Java\nSpring\nHibernate";
-text.lines().forEach(System.out::println);
-// Output
-// Java
-// Spring
-// Hibernate
-
-String s = "  Java  ";
-System.out.println(s.strip());          // "Java"
-System.out.println(s.stripLeading());   // "Java  "
-System.out.println(s.stripTrailing());  // "  Java"
-
-String s = "Hi ";
-System.out.println(s.repeat(3)); // Hi Hi Hi
-```
-
-5️⃣ **HTTP Client (Java 11)**
-
-HttpClient in Java 11 is a modern API to send HTTP requests and receive responses (REST calls, APIs, microservices communication) in a simple, efficient, and non-blocking way.
-
-```java
-HttpClient client = HttpClient.newHttpClient();
-HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.github.com")).GET().build();
-HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-```
-
-❌ Problem
-
-- Old `HttpURLConnection` was complex
-- External libraries for HTTP
-
-✅ Solution
-
-- Create one HttpClient and reuse it
-- Use send() for synchronous calls
-- Use sendAsync() for asynchronous calls
-
-6️⃣ **Switch Expressions (Java 12–14)**
-
-To make `switch` more **concise, expressive, and less error-prone** by allowing it to be used as an expression (returns a value), not just a statement.
-
-❌ Traditional `switch`:
-
-- Was statement-only (no direct return value)
-- Required break to avoid fall-through
-- Led to verbose and bug-prone code
-
-```java
-// Simple Expression Form
-int day = 3;
-String dayType = switch (day) {
-    case 1, 7 -> "Weekend";
-    case 2, 3, 4, 5, 6 -> "Weekday";
-    default -> "Invalid day";
-};
-System.out.println(dayType); // Output: Weekday
-
-// Block with yield
-int marks = 85;
-String result = switch (marks / 10) {
-    case 10, 9 -> "Excellent";
-    case 8 -> {
-        System.out.println("Good performance");
-        yield "Very Good";
-    }
-    default -> "Needs Improvement";
-};
-System.out.println(result);
-// Output:
-// Good performance
-// Very Good
-```
-
-**Key Rules About yield**
-
-- Used only in **switch expressions**
-- Used inside `{}` blocks
-- Replaces `break` + value-return logic
-- Cannot be used in **traditional switch statements**
-
-> default is NOT mandatory - If the compiler can prove that all possible values are covered
-> default IS mandatory - If not all possible values are covered
-
-7️⃣ **Text Blocks (Java 15)**
-
-Text Blocks provide a clean, readable way to write multi-line string literals in Java
-
-❌ Before Java 15, multi-line strings required:
-
-- \n for new lines
-- Escaping quotes (\")
-- String concatenation (+)
-
-This made code hard to read, error-prone, and noisy, especially for JSON, SQL, HTML, or XML.
-
-✅ Rules to Write Text Blocks
-
-- Start and end with `"""`
-- Content begins on a **new line**
-- Indentation is **automatically normalized**
-- Trailing newline is included by default
-- Escape sequences like `\n`, `\t`, `\"` still work
-- To avoid a newline at end, use `\`
-
-```java
-// Before
-String json = "{\n" +
-              "  \"name\": \"Dev\",\n" +
-              "  \"role\": \"Developer\"\n" +
-              "}";
-
-// After
-String json = """
-    {
-      "name": "Dev",
-      "role": "Developer"
-    }
-    """;
-```
-
-8️⃣ **Records (Java 16)**
-
-❌ Before Java 16, simple data classes required lots of boilerplate:
-
-- Fields
-- Constructor
-- Getters
-- equals(), hashCode(), toString()
-
-✅ Records are a special kind of Java **class** designed to model **immutable data carriers**.
-
-```java
-// Traditional Class
-class User {
-    private final String name;
-    private final int age;
-
-    public User(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() { return name; }
-    public int getAge() { return age; }
-
-    @Override
-    public boolean equals(Object o) { /* boilerplate */ }
-
-    @Override
-    public int hashCode() { /* boilerplate */ }
-
-    @Override
-    public String toString() { /* boilerplate */ }
-}
-
-// Same Using Record
-public record User(String name, int age) { }
-
-// Using the Record
-User user = new User("Dev", 25);
-System.out.println(user.name());   // Dev
-System.out.println(user.age());    // 25
-```
-
-9️⃣ **Sealed Classes (Java 17)**
-
-Sealed classes **restrict which classes or interfaces can extend or implement them**.
-
-❌ Before Java 17, inheritance was:
-
-- Too open (public / protected classes → anyone could extend)
-- Too closed (final → no extension at all)
-
-✅ Rules to Write Sealed Classes
-
-- A sealed class/interface must declare permitted subclasses using `permits`
-- All permitted subclasses must:
-  - Be in the same module (or same package if no module)
-  - Explicitly declare `final`, `sealed`, or `non-sealed`
-- Sealed classes cannot be anonymous
-- `permits` is optional if subclasses are in the same file
-
-```java
-// Sealed Class
-public sealed abstract class Shape permits Circle, Rectangle, Triangle {}
-
-// Permitted Subclasses
-public final class Circle extends Shape {}
-
-public non-sealed class Triangle extends Shape {}
-
-public sealed class Rectangle extends Shape permits Square {}
-
-public final class Square extends Rectangle {}
-```
-
-| Keyword      | Meaning                                                         |
-| ------------ | --------------------------------------------------------------- |
-| `final`      | **No further inheritance allowed**                              |
-| `sealed`     | **Inheritance allowed only to explicitly permitted subclasses** |
-| `non-sealed` | **Inheritance is open again** (Anyone may extend from here)     |
-
-🔟 **Pattern Matching (`instanceof` [Java 16] & `switch` [Java 21])**
-
-Pattern Matching allows **testing a value’s type and binding it to a variable in one step**
-
-❌ Traditional Java required:
-
-- Explicit type checks
-- Manual casting
-- Verbose if-else or switch logic
-
-1. Pattern Matching with `instanceof`
-
-```java
-// Without Pattern Matching
-if (obj instanceof String) {
-    String s = (String) obj;
-    System.out.println(s.length());
-}
-
-// With Pattern Matching
-if (obj instanceof String s) {
-    System.out.println(s.length());
-}
-```
-
-2. Pattern Matching with `switch`
-
-```java
-record Success(String data) {}
-record ValidationError(String message) {}
-
-// Before
-static String handleResponse(Object response) {
-    if (response == null) {
-        return "No response received";
-    }
-    if (response instanceof Success) {
-        Success s = (Success) response;
-        return "Success: " + s.data();
-    }
-    if (response instanceof ValidationError) {
-        ValidationError v = (ValidationError) response;
-        return "Validation failed: " + v.message();
-    }
-    return "Unknown response";
-}
-
-// After
-static String handleResponse(Object response) {
-    return switch (response) {
-        case Success s -> "Success: " + s.data();
-        case ValidationError v -> "Validation failed: " + v.message();
-        case null -> "No response received";
-        default -> "Unknown response type";
-    };
-}
-```
-
-> Use `instanceof` pattern matching for simple type checks
-> Use `switch` pattern matching for multiple type-based branches
-
----
-
-## Java Features:
-
 ### ❓ AutoBoxing & AutoUnboxing
 
 ### 📝 Answer
@@ -3093,91 +3161,3 @@ for (long i = 0; i < 1_000_000; i++) {
 ```java
 long sum = 0L;
 ```
-
-## JVM vs JRE vs JDK
-
-### ❓ JVM Internals
-
-### 📝 Answer
-
-🔹 High-Level View
-
-```
-JDK = JRE + Development Tools
-JRE = JVM + Core Libraries
-JVM = Execution Engine
-```
-
-🔹 **JVM Internal Architecture (Must Know)**
-
-```
-          ┌───────────────┐
-          │  ClassLoader  │
-          └──────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │ Runtime Memory  │
-        │  - Heap         │
-        │  - Stack        │
-        │  - Metaspace   │
-        │  - PC Register │
-        └────────┬────────┘
-                 │
-        ┌────────▼────────┐
-        │ Execution Engine│
-        │  - Interpreter │
-        │  - JIT Compiler│
-        │  - GC          │
-        └────────────────┘
-```
-
-🔹 **JVM Responsibilities**
-
-✔ Loads `.class` files
-✔ Verifies bytecode
-✔ Manages memory & GC
-✔ Executes bytecode
-✔ Ensures platform independence
-
-🔹 **JRE (Runtime Environment)**
-
-Contains:
-
-- JVM
-- Java Core APIs (`java.lang`, `java.util`, etc.)
-- Native libraries
-
-❌ Cannot compile code
-
-🔹 **JDK (Development Kit)**
-
-Contains:
-
-- JRE
-- `javac`, `javadoc`, `jconsole`, `jstack`, `jmap`
-
-**✅ Rules to Remember**
-
-✔ JVM is platform-dependent (**Windows x64 JVM**, **Linux x64 JVM,** **macOS ARM JVM**)
-✔ JRE = runtime only
-✔ JDK needed for development
-✔ Java is platform-independent (Same **.class** file runs on any platform as long as the correct JVM exists)
-
-🤔 **Java Compilation and Runtime Execution**
-
-- JDK’s `javac` compiles all `.java` files into `.class` files (written in **bytecode**)
-- Tomcat Startup
-  - JVM loads `.class` files using the `ClassLoader`
-  - JVM **Interpreter** executes bytecode **instruction by instruction**
-  - JVM monitors execution
-    - Only Frequently executed methods / loops are detected
-    - **JIT** compiles them into native machine code
-
-🤔 **Why Java is Platform Independent?**
-
-- Java code is compiled into bytecode (.class)
-- Bytecode runs on JVM, not directly on OS
-- Each OS has its own JVM implementation
-- Same bytecode runs unchanged on any platform
-
-> 👉 “Write Once, Run Anywhere (WORA)”

@@ -1027,6 +1027,31 @@ public class LoggingAspect {
 
 ---
 
+### ❓ How doe you handle Exception in your application?
+
+### 📝 Answer
+
+✔ Use **`@RestControllerAdvice` + `@ExceptionHandler`**
+✔ Never expose stack trace to clients
+✔ Create **custom exceptions**
+✔ Map exceptions to proper **HTTP status codes**
+✔ Log errors centrally
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<String> handleNotFound() {
+    return ResponseEntity.status(404).body("Not Found");
+  }
+}
+```
+
+---
+
+## Spring Data JPA
+
 ### ❓ What is Declarative Transactions, Spring Transactions & Spring Data JPA?
 
 ### 📝 Answer
@@ -1818,6 +1843,12 @@ class User implements Serializable {
 
 ---
 
+### ❓ Important http status codes to know
+
+### 📝 Answer
+
+---
+
 ## Spring Security
 
 ### ❓ What is Spring Security and why do we need it??
@@ -2341,94 +2372,179 @@ You must balance two threats:
 
 ---
 
-### ❓ Checked Exception vs Unchecked Exception
+### ❓ Filters vs Interceptors
 
-✔ **Checked Exceptions**
+### 📝 Answer
 
-- Checked at **compile time**
-- Must be **handled** using `try-catch` **or** declared using `throws`
+🔹 Spring Security **Filters**
 
-**Common Checked Exceptions (Important ones to remember)**
-_(All extend `Exception` but NOT `RuntimeException`)_
+- Part of **Servlet container**
+- Execute **before the request reaches the Controller**
+- Used for **authentication & authorization**
+- Spring Security works **mainly using filters**
 
-- **IOException** – File/network I/O failure
-- **SQLException** – Database access error
-- **ClassNotFoundException** – Class not found at runtime loading
-- **InterruptedException** – Thread interrupted during execution
-- **FileNotFoundException** – Not implemented `Cloneable` but `clone()` is called
+📌 Examples:
 
-👉 **You cannot realistically name all checked exceptions**
-(There are **100+**, including custom ones)
+- `UsernamePasswordAuthenticationFilter`
+- `JwtAuthenticationFilter`
 
-✔ **Unchecked Exceptions**
+🔹 Spring MVC **Interceptors**
 
-- Checked at **runtime**
-- Occur due to **programming mistakes**
+- Part of **Spring MVC**
+- Execute **after filter, before controller method**
+- Used for **logging, auditing, request modification**
+- **NOT** used for security
 
-**Very common ones (must remember):**
-_(Extend `RuntimeException`)_
+🔁 Execution Flow
 
-- **NullPointerException** – Accessing object reference that is null
-- **ArrayIndexOutOfBoundsException** – Invalid array index
-- **ArithmeticException** – Invalid arithmetic (divide by zero)
-- **NumberFormatException** – Invalid string to number conversion
-- **ClassCastException** – Invalid object casting
-- **IllegalArgumentException** → wrong input
-- **ConcurrentModificationException** → modify collection during iteration
-
-```java
-class MyChecked extends Exception {}
-class MyUnchecked extends RuntimeException {}
+```
+Client → Filters → Interceptors → Controller
 ```
 
-✔ Exception vs Error
+✅ Simple Comparison Table
 
-| Exception         | Error                 |
-| ----------------- | --------------------- |
-| Recoverable       | Not recoverable       |
-| App-level issues  | JVM-level issues      |
-| Should be handled | Should NOT be handled |
+| Feature                | Filter  | Interceptor |
+| ---------------------- | ------- | ----------- |
+| Layer                  | Servlet | Spring MVC  |
+| Runs before Controller | ✅      | ✅          |
+| Can block request      | ✅      | ❌ (mostly) |
+| Used for Security      | ✅      | ❌          |
+| Spring Security uses   | Filters | ❌          |
 
-- **OutOfMemoryError** – Heap memory exhausted
-- **StackOverflowError** – Infinite recursion
-- **NoClassDefFoundError** – Class missing at runtime
-- **VirtualMachineError** – JVM internal failure
+> **Spring Security uses Filters because security must be applied before request reaches the controller.**
 
-🤔 **`throw` vs `throws`**
+---
 
-| throw                                  | throws                        |
-| -------------------------------------- | ----------------------------- |
-| Used to **explicitly throw** exception | Used to **declare** exception |
-| Inside method                          | Method signature              |
-| Throws **one exception**               | Can declare **multiple**      |
+### ❓ How Role-Based Access is Implemented in Spring Security
+
+### 📝 Answer
+
+🔹 Concept
+
+- Users are assigned **roles** (ADMIN, USER)
+- Roles are checked **before allowing access**
+
+🔹 Role vs Authority
+
+- `ROLE_ADMIN` → internally treated as **authority**
+- `hasRole("ADMIN")` → checks `ROLE_ADMIN`
+
+✅ Method-Level Security (Most Asked)
 
 ```java
-throw new IOException();
-void read() throws IOException {}
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin")
+public String adminOnly() {
+    return "Admin Access";
+}
 ```
 
-🤔 **Exception Handling Best Practices (Spring Boot)**
-
-✔ Use **`@RestControllerAdvice` + `@ExceptionHandler`**
-✔ Never expose stack trace to clients
-✔ Create **custom exceptions**
-✔ Map exceptions to proper **HTTP status codes**
-✔ Log errors centrally
+✅ URL-Based Security
 
 ```java
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-
-  @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<String> handleNotFound() {
-    return ResponseEntity.status(404).body("Not Found");
-  }
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+            .anyRequest().authenticated()
+        )
+        .httpBasic();
+    return http.build();
 }
 ```
 
 ---
 
+### ❓ What is SAML?
+
+### 📝 Answer
+
+**SAML (Security Assertion Markup Language)** is an **XML-based authentication protocol** used for **Single Sign-On (SSO)**.
+
+📌 Example:
+
+> Login once → Access Gmail, Jira, Confluence without logging in again
+
+🔹 How SAML Works (Simple Flow)
+
+1. User tries to access App
+2. App redirects to **Identity Provider (IdP)** (like Okta)
+3. User logs in
+4. IdP sends **SAML Assertion (XML)**
+5. App trusts it → Login success
+
+🔹 Why SAML?
+
+- Used in **Enterprise applications**
+- Works well with **legacy systems**
+- Browser-based SSO
+
+---
+
+### ❓ SAML vs JWT
+
+### 📝 Answer
+
+| Feature         | SAML             | JWT         |
+| --------------- | ---------------- | ----------- |
+| Format          | XML              | JSON        |
+| Size            | Large            | Small       |
+| Transport       | Browser Redirect | HTTP Header |
+| Common Use      | Enterprise SSO   | REST APIs   |
+| Mobile Friendly | ❌               | ✅          |
+| Complexity      | High             | Low         |
+
+> **SAML is XML-based and heavy, JWT is lightweight and ideal for APIs.**
+
+---
+
+### ❓ SAML vs OAuth vs OIDC
+
+### 📝 Answer
+
+🔹 OAuth 2.0
+
+- **Authorization protocol**
+- Allows apps to access user data
+- Does **NOT authenticate users**
+
+📌 Example:
+
+> “Allow this app to access your Google Drive”
+
+🔹 OpenID Connect (OIDC)
+
+- Built **on top of OAuth**
+- Used for **Authentication**
+- Returns **ID Token (JWT)**
+
+📌 Example:
+
+> “Login with Google”
+
+🔹 SAML
+
+- Older SSO protocol
+- XML-based
+- Mostly enterprise usage
+
+✅ Comparison Table
+
+| Feature        | SAML           | OAuth         | OIDC           |
+| -------------- | -------------- | ------------- | -------------- |
+| Purpose        | Authentication | Authorization | Authentication |
+| Token Type     | XML Assertion  | Access Token  | ID Token (JWT) |
+| Modern APIs    | ❌             | ✅            | ✅             |
+| Mobile Support | ❌             | ✅            | ✅             |
+| Best For       | Enterprise SSO | API Access    | Login / SSO    |
+
+---
+
 ### ❓ Spring HATEOAS
+
+### 📝 Answer
 
 ❓ Problem Before
 
@@ -2459,6 +2575,8 @@ model.add(linkTo(methodOn(UserController.class).getAll()).withRel("all-users"));
 
 ### ❓ Thymeleaf
 
+### 📝 Answer
+
 ❓ Problem Before
 
 - JSP had poor Spring integration
@@ -2486,3 +2604,226 @@ model.addAttribute("user", user);
 🧠 In Short
 
 > Thymeleaf is a server-side template engine used to render dynamic HTML in Spring Boot.
+
+---
+
+### ❓ application.properties vs application.yml?
+
+### 📝 Answer
+
+Both are used to **configure Spring Boot applications** (DB config, server port, logging, etc.).
+
+| application.properties      | application.yml          |
+| --------------------------- | ------------------------ |
+| Key = value format          | YAML (indentation-based) |
+| Easy for small configs      | Best for complex configs |
+| Less readable for hierarchy | Very readable & clean    |
+| No indentation              | Indentation is mandatory |
+
+Spring Boot supports **both**, but **YAML is preferred** for large projects.
+
+**Example**
+
+application.properties
+
+```properties
+server.port=8081
+spring.datasource.url=jdbc:mysql://localhost:3306/testdb
+spring.datasource.username=root
+spring.datasource.password=admin
+```
+
+application.yml
+
+```yaml
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/testdb
+    username: root
+    password: admin
+```
+
+> prefer `application.yml` for readability when configs grow.
+
+---
+
+### ❓ What Unit Testing technique you used in Java and Spring?
+
+### 📝 Answer
+
+**Tools Used**
+
+- **JUnit 5** → Testing framework
+- **Mockito** → Mock dependencies
+- **Spring Boot Test** → Integration testing
+
+**Unit Testing (Service Layer Example)**
+
+Service Class
+
+```java
+@Service
+public class UserService {
+
+    public String getUserName() {
+        return "Dev";
+    }
+}
+```
+
+Unit Test
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    void testGetUserName() {
+        assertEquals("Dev", userService.getUserName());
+    }
+}
+```
+
+**Mocking Dependencies (Real-world Example)**
+
+```java
+@ExtendWith(MockitoExtension.class)
+class OrderServiceTest {
+
+    @Mock
+    private OrderRepository orderRepository;
+
+    @InjectMocks
+    private OrderService orderService;
+
+    @Test
+    void testCreateOrder() {
+        when(orderRepository.save(any()))
+            .thenReturn(new Order(1L));
+
+        Order order = orderService.createOrder(new Order());
+
+        assertNotNull(order);
+    }
+}
+```
+
+**Spring Boot Integration Test**
+
+```java
+@SpringBootTest
+class UserControllerTest {
+
+    @Autowired
+    private UserController controller;
+
+    @Test
+    void contextLoads() {
+        assertNotNull(controller);
+    }
+}
+```
+
+> Write unit tests with Mockito and integration tests using `@SpringBootTest`.
+
+---
+
+### ❓ What challenges you encountered while upgrading Spring or Java?
+
+### 📝 Answer
+
+While upgrading Spring Boot / Java, I faced **compatibility and breaking changes**.
+
+**Common Challenges & Solutions**
+
+🔹 1. Dependency Incompatibility
+
+❌ **Problem**
+
+- Older libraries not supported
+
+✅ **Solution**
+
+- Upgrade dependencies
+- Use Spring BOM (dependency management)
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-dependencies</artifactId>
+      <version>3.2.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+🔹 2. Java Version Issues (Java 8 → 17)
+
+❌ **Problem**
+
+- Removed APIs (e.g. `javax.*`)
+
+✅ **Solution**
+
+- Migrated to `jakarta.*`
+
+```java
+// Old
+import javax.persistence.Entity;
+
+// New
+import jakarta.persistence.Entity;
+```
+
+🔹 3. Spring Security Changes
+
+❌ **Problem**
+
+- Deprecated `WebSecurityConfigurerAdapter`
+
+✅ **Solution**
+
+- Used `SecurityFilterChain`
+
+```java
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+    return http.build();
+}
+```
+
+🔹 4. Failing Tests After Upgrade
+
+❌ **Problem**
+
+- Mock failures / context load issues
+
+✅ **Solution**
+
+- Updated Mockito & JUnit versions
+- Fixed deprecated annotations
+
+🔹 5. Configuration Changes
+
+❌ **Problem**
+
+- Properties renamed or removed
+
+✅ **Solution**
+
+- Checked Spring Boot migration guide
+- Updated `application.yml`
+
+> Upgrading needs dependency alignment, code refactoring, and proper testing.
