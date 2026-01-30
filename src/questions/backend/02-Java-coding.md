@@ -825,17 +825,17 @@ while (it.hasNext()) {
 
 ### ❓ What will be the output of the following code? **(orElse() vs orElseGet())**
 
-```java
-Optional<String> name = Optional.of("Dev");
-
-String value = name.orElse(getDefault());
-System.out.println(value);
-
-static String getDefault() {
-    System.out.println("Default called");
-    return "Default";
-}
-```
+> ```java
+> Optional<String> name = Optional.of("Dev");
+> 
+> String value = name.orElse(getDefault());
+> System.out.println(value);
+> 
+> static String getDefault() {
+>     System.out.println("Default called");
+>     return "Default";
+> }
+> ```
 
 ### 📝 Answer
 
@@ -857,10 +857,10 @@ Dev
 
 ### ❓ What will be the output of the following code? **(Optional get())**
 
-```java
-Optional<String> name = Optional.empty();
-System.out.println(name.get());
-```
+> ```java
+> Optional<String> name = Optional.empty();
+> System.out.println(name.get());
+> ```
 
 ### 📝 Answer
 
