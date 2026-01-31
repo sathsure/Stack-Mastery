@@ -1050,6 +1050,32 @@ public class GlobalExceptionHandler {
 
 ---
 
+### ❓ What is Spring Modular Design?
+
+### 📝 Answer
+
+![ModularDesign Image](/src/assets/backend/spring-modular-design.png)
+
+**Spring Modular Design** means the Spring Framework is built as a collection of independent, loosely coupled modules, where each module solves a specific concern (core container, web, data access, security, etc.).
+
+> 👉 You only include what you need, keeping applications lightweight, maintainable, and scalable.
+
+| Types                                | Responsibilities                                                        |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| **Spring Core Container**            | IoC Container, Bean lifecycle, Dependency Injection, Configuration Mgmt |
+| **Spring Data Access / Integration** | JDBC, ORM (Hibernate, JPA), Transactions, Spring Data JPA               |
+| **Spring Web Layer**                 | Spring MVC, Spring WebFlux (Reactive)                                   |
+| **Spring Security**                  | Authentication, Authorization, CSRF protection, OAuth2, JWT             |
+| **Spring AOP**                       | Logging, Security, Transactions, Auditing                               |
+
+---
+
+### ❓ Important http status codes to know
+
+### 📝 Answer
+
+---
+
 ## Spring Data JPA
 
 ### ❓ What is Declarative Transactions, Spring Transactions & Spring Data JPA?
@@ -1823,29 +1849,167 @@ class User implements Serializable {
 
 ---
 
-### ❓ What is Spring Modular Design?
+### ❓ What is the **N+1 Problem**? How to solve it?
 
 ### 📝 Answer
 
-![ModularDesign Image](/src/assets/backend/spring-modular-design.png)
+❌ Problem
 
-**Spring Modular Design** means the Spring Framework is built as a collection of independent, loosely coupled modules, where each module solves a specific concern (core container, web, data access, security, etc.).
+When fetching a parent entity, **Hibernate fires 1 query for parent + N queries for children**.
 
-> 👉 You only include what you need, keeping applications lightweight, maintainable, and scalable.
+```java
+List<Order> orders = orderRepository.findAll();
+for (Order o : orders) {
+    o.getItems().size(); // triggers extra queries
+}
+```
 
-| Types                                | Responsibilities                                                        |
-| ------------------------------------ | ----------------------------------------------------------------------- |
-| **Spring Core Container**            | IoC Container, Bean lifecycle, Dependency Injection, Configuration Mgmt |
-| **Spring Data Access / Integration** | JDBC, ORM (Hibernate, JPA), Transactions, Spring Data JPA               |
-| **Spring Web Layer**                 | Spring MVC, Spring WebFlux (Reactive)                                   |
-| **Spring Security**                  | Authentication, Authorization, CSRF protection, OAuth2, JWT             |
-| **Spring AOP**                       | Logging, Security, Transactions, Auditing                               |
+🤔 What happens in DB?
+
+```sql
+1 query → fetch orders
+N queries → fetch items for each order
+```
+
+❌ Performance killer
+
+✅ Solutions
+
+1. Fetch Join (Best & Most Used)
+
+```java
+@Query("SELECT o FROM Order o JOIN FETCH o.items")
+List<Order> findAllWithItems();
+```
+
+2. EntityGraph
+
+```java
+@EntityGraph(attributePaths = "items")
+List<Order> findAll();
+```
+
+3. Batch Fetching
+
+```properties
+hibernate.default_batch_fetch_size=10
+```
+
+> _N+1 occurs due to lazy loading. I solve it using fetch joins or EntityGraph._
 
 ---
 
-### ❓ Important http status codes to know
+### ❓ JPQL vs Native Query
 
 ### 📝 Answer
+
+| Feature        | JPQL         | Native Query     |
+| -------------- | ------------ | ---------------- |
+| Works on       | Entity names | Table names      |
+| DB Independent | ✅ Yes       | ❌ No            |
+| Performance    | Good         | Sometimes faster |
+| Portability    | High         | Low              |
+
+**JPQL Example**
+
+```java
+@Query("SELECT e FROM Employee e WHERE e.salary > :salary")
+List<Employee> findHighPaid(@Param("salary") double salary);
+```
+
+**Native Query Example**
+
+```java
+@Query(value = "SELECT * FROM employee WHERE salary > ?", nativeQuery = true)
+List<Employee> findHighPaid(double salary);
+```
+
+- ✅ **JPQL** → 90% of cases
+- ✅ **Native** → Complex joins, DB-specific features
+
+> _JPQL is preferred for portability; native queries only when JPQL is insufficient._
+
+---
+
+### ❓ First-Level vs Second-Level Cache
+
+### 📝 Answer
+
+**First-Level Cache**
+
+- Enabled by default
+- **Scope: Session / EntityManager**
+- Cannot be turned off
+
+```java
+Employee e1 = em.find(Employee.class, 1);
+Employee e2 = em.find(Employee.class, 1);
+// DB hit happens only once
+```
+
+**Second-Level Cache**
+
+- Optional
+- **Shared across sessions**
+- Requires configuration (Ehcache, Hazelcast)
+
+```properties
+spring.jpa.properties.hibernate.cache.use_second_level_cache=true
+```
+
+**Comparison**
+
+| Cache        | Scope       | Default |
+| ------------ | ----------- | ------- |
+| First-level  | Session     | ✅ Yes  |
+| Second-level | Application | ❌ No   |
+
+> _First-level cache is mandatory and session-scoped; second-level cache is optional and shared._
+
+---
+
+### ❓ Spring JPA Inheritance
+
+### 📝 Answer
+
+Mapping **Java inheritance** to **database tables**.
+
+1️⃣ **SINGLE_TABLE (Most Used)**
+
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+class Vehicle { }
+
+@Entity
+class Car extends Vehicle { }
+```
+
+✅ Fast
+❌ Nullable columns
+
+2️⃣ **JOINED**
+
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+class Vehicle { }
+```
+
+✅ Normalized DB
+❌ Slower joins
+
+3️⃣ **TABLE_PER_CLASS**
+
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+class Vehicle { }
+```
+
+❌ Poor performance
+❌ Rarely used
 
 ---
 
@@ -2512,7 +2676,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 📌 Example:
 
-> “Allow this app to access your Google Drive”
+> Allow this app to access your Google Drive
 
 🔹 OpenID Connect (OIDC)
 
@@ -2522,7 +2686,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 📌 Example:
 
-> “Login with Google”
+> Login with Google
 
 🔹 SAML
 

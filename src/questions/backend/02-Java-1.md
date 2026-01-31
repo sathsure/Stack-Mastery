@@ -1248,6 +1248,51 @@ void read() throws IOException {}
 
 ---
 
+### ❓ What is JNA?
+
+### 📝 Answer
+
+**JNA** is a Java library that lets Java code **call native OS libraries (C/C++)** directly without writing JNI code.
+
+JNA Example
+
+Calling a native C function like `strlen()`:
+
+```xml
+<dependency>
+    <groupId>net.java.dev.jna</groupId>
+    <artifactId>jna</artifactId>
+    <version>5.13.0</version>
+</dependency>
+```
+
+```java
+// Java Interface
+
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+
+public interface CLibrary extends Library {
+    CLibrary INSTANCE = Native.load("c", CLibrary.class);
+
+    int strlen(String s);
+}
+
+// Usage
+public class JnaDemo {
+    public static void main(String[] args) {
+        int length = CLibrary.INSTANCE.strlen("Hello JNA");
+        System.out.println(length);
+    }
+}
+```
+
+🟢 No C code written
+🟢 No JNI
+🟢 Clean Java interface
+
+---
+
 ## 3️⃣ Collections Framework
 
 ![Collections Image](/src/assets/backend/java-collections.png)
