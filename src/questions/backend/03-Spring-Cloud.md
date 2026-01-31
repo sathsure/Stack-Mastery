@@ -1185,6 +1185,144 @@ public class OrderServiceApplication {
 
 ---
 
+### ❓ How Load Balancing Works in Spring Boot?
+
+### 📝 Answer
+
+> **Spring Boot = Business Logic**
+> **Spring Cloud / Platform = Load Balancing**
+
+🧠 Case 1: Using Spring Cloud
+
+Spring Boot uses **Spring Cloud LoadBalancer** when:
+
+- You call another service using **service name** instead of IP
+- A **Service Registry** is present
+
+Example registries:
+
+- **Eureka**
+- **Consul**
+- **Kubernetes Service Discovery**
+
+✅ Flow
+
+1. Service instances register themselves
+2. Client asks for `USER-SERVICE`
+3. LoadBalancer picks **one healthy instance**
+4. Request is forwarded
+
+🔹 **Simple Code Example (Client-Side Load Balancing)**
+
+✅ Dependency
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+</dependency>
+```
+
+✅ RestTemplate with Load Balancer
+
+```java
+@Bean
+@LoadBalanced
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+```
+
+✅ Calling Another Service
+
+```java
+String response = restTemplate.getForObject(
+    "http://ORDER-SERVICE/orders", String.class);
+```
+
+👉 **ORDER-SERVICE** is resolved dynamically to:
+
+```
+10.0.1.2
+10.0.1.3
+10.0.1.4
+```
+
+🔹 **Load Balancing Strategy**
+
+Default strategy:
+
+```
+Round Robin
+```
+
+Other strategies:
+
+- Random
+- Weighted
+- Custom
+
+---
+
+### ❓ How Router Traffic Is Handled (API Gateway)
+
+### 📝 Answer
+
+Routing decides:
+
+> **Which request goes to which microservice**
+
+✅ Using Spring Cloud Gateway (Most Common)
+
+Spring Cloud Gateway sits **in front of all services**.
+
+🔹 Gateway Routing Example
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+```
+
+```
+Client → Gateway → USER-SERVICE
+```
+
+Gateway:
+
+- Routes traffic
+- Load balances
+- Handles security
+- Applies filters
+
+---
+
+### ❓ How Traffic Routing Works in Kubernetes
+
+### 📝 Answer
+
+If running on Kubernetes:
+
+🚀 Traffic Flow
+
+```
+Client → Ingress → Service → Pod
+```
+
+- **Ingress** → Routing
+- **Service** → Load Balancing
+- **Pods** → Actual application
+
+👉 Spring Boot **does nothing special here**
+Kubernetes handles everything.
+
+---
+
 ## Service Communication & Discovery
 
 ### ❓ How do services discover each other in Spring Cloud?

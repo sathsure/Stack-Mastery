@@ -784,16 +784,314 @@ SET GLOBAL general_log = ON;
 
 4️⃣ CHECK INDEX USAGE
 
-### 8️⃣ Verify indexes
+**Verify indexes**
 
 ```sql
 SHOW INDEX FROM orders;
 ```
 
-### 9️⃣ Find unused indexes
+**Find unused indexes**
 
 ```sql
 performance_schema.table_io_waits_summary_by_index_usage;
 ```
 
 📌 Missing index is the **#1 cause** of performance issues.
+
+---
+
+### ❓ EXPLAIN / ANALYZE Query
+
+### 📝 Answer
+
+`EXPLAIN` - shows **how MySQL executes a query**:
+
+- Which index is used
+- Join order
+- Table scan or index scan
+- Estimated rows
+
+✅ Why is it needed?
+
+- To **find performance problems**
+- To know **why a query is slow**
+- To decide **which index to add or fix**
+
+```sql
+EXPLAIN
+SELECT * FROM orders WHERE user_id = 10;
+```
+
+**Sample Output (important columns)**
+
+| Column | Meaning                                   |
+| ------ | ----------------------------------------- |
+| type   | Access type (ALL = bad, ref/range = good) |
+| key    | Index used                                |
+| rows   | Rows MySQL expects to scan                |
+| Extra  | Using where, Using index, etc.            |
+
+`EXPLAIN ANALYZE` - Shows **actual execution time**, not estimates.
+
+```sql
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE user_id = 10;
+```
+
+📌 **Difference**
+
+- `EXPLAIN` → Estimated plan
+- `EXPLAIN ANALYZE` → Real execution time (best for optimization)
+
+✅ How it helps optimization?
+
+- Finds **full table scans**
+- Identifies **missing indexes**
+- Reveals **bad join order**
+
+Example optimization:
+
+```sql
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+```
+
+---
+
+### ❓ WHERE vs HAVING
+
+### 📝 Answer
+
+✅ WHERE
+
+- Filters **rows before GROUP BY**
+- Faster
+- Cannot use aggregate functions
+
+```sql
+SELECT * FROM orders WHERE status = 'PAID';
+```
+
+✅ HAVING
+
+- Filters **after GROUP BY**
+- Used with aggregate functions
+
+```sql
+SELECT user_id, COUNT(*)
+FROM orders
+GROUP BY user_id
+HAVING COUNT(*) > 5;
+```
+
+🔑 Key Difference
+
+| WHERE           | HAVING             |
+| --------------- | ------------------ |
+| Before grouping | After grouping     |
+| No aggregates   | Aggregates allowed |
+| Faster          | Slower             |
+
+📌 **Rule**:
+👉 Use `WHERE` whenever possible, `HAVING` only when needed.
+
+---
+
+### ❓ JOIN Types (INNER, LEFT, RIGHT)
+
+### 📝 Answer
+
+Assume:
+
+- `users(id, name)`
+- `orders(id, user_id)`
+
+🔹 **INNER JOIN**
+
+Returns **matching rows only**
+
+```sql
+SELECT u.name, o.id
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;
+```
+
+📌 If user has **no orders → excluded**
+
+🔹 **LEFT JOIN**
+
+Returns **all left table rows**
+
+```sql
+SELECT u.name, o.id
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+```
+
+📌 Users without orders → `NULL` in order columns
+
+🔹 **RIGHT JOIN**
+
+Returns **all right table rows**
+
+```sql
+SELECT u.name, o.id
+FROM users u
+RIGHT JOIN orders o ON u.id = o.user_id;
+```
+
+📌 Rarely used (LEFT JOIN is preferred)
+
+🔑 **JOIN Summary**
+
+| Join  | Result              |
+| ----- | ------------------- |
+| INNER | Only matches        |
+| LEFT  | All left + matches  |
+| RIGHT | All right + matches |
+
+---
+
+### ❓ How to Debug Slow Queries in Production
+
+### 📝 Answer
+
+✅ Step-by-step approach
+
+1️⃣ **Identify slow query**
+
+```sql
+SHOW PROCESSLIST;
+```
+
+2️⃣ **Enable Slow Query Log**
+
+```sql
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 1;
+```
+
+3️⃣ **Analyze query**
+
+```sql
+EXPLAIN ANALYZE SELECT ...
+```
+
+4️⃣ **Check indexes**
+
+```sql
+SHOW INDEX FROM table_name;
+```
+
+5️⃣ **Optimize**
+
+- Add missing indexes
+- Avoid `SELECT *`
+- Reduce joins
+- Limit result set
+
+🔧 **Common Tools Used**
+
+- MySQL Slow Query Log
+- `EXPLAIN ANALYZE`
+- Performance Schema
+- Application APM (New Relic, Datadog)
+- MySQL Workbench
+
+---
+
+### ❓ Database Sharing
+
+### 📝 Answer
+
+Multiple applications or services **using the same database**
+
+❌ Problems
+
+- Performance bottlenecks
+- Locking issues
+- Tight coupling
+- Risky deployments
+
+✅ Best Practice
+
+- **One database per service**
+- Shared DB only for:
+  - Reporting
+  - Legacy systems
+
+📌 In microservices → **Never share databases**
+
+---
+
+### ❓ Database Replication
+
+### 📝 Answer
+
+Copying data from **Primary (Master)** to **Replica (Slave)**
+
+```
+Primary → Replica1 → Replica2
+```
+
+✅ Why needed?
+
+- Read scalability
+- High availability
+- Backup & reporting
+
+✅ Types
+
+| Type          | Use                        |
+| ------------- | -------------------------- |
+| Master-Slave  | Read scaling               |
+| Master-Master | HA (complex)               |
+| Async         | Fast, eventual consistency |
+| Semi-sync     | Safer, slower              |
+
+**Example Use Case**
+
+```text
+Writes → Primary
+Reads  → Replica
+```
+
+---
+
+### ❓ Production Bug / SQL Issue – Root Cause Analysis
+
+### 📝 Answer
+
+1️⃣ **Check application logs**
+
+- SQL errors
+- Timeout errors
+
+2️⃣ **Check database health**
+
+```sql
+SHOW PROCESSLIST;
+SHOW ENGINE INNODB STATUS;
+```
+
+3️⃣ **Check slow queries**
+
+- Slow query log
+- Recently deployed queries
+
+4️⃣ **Run EXPLAIN ANALYZE**
+
+```sql
+EXPLAIN ANALYZE SELECT ...
+```
+
+5️⃣ **Check data issues**
+
+- Missing records
+- Wrong joins
+- NULL values
+
+6️⃣ **Check replication lag**
+
+```sql
+SHOW SLAVE STATUS\G;
+```
