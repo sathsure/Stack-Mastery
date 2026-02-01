@@ -15,6 +15,7 @@
 ```
 
 🧠 _Explanation_
+
 `finally` always overrides the return value.
 
 ---
@@ -39,6 +40,7 @@
 ```
 
 🧠 _Explanation_
+
 `finally` executes even after `catch` return.
 
 ---
@@ -61,6 +63,7 @@
 ```
 
 🧠 _Explanation_
+
 Returned value is copied before `finally` executes.
 
 ---
@@ -87,6 +90,7 @@ Test{x=20}
 ```
 
 🧠 _Explanation_
+
 Object reference is returned, not the object state.
 
 ---
@@ -108,6 +112,7 @@ Object reference is returned, not the object state.
 ```
 
 🧠 _Explanation_
+
 `System.exit()` terminates JVM immediately.
 
 ---
@@ -133,6 +138,7 @@ System.out.println(a);
 ````
 
 🧠 _Explanation_
+
 Overloaded `main()` is a normal static method.
 
 ---
@@ -162,6 +168,7 @@ Main
 ```
 
 🧠 _Explanation_
+
 Static blocks execute before `main()`.
 
 ---
@@ -188,6 +195,7 @@ Constructor
 ```
 
 🧠 _Explanation_
+
 Instance block runs before constructor.
 
 ---
@@ -207,6 +215,7 @@ true
 ```
 
 🧠 _Explanation_
+
 String literals are stored in the String Pool.
 
 ---
@@ -226,6 +235,7 @@ false
 ```
 
 🧠 _Explanation_
+
 `new` creates separate heap objects.
 
 ---
@@ -245,6 +255,7 @@ true
 ```
 
 🧠 _Explanation_
+
 `intern()` returns pooled reference.
 
 ---
@@ -264,6 +275,7 @@ true
 ```
 
 🧠 _Explanation_
+
 Integer cache range is `-128 to 127`.
 
 ---
@@ -283,6 +295,7 @@ false
 ```
 
 🧠 _Explanation_
+
 Outside Integer cache range.
 
 ---
@@ -301,6 +314,7 @@ NullPointerException
 ```
 
 🧠 _Explanation_
+
 Auto-unboxing `null` throws NPE.
 
 ---
@@ -326,6 +340,7 @@ String
 ```
 
 🧠 _Explanation_
+
 Most specific overloaded method is chosen.
 
 ---
@@ -356,6 +371,7 @@ A
 ```
 
 🧠 _Explanation_
+
 Static methods are resolved at compile time.
 
 ---
@@ -386,6 +402,7 @@ B
 ```
 
 🧠 _Explanation_
+
 Runtime polymorphism applies to instance methods.
 
 ---
@@ -416,6 +433,7 @@ B
 ```
 
 🧠 _Explanation_
+
 Parent constructor executes first.
 
 ---
@@ -435,6 +453,7 @@ Java World
 ```
 
 🧠 _Explanation_
+
 `final` prevents reassignment, not mutation.
 
 ---
@@ -796,6 +815,7 @@ B Static
 ```
 
 🧠 _Explanation_
+
 Parent class loads before child class.
 
 ---
@@ -831,6 +851,7 @@ Constructor
 ```
 
 🧠 _Explanation_
+
 Static → Instance block → Constructor.
 
 ---
@@ -858,6 +879,7 @@ long
 ```
 
 🧠 _Explanation_
+
 Widening beats boxing in method resolution.
 
 ---
@@ -885,6 +907,7 @@ int
 ```
 
 🧠 _Explanation_
+
 Exact match is preferred over varargs.
 
 ---
@@ -912,6 +935,7 @@ Compile-time error
 ```
 
 🧠 _Explanation_
+
 `null` matches both wrappers → ambiguity.
 
 ---
@@ -939,6 +963,7 @@ Compile-time error
 ```
 
 🧠 _Explanation_
+
 `return` in `finally` suppresses exception.
 
 ---
@@ -974,6 +999,7 @@ A Closed
 ```
 
 🧠 _Explanation_
+
 Resources close in reverse order of creation.
 
 ---
@@ -998,6 +1024,7 @@ AB
 ```
 
 🧠 _Explanation_
+
 Reference reassignment doesn’t affect caller.
 
 ---
@@ -1022,6 +1049,7 @@ ConcurrentModificationException
 ```
 
 🧠 _Explanation_
+
 Structural modification during iteration is illegal.
 
 ---
@@ -1049,6 +1077,7 @@ May or may not print "Finalize"
 ```
 
 🧠 _Explanation_
+
 `finalize()` execution is not guaranteed.
 
 ---
@@ -1067,6 +1096,7 @@ May or may not print "Finalize"
 ```
 
 🧠 _Explanation_
+
 Post → Pre → Post evaluation order.
 
 ---
@@ -1085,6 +1115,7 @@ Run
 ```
 
 🧠 _Explanation_
+
 `run()` executes like a normal method.
 
 ---
@@ -1105,6 +1136,7 @@ A
 ```
 
 🧠 _Explanation_
+
 Compiler removes unreachable branch.
 
 ---
@@ -1123,6 +1155,7 @@ ClassCastException
 ```
 
 🧠 _Explanation_
+
 Runtime cast mismatch.
 
 ---
@@ -1147,4 +1180,5 @@ Done
 ```
 
 🧠 _Explanation_
+
 `volatile` guarantees visibility across threads.
