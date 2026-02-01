@@ -827,10 +827,10 @@ while (it.hasNext()) {
 
 > ```java
 > Optional<String> name = Optional.of("Dev");
-> 
+>
 > String value = name.orElse(getDefault());
 > System.out.println(value);
-> 
+>
 > static String getDefault() {
 >     System.out.println("Default called");
 >     return "Default";
@@ -865,3 +865,142 @@ Dev
 ### 📝 Answer
 
 ❌ Throws NoSuchElementException
+
+---
+
+### ❓ Employee–Department Related Questions
+
+> You are given two classes, `Employee` and `Department`.
+> Each department references employees using `empId`.
+> Write a program to:
+>
+> 1. Find the total number of employees
+> 2. Find the total number of employees grouped by department name
+> 3. Identify the department with the lowest number of employees
+> 4. Identify the department with the highest number of employees
+> 5. Calculate the average employee score
+
+### 📝 Answer
+
+```java
+/* ---- Model Classes ----*/
+class Employee {
+    String empId;
+    String empName;
+    int empScore;
+}
+
+class Department {
+    String depId;
+    String depName;
+    String empId; // Foreign key reference
+}
+
+
+/* ---- Total Number of Employees ----*/
+int totalEmployees = employees.size(); // Direct count
+
+/* ---- Employees per Department ----*/
+Map<String, Long> empCountByDept =
+    departments.stream()
+        .collect(Collectors.groupingBy(
+            d -> d.depName,
+            Collectors.counting()
+        )); // Group by department name
+
+/* ---- Department with Lowest Employees ----*/
+String minDept =
+    empCountByDept.entrySet()
+        .stream()
+        .min(Map.Entry.comparingByValue())
+        .get()
+        .getKey(); // Lowest count department
+
+/* ---- Department with Highest Employees ----*/
+String maxDept =
+    empCountByDept.entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .get()
+        .getKey(); // Highest count department
+
+/* ---- Average Employee Score ----*/
+double avgScore =
+    employees.stream()
+        .mapToInt(e -> e.empScore)
+        .average()
+        .orElse(0); // Handles empty list safely
+```
+
+---
+
+### ❓ Perfect Numbers
+
+> Write a program to find all **perfect numbers** up to a given input `N`.
+> A perfect number is one where the sum of its positive divisors (excluding itself) equals the number.
+
+### 📝 Answer
+
+```java
+static List<Integer> findPerfectNumbers(int n) {
+    List<Integer> result = new ArrayList<>();
+
+    for (int i = 2; i <= n; i++) {
+        int sum = 1; // 1 is always a divisor
+
+        for (int j = 2; j <= i / 2; j++) {
+            if (i % j == 0) sum += j; // Add divisor
+        }
+
+        if (sum == i) result.add(i); // Perfect number check
+    }
+    return result;
+}
+```
+
+**Time Complexity:** `O(n²)`
+**Output (1000):** `[6, 28, 496]`
+
+---
+
+### ❓ Two Sum Problem
+
+> Given an integer array and a target value, find the indices of two numbers whose sum equals the target.
+> Implement:
+>
+> - A brute-force solution (O(n²))
+> - An optimized solution (O(n))
+
+### 📝 Answer
+
+**Approach 1: Brute Force (O(n²))**
+
+```java
+static int[] twoSumBrute(int[] nums, int target) {
+    for (int i = 0; i < nums.length; i++) {
+        for (int j = i + 1; j < nums.length; j++) {
+            if (nums[i] + nums[j] == target)
+                return new int[]{i, j}; // Match found
+        }
+    }
+    return new int[]{};
+}
+```
+
+**Approach 2: Optimized (O(n)) – HashMap**
+
+```java
+static int[] twoSumOptimized(int[] nums, int target) {
+    Map<Integer, Integer> map = new HashMap<>();
+
+    for (int i = 0; i < nums.length; i++) {
+        int diff = target - nums[i];
+
+        if (map.containsKey(diff))
+            return new int[]{map.get(diff), i}; // Complement found
+
+        map.put(nums[i], i); // Store number with index
+    }
+    return new int[]{};
+}
+```
