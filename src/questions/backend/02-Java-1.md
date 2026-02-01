@@ -2379,39 +2379,233 @@ class ElectricCar extends Machine implements Vehicle { } // ✅ still allowed
 
 ```
 
-7️⃣ Simple Coding Examples:
+---
+
+### ❓ `input.toCharArray()` vs `input.chars()`?
+
+### 📝 Answer
+
+`input.toCharArray()` 👉 Converts the `String` into a **char[] (character array)**
 
 ```java
-// 1. Find even numbers
-list.stream().filter(n -> n % 2 == 0).forEach(System.out::println);
+String input = "ABC";
 
-// 2. Find maximum number
-int max = list.stream().max(Integer::compareTo).get();
-
-// 3. Find sum of all numbers
-int sum = list.stream().mapToInt(Integer::intValue).sum();
-
-// 4. Count elements greater than 10
-long count = list.stream().filter(n -> n > 10).count();
-
-// 5. Convert List → Set
-Set<Integer> set = list.stream().collect(Collectors.toSet());
-
-// 6. Convert List → Map
-Map<String, Integer> map = list.stream().collect(Collectors.toMap(s -> s, String::length));
-
-// 7. Sort in descending order
-list.stream().sorted(Comparator.reverseOrder()).forEach(System.out::println);
-
-// 8. Find second highest number
-int secondMax = list.stream().distinct().sorted(Comparator.reverseOrder()).skip(1).findFirst().get();
-
-// 9. Group employees by department
-Map<String, List<Employee>> map = list.stream().collect(Collectors.groupingBy(Employee::getDepartment));
-
-// 10. Filtered list using Parallel Stream
-List<Integer> result = list.parallelStream().filter(n -> n > 10).collect(Collectors.toList());
+char[] chars = input.toCharArray();
+for (char c : chars) {
+    System.out.println(c);
+}
 ```
+
+🎯 **Key Understanding**
+
+- Returns: `char[]`
+- Best for **simple loops**
+
+`input.chars()` 👉 Returns a **stream of character codes (int values)**
+
+```java
+String input = "ABC";
+
+input.chars()
+     .forEach(c -> System.out.println((char) c));
+```
+
+🎯 **Key Understanding**
+
+- Returns: `IntStream`
+- Each value is an **ASCII/Unicode code**
+- Requires casting to `char`
+- Useful for **stream operations** (filter, map, count)
+
+---
+
+### ❓ map vs mapToInt vs mapToObj vs mapToLong vs mapToDouble vs flatMap?
+
+### 📝 Answer
+
+1️⃣ `map()` 👉 **Transforms each element → another element**
+
+```java
+List<String> names = List.of("java", "angular");
+
+List<String> upper =
+    names.stream()
+         .map(s -> s.toUpperCase())
+         .toList();
+
+System.out.println(upper); // [JAVA, ANGULAR]
+```
+
+2️⃣ `mapToInt()` 👉 **Object → primitive `int` stream (`IntStream`)**
+
+```java
+List<String> names = List.of("java", "angular");
+
+int[] lengths =
+    names.stream()
+         .mapToInt(s -> s.length())
+         .toArray();
+
+System.out.println(Arrays.toString(lengths)); // [4, 7]
+```
+
+3️⃣ `mapToLong()` 👉 **Object → primitive `long` stream (`LongStream`)**
+
+```java
+List<String> files = List.of("a", "bb", "ccc");
+
+long total =
+    files.stream()
+         .mapToLong(s -> s.length())
+         .sum();
+
+System.out.println(total); // 6
+```
+
+4️⃣ `mapToDouble()` 👉 **Object → primitive `double` stream (`DoubleStream`)**
+
+```java
+List<Integer> prices = List.of(100, 200, 300);
+
+double avg =
+    prices.stream()
+          .mapToDouble(p -> p * 1.18)
+          .average()
+          .getAsDouble();
+
+System.out.println(avg); // 236.0
+```
+
+5️⃣ `mapToObj()` 👉 **Primitive → Object stream**
+
+```java
+IntStream.range(1, 4)
+         .mapToObj(i -> "Item-" + i)
+         .forEach(System.out::println); // Item-1 Item-2 Item-3
+```
+
+6️⃣ `flatMap()` 👉 **Flattens nested streams (many → one)**
+
+```java
+List<List<String>> data =
+    List.of(
+        List.of("A", "B"),
+        List.of("C", "D")
+    );
+
+List<String> flat =
+    data.stream()
+        .flatMap(list -> list.stream())
+        .toList();
+
+System.out.println(flat); // [A, B, C, D]
+```
+
+---
+
+### ❓ Collectors to Remember
+
+### 📝 Answer
+
+```java
+List<Employee> data = new ArrayList<>();
+data.add(new Employee(1, "Adam", "10000", "24"));
+data.add(new Employee(2, "Jon",  "10000", "23"));
+data.add(new Employee(3, "Tim",  "15000", "26"));
+data.add(new Employee(4, "Jim",  "14500", "26"));
+```
+
+| Code                                                                                        | Output                              | Syntax                                    |
+| ------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------- |
+| `data.stream().collect(toList())`                                                           | `List<Employee>`                    | `toList()`                                |
+| `data.stream().map(Employee::getAge).collect(toSet())`                                      | `[23,24,26]`                        | `toSet()`                                 |
+| `data.stream().map(Employee::getName).collect(joining(","))`                                | `Adam,Jon,Tim,Jim`                  | `joining(delimiter)`                      |
+| `data.stream().collect(counting())`                                                         | `4`                                 | `counting()`                              |
+| `data.stream().collect(groupingBy(Employee::getAge))`                                       | `{23=[Jon],24=[Adam],26=[Tim,Jim]}` | `groupingBy(key)`                         |
+| `data.stream().collect(groupingBy(Employee::getAge, counting()))`                           | `{23=1,24=1,26=2}`                  | `groupingBy(key, downstream)`             |
+| `data.stream().collect(groupingBy(Employee::getAge, HashMap::new, toList()))`               | `{23=[Jon],24=[Adam],26=[Tim,Jim]}` | `groupingBy(key, mapFactory, downstream)` |
+| `data.stream().collect(toMap(Employee::getId, Employee::getName))`                          | `{1=Adam,2=Jon,3=Tim,4=Jim}`        | `toMap(key, value)`                       |
+| `data.stream().collect(toMap(Employee::getAge, Employee::getName, (a,b)->a))`               | `{23=Jon,24=Adam,26=Tim}`           | `toMap(key, value, mergeFn)`              |
+| `data.stream().collect(toMap(Employee::getAge, Employee::getName, (a,b)->a, TreeMap::new))` | `{23=Jon,24=Adam,26=Tim}`           | `toMap(key, value, mergeFn, mapFactory)`  |
+| `data.stream().collect(maxBy(Comparator.comparing(Employee::getSalary)))`                   | `Optional[Tim]`                     | `maxBy(comparator)`                       |
+| `data.stream().collect(minBy(Comparator.comparing(Employee::getSalary)))`                   | `Optional[Adam]`                    | `minBy(comparator)`                       |
+| `data.stream().collect(groupingBy(Employee::getAge, mapping(Employee::getName, toList())))` | `{23=[Jon],24=[Adam],26=[Tim,Jim]}` | `mapping(mapper, downstream)`             |
+
+1️⃣ `groupingBy` — Mandatory vs Optional
+
+🧠 Argument Breakdown
+
+| Argument           | Mandatory?   | Why                                  |
+| ------------------ | ------------ | ------------------------------------ |
+| `classifier (key)` | ✅ Mandatory | Grouping cannot happen without a key |
+| `downstream`       | ❌ Optional  | Defaults to `toList()`               |
+| `mapFactory`       | ❌ Optional  | Defaults to `HashMap`                |
+
+2️⃣ `toMap` — Mandatory vs Optional
+
+🧠 Argument Breakdown
+
+| Argument        | Mandatory?     | Why                                                             |
+| --------------- | -------------- | --------------------------------------------------------------- |
+| `keyMapper`     | ✅ Mandatory   | Keys are required                                               |
+| `valueMapper`   | ✅ Mandatory   | Values are required                                             |
+| `mergeFunction` | ❌ Conditional | Duplicate keys without mergeFn throw ❌ `IllegalStateException` |
+| `mapFactory`    | ❌ Optional    | Defaults to `HashMap`                                           |
+
+3️⃣ `Function.identity()`
+
+✅ Use When - Element is already the key (String, Integer, etc)
+
+```java
+toMap(Function.identity(), v -> "VAL")
+```
+
+❌ Don’t Use When - Element is an Object (e.g. Employee)
+
+```java
+toMap(Function.identity(), Employee::getSalary)
+```
+
+3️⃣ `Collectors.counting()`
+
+```java
+Collectors.counting()
+```
+
+- Counts how many elements fall into each group
+- Returns `Long`
+
+---
+
+### ❓ Optional.isPresent vs Optional.IfPresent
+
+### 📝 Answer
+
+`Optional.isPresent()` - To check if the Optional instance contains a non-null value
+
+```java
+Optional<String> optional = Optional.of("Hello");
+
+if (optional.isPresent()) {
+    System.out.println("Value is: " + optional.get()); // Can throw an exception if the Optional is empty
+} else {
+    System.out.println("Value is not present.");
+}
+```
+
+Usage: Typically used in a traditional if-else block
+
+`Optional.ifPresent()` - To perform a specific action on the contained value only if it is present.
+
+```java
+Optional<String> optional = Optional.of("Hello");
+
+// The consumer action is executed only if a value is present
+optional.ifPresent(value -> System.out.println("Value is: " + value));
+// Output: Value is: Hello
+```
+
+Usage: It takes a lambda expression (or method reference) as an argument
 
 ---
 
