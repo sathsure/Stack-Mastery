@@ -623,6 +623,12 @@ Design principles while writing Java code:
 
 SOLID is a set of 5 object-oriented design principles that help write clean, maintainable, and scalable code:
 
+- **SRP – Single Responsibility Principle**
+- **OCP – Open/Closed Principle**
+- **LSP – Liskov Substitution Principle**
+- **ISP – Interface Segregation Principle**
+- **DIP – Dependency Inversion Principle**
+
 1. **SRP – Single Responsibility Principle**
 
 Definition: A class should have only one reason to change.
@@ -950,6 +956,10 @@ try (Resource res = new Resource()) {
 ### ❓ What are the design patterns that you used in Java?
 
 ### 📝 Answer
+
+- **Creational Design Patterns** - Singleton, Factory, Builder
+- **Structural Design Patterns** - Adapter, Decorator, Proxy
+- **Behavioral Design Patterns** - Strategy, Observer, Command
 
 1️⃣ **Creational Design Patterns**
 
