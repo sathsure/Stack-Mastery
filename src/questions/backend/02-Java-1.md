@@ -1262,7 +1262,7 @@ void read() throws IOException {}
 
 ### 📝 Answer
 
-**JNA** is a Java library that lets Java code **call native OS libraries (C/C++)** directly without writing JNI code.
+**JNA** (Java Native Access) is a Java library that lets Java code **call native OS libraries (C/C++)** directly without writing JNI code.
 
 JNA Example
 
