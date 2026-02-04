@@ -1055,43 +1055,186 @@ Writes → Primary
 Reads  → Replica
 ```
 
+🤔 How they stay synced
+MySQL uses Asynchronous Replication by default. Here are the steps the system takes automatically:
+
+**Binary Log (Primary):** The Original database records every change (Insert, Update, Delete) into a file called the `binlog`.
+
+**Relay Log (Replica):** The Replica database connects to the Primary, reads the `binlog`, and copies it to its own file called the `relay log`.
+
+**Applier Thread (Replica):** The Replica executes the queries in the `relay log` one by one to update its own data.
+
+🤔 How to check Sync Status
+
+```sql
+SHOW SLAVE STATUS\G
+```
+
+| Variable                | Target Value | Meaning                                 |
+| ----------------------- | ------------ | --------------------------------------- |
+| `Slave_IO_Running`      | Yes          | Connected to Primary and receiving logs |
+| `Slave_SQL_Running`     | Yes          | Applying the logs to the data           |
+| `Seconds_Behind_Master` | 0            | The Replica is perfectly synced         |
+
+```properties
+# Primary (Write)
+spring.datasource.primary.url=jdbc:mysql://192.168.1.10:3306/db
+spring.datasource.primary.username=admin
+spring.datasource.primary.password=pass
+
+# Replica (Read)
+spring.datasource.replica.url=jdbc:mysql://192.168.1.50:3306/db
+spring.datasource.replica.username=admin
+spring.datasource.replica.password=pass
+```
+
+```java
+public class RoutingDataSource extends AbstractRoutingDataSource {
+    @Override
+    protected Object determineCurrentLookupKey() {
+        return TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+               ? "READ" : "WRITE";
+    }
+}
+
+@Configuration
+public class DataSourceConfig {
+    @Bean
+    public DataSource dataSource() {
+        Map<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put("WRITE", primaryDataSource());
+        targetDataSources.put("READ", replicaDataSource());
+
+        RoutingDataSource routingDataSource = new RoutingDataSource();
+        routingDataSource.setTargetDataSources(targetDataSources);
+        routingDataSource.setDefaultTargetDataSource(primaryDataSource());
+        return routingDataSource;
+    }
+}
+
+@Service
+public class OrderService {
+
+    // Goes to REPLICA (192.168.1.50)
+    @Transactional(readOnly = true)
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    // Goes to PRIMARY (192.168.1.10)
+    @Transactional
+    public void createOrder(Order order) {
+        orderRepository.save(order);
+    }
+}
+```
+
 ---
 
 ### ❓ Production Bug / SQL Issue – Root Cause Analysis
 
 ### 📝 Answer
 
-1️⃣ **Check application logs**
+1.  Configuration
 
-- SQL errors
-- Timeout errors
-
-2️⃣ **Check database health**
+Run these in your MySQL client to enable logging to a table:
 
 ```sql
-SHOW PROCESSLIST;
-SHOW ENGINE INNODB STATUS;
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL log_output = 'TABLE';
+SET GLOBAL long_query_time = 2;
+
 ```
 
-3️⃣ **Check slow queries**
+2.  The Retrieval Query
 
-- Slow query log
-- Recently deployed queries
-
-4️⃣ **Run EXPLAIN ANALYZE**
+Use this to find the slowest queries and the tables involved:
 
 ```sql
-EXPLAIN ANALYZE SELECT ...
+SELECT
+    start_time,
+    user_host,
+    query_time,
+    rows_examined,
+    sql_text
+FROM mysql.slow_log
+ORDER BY query_time DESC;
+
 ```
 
-5️⃣ **Check data issues**
+3.  Expected Sample Output
 
-- Missing records
-- Wrong joins
-- NULL values
+| start_time          | user_host              | query_time  | rows_examined | sql_text                                               |
+| ------------------- | ---------------------- | ----------- | ------------- | ------------------------------------------------------ |
+| 2026-02-04 10:30:01 | root[root] @ localhost | 00:00:05.12 | 500000        | `SELECT * FROM orders WHERE status = 'pending';`       |
+| 2026-02-04 10:31:15 | app[app] @ 192.168.1.1 | 00:00:03.45 | 120000        | `SELECT name FROM users WHERE bio LIKE '%developer%';` |
 
-6️⃣ **Check replication lag**
+4.  Diagnosing the Table
+
+Take the `sql_text` from the results above and run:
 
 ```sql
-SHOW SLAVE STATUS\G;
+EXPLAIN SELECT * FROM orders WHERE status = 'pending';
+
 ```
+
+**Expected Sample Output:**
+
+| id  | select_type | table      | type | key  | rows   | Extra       |
+| --- | ----------- | ---------- | ---- | ---- | ------ | ----------- |
+| 1   | SIMPLE      | **orders** | ALL  | NULL | 500000 | Using where |
+
+_(Note: `type: ALL` and `key: NULL` confirms the table is slow because it is missing an index.)_
+
+5. Verification Steps
+
+Run the `EXPLAIN` command again to confirm the fix worked.
+
+```sql
+-- Check the new execution plan
+EXPLAIN SELECT * FROM orders WHERE status = 'pending';
+
+```
+
+**Expected Result Comparison:**
+
+| Feature  | Before Fix              | After Fix                            |
+| -------- | ----------------------- | ------------------------------------ |
+| **type** | `ALL` (Full Table Scan) | `ref` or `range` (Targeted Scan)     |
+| **key**  | `NULL`                  | `idx_status` (The Index you created) |
+| **rows** | `500,000`               | `120`                                |
+
+6. If it is still slow (The Remaining 10%)
+
+If indexes don't fix it, the issue is usually structural or hardware-related.
+
+**SQL Fixes:**
+
+- **Rewrite the Query:** Avoid `SELECT *`. Only fetch columns you need.
+
+```sql
+-- Better
+SELECT id, order_date FROM orders WHERE status = 'pending';
+
+```
+
+- **Avoid Leading Wildcards:** Change `LIKE '%value%'` to `LIKE 'value%'`.
+
+```sql
+-- This cannot use a standard index
+SELECT * FROM users WHERE email LIKE '%gmail.com';
+
+```
+
+**Database Fixes:**
+
+- **Table Partitioning:** Splitting a 100-million-row table into smaller physical pieces.
+- **Vertical Scaling:** Increasing Server RAM so the entire index fits in memory.
+
+7. Summary of Results
+
+| Action             | Impact | Result                                                   |
+| ------------------ | ------ | -------------------------------------------------------- |
+| **Create Index**   | High   | Reduces rows searched from millions to hundreds.         |
+| **Optimize Table** | Medium | Reclaims space and reorganizes data for faster disk I/O. |
+| **Rewrite Query**  | High   | Reduces CPU and memory load per request.                 |
