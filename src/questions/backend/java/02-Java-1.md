@@ -982,17 +982,7 @@ try (Resource res = new Resource()) {
 
 **Singleton** restricts object creation to one instance and provides a global access point to it.
 
-```java
-class Singleton {
-    private static Singleton instance;
-    private Singleton() {}
-    public static Singleton getInstance() {
-        if (instance == null)
-            instance = new Singleton();
-        return instance;
-    }
-}
-```
+[Singleton Class](#L3202)
 
 🔹 Factory
 
@@ -3216,21 +3206,182 @@ Caller can mutate: `skills.add("Hacking");` . Use `List.copyOf(skills);`
 Singleton - A class that allows only one instance throughout the application lifecycle.
 
 ```java
-public class Singleton {
+import java.io.Serializable;
 
-    private static final Singleton INSTANCE = new Singleton();
+public final class Singleton implements Serializable {
 
-    private Singleton() {}
+    private static final long serialVersionUID = 1L;
 
+    // 1️⃣ Private constructor
+    private Singleton() {
+        if (Holder.INSTANCE != null) {
+            throw new RuntimeException("Use getInstance()");
+        }
+    }
+
+    // 2️⃣ Lazy-loaded, thread-safe holder
+    private static class Holder {
+        private static final Singleton INSTANCE = new Singleton();
+    }
+
+    // 3️⃣ Global access point
     public static Singleton getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
+    }
+
+    // 4️⃣ Prevent serialization from breaking singleton
+    private Object readResolve() {
+        return Holder.INSTANCE;
+    }
+
+    // 5️⃣ Prevent cloning
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException("Cloning not allowed");
     }
 }
 ```
 
-1️⃣ Can Cloning Break Singleton?
+1️⃣ **Private Constructor**
 
-✅ Yes, unless prevented.
+❌ Without
+
+```java
+Singleton s = new Singleton(); // anyone can create object
+```
+
+✅ With
+
+```java
+private Singleton() {}
+```
+
+✔ Prevents external object creation
+✔ Enforces single instance
+
+2️⃣ **Inner Class**
+
+1. ❌ Without Inner Class
+
+```java
+private static final Singleton INSTANCE = new Singleton();
+```
+
+What JVM does
+
+- Loads Singleton class
+- Initializes ALL static fields
+- INSTANCE created immediately **even if never used**
+
+2. ❌ Without Inner Class (Lazy + Thread-Safe is Hard)
+
+```java
+private static Singleton instance;
+
+public static Singleton getInstance() {
+    if (instance == null) {          // ❌ race condition
+        instance = new Singleton();
+    }
+    return instance;
+}
+```
+
+- Not thread-safe
+- Multiple objects possible
+
+✅ With Inner Class (BEST WAY)
+
+```java
+private static class Holder {
+    private static final Singleton INSTANCE = new Singleton();
+}
+```
+
+What JVM does
+
+- Load outer class
+- Inner class is NOT initialized
+- When getInstance() is called
+  - JVM loads Inner class
+  - Initializes static fields
+  - NOW `new Singleton()` is executed
+
+```java
+Singleton s;             // ❌ no object created
+Singleton.getInstance(); // ✅ object created HERE
+```
+
+3️⃣ **Global Access Method**
+
+❌ Without
+
+```java
+// no controlled access
+```
+
+✅ With
+
+```java
+public static Singleton getInstance() {
+    return Holder.INSTANCE;
+}
+```
+
+✔ Single access point
+✔ Controlled instance creation
+
+4️⃣ **Serialization Protection (`readResolve`)**
+
+❌ Without
+
+```java
+Singleton s1 = getInstance();
+Singleton s2 = deserialize(s1);
+
+s1 != s2 // ❌ singleton broken
+```
+
+✅ With
+
+```java
+private Object readResolve() {
+    return Holder.INSTANCE;
+}
+```
+
+✔ Prevents new instance during deserialization
+✔ Ensures same object
+
+5️⃣ **Reflection Protection (Constructor Guard)**
+
+❌ Without
+
+```java
+Constructor<Singleton> c = Singleton.class.getDeclaredConstructor();
+c.newInstance(); // ❌ new object
+```
+
+✅ With
+
+```java
+private Singleton() {
+    if (Holder.INSTANCE != null)
+        throw new RuntimeException();
+}
+```
+
+✔ Stops multiple instantiations
+✔ Basic reflection safety
+
+6️⃣ **Clone Protection**
+
+❌ Without
+
+```java
+Singleton s2 = (Singleton) s1.clone(); // ❌ new instance
+```
+
+✅ With
 
 ```java
 @Override
@@ -3239,7 +3390,7 @@ protected Object clone() throws CloneNotSupportedException {
 }
 ```
 
-> Singleton guarantees one instance per class loader, not per JVM.
+✔ Prevents object cloning
 
 ---
 
