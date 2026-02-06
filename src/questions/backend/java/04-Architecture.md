@@ -683,3 +683,99 @@ When independent scaling, deployment speed, or ownership becomes a problem—not
 ### 📝 Answer
 
 UI logic stays in Angular. Data validation, security, and performance-critical logic stay in backend.
+
+---
+
+### ❓ What challenges you encountered while upgrading Spring or Java?
+
+### 📝 Answer
+
+While upgrading Spring Boot / Java, I faced **compatibility and breaking changes**.
+
+**Common Challenges & Solutions**
+
+🔹 1. Dependency Incompatibility
+
+❌ **Problem**
+
+- Older libraries not supported
+
+✅ **Solution**
+
+- Upgrade dependencies
+- Use Spring BOM (dependency management)
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-dependencies</artifactId>
+      <version>3.2.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+🔹 2. Java Version Issues (Java 8 → 17)
+
+❌ **Problem**
+
+- Removed APIs (e.g. `javax.*`)
+
+✅ **Solution**
+
+- Migrated to `jakarta.*`
+
+```java
+// Old
+import javax.persistence.Entity;
+
+// New
+import jakarta.persistence.Entity;
+```
+
+🔹 3. Spring Security Changes
+
+❌ **Problem**
+
+- Deprecated `WebSecurityConfigurerAdapter`
+
+✅ **Solution**
+
+- Used `SecurityFilterChain`
+
+```java
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+    return http.build();
+}
+```
+
+🔹 4. Failing Tests After Upgrade
+
+❌ **Problem**
+
+- Mock failures / context load issues
+
+✅ **Solution**
+
+- Updated Mockito & JUnit versions
+- Fixed deprecated annotations
+
+🔹 5. Configuration Changes
+
+❌ **Problem**
+
+- Properties renamed or removed
+
+✅ **Solution**
+
+- Checked Spring Boot migration guide
+- Updated `application.yml`
+
+> Upgrading needs dependency alignment, code refactoring, and proper testing.

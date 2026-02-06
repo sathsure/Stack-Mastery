@@ -2062,6 +2062,90 @@ Map<String, String> config =
 
 ---
 
+## JAVA STREAMS — COLLECTORS & COMPARATORS CHEAT SHEET
+
+🔑 **COMMON PLACEHOLDERS — WHAT TO WRITE**
+
+```java
+classifier   -> Person::getDepartment
+mapper       -> Person::getAge | Person::getName
+predicate    -> p -> p.getAge() > 18
+comparator   -> Comparator.comparing(Person::getAge)
+mergeFn      -> (a, b) -> a
+mapSupplier  -> HashMap::new | TreeMap::new
+downstream   -> Collectors.toList()
+```
+
+⚡ **COLLECTORS — SYNTAX + USAGE**
+
+```java
+Collectors.toList()                          // Convert Stream → List
+Collectors.toSet()                           // Convert Stream → Set
+
+Collectors.toMap(k, v)                       // Convert List → Map
+Collectors.toMap(k, v, mergeFn)              // Map with duplicate keys
+Collectors.toMap(k, v, mergeFn, mapSupplier) // Custom Map (HashMap/TreeMap)
+
+Collectors.groupingBy(classifier)            // Group by field
+Collectors.groupingBy(classifier, downstream)// Group + aggregate
+Collectors.groupingBy(c, mapSupplier, d)     // Group into custom Map
+
+Collectors.partitioningBy(predicate)         // Split true / false
+Collectors.partitioningBy(p, downstream)     // Partition + collect
+
+Collectors.counting()                        // Count elements
+
+Collectors.averagingInt(mapper)              // Average int field
+Collectors.averagingLong(mapper)             // Average long field
+Collectors.averagingDouble(mapper)           // Average double field
+
+Collectors.summingInt(mapper)                // Sum int field
+Collectors.summingLong(mapper)               // Sum long field
+Collectors.summingDouble(mapper)             // Sum double field
+
+Collectors.minBy(comparator)                 // Find minimum
+Collectors.maxBy(comparator)                 // Find maximum
+
+Collectors.mapping(mapper, downstream)       // Transform while collect
+Collectors.flatMapping(mapper, downstream)   // Flatten nested streams
+
+Collectors.joining()                         // Convert List → String
+Collectors.joining(delimiter)                // String with separator
+Collectors.joining(d, prefix, suffix)        // Formatted String
+
+Collectors.summarizingInt(mapper)             // min, max, avg, sum
+Collectors.summarizingLong(mapper)            // statistics long
+Collectors.summarizingDouble(mapper)          // statistics double
+
+Collectors.collectingAndThen(downstream, f)  // Post-process result
+```
+
+⚡ **COMPARATORS — SYNTAX + USAGE**
+
+```java
+Comparator.comparing(key)                    // Sort by field
+Comparator.comparing(key, comparator)        // Custom sort logic
+
+Comparator.comparingInt(key)                 // Primitive int sort
+Comparator.comparingLong(key)                // Primitive long sort
+Comparator.comparingDouble(key)              // Primitive double sort
+
+Comparator.naturalOrder()                    // Ascending order
+Comparator.reverseOrder()                    // Descending order
+
+comparator.reversed()                        // Reverse comparator
+comparator.thenComparing(key)                // Secondary sort
+comparator.thenComparing(key, cmp)           // Multi-level sort
+
+Comparator.nullsFirst(cmp)                   // Nulls first
+Comparator.nullsLast(cmp)                    // Nulls last
+
+Map.Entry.comparingByKey()                   // Sort map by key
+Map.Entry.comparingByValue()                 // Sort map by value
+```
+
+---
+
 ## 3️⃣ Equals and Hashcode
 
 ### ❓ How do equals() and hashCode() work together?
@@ -3336,7 +3420,7 @@ public static Singleton getInstance() {
 
 ```java
 Singleton s1 = getInstance();
-Singleton s2 = deserialize(s1);
+Singleton s2 = deserialize(serialize(s1));
 
 s1 != s2 // ❌ singleton broken
 ```

@@ -751,6 +751,130 @@ ExecutorService executor = Executors.newCachedThreadPool();
 
 ## JVM Deep Dive
 
+### ❓ What does Serializable mean?
+
+### 📝 Answer
+
+**`Serializable`** is a **marker interface** that is used to **convert Java Object into a byte stream**.
+
+Serializable is like a tag you put on a class to tell Java:
+
+> Hey JVM, this object is allowed to be converted into bytes.
+
+Because Java asks:
+
+> Are you sure you want this object to leave memory?
+
+Serialization is commonly used for:
+
+- Saving objects to a **file**
+- Sending objects over a **network**
+- Caching objects (Redis, session storage)
+- Passing objects between JVMs
+
+🔹 **Marker Interface**
+
+A marker interface is an **interface with no methods** that tells the JVM to treat a class differently.
+
+```java
+// Marker Interface
+public interface Serializable { }
+
+class User implements Serializable {}
+
+// Annotation
+@Serializable
+class User {}
+```
+
+> **Before annotations existed, marker interfaces were the only way.**
+
+| Marker Interface                   | Purpose                     |
+| ---------------------------------- | --------------------------- |
+| `Serializable`                     | Allows object serialization |
+| `Cloneable`                        | Allows object cloning       |
+| `RandomAccess`                     | Optimizes list access       |
+| `SingleThreadModel` _(deprecated)_ | Thread safety hint          |
+
+Example: [Serialization Example](/src/questions/backend/java/02-Java-1.md#L3202)
+
+🔹 `serialVersionUID`
+
+```java
+private static final long serialVersionUID = 1L;
+```
+
+- Ensures **version compatibility**
+- Prevents `InvalidClassException`
+
+❌ Without it:
+
+Java secretly creates its own version number based on: `fields`, `types`, `structure`.  
+Now you change the class (even slightly), Java creates a different version number.  
+Later, when deserializing, Java compares: **version in saved data** and **version of current class**
+
+```text
+InvalidClassException: local class incompatible
+```
+
+🔹 `transient` Keyword
+
+Used to **exclude fields from serialization**.
+
+```java
+class User implements Serializable {
+    int id;
+    transient String password;
+}
+```
+
+- `password` will **NOT** be serialized
+- After deserialization → `password = null`
+
+🔹 `transient` vs `@Transient`
+
+**transient** is a Java keyword that excludes a field from **serialization**
+**@Transient** excludes a field from **database persistence**
+
+🔹 Serializable vs Externalizable
+
+| Feature     | Serializable | Externalizable                  |
+| ----------- | ------------ | ------------------------------- |
+| Methods     | None         | `writeExternal`, `readExternal` |
+| Control     | Automatic    | Full control                    |
+| Complexity  | Simple       | Complex                         |
+| Performance | Slower       | Faster (custom)                 |
+
+🤔 Where is Serializable used in real applications?
+
+Common places:
+
+- HTTP Sessions (Spring Boot)
+- File storage
+- Messaging (Kafka / RabbitMQ)
+
+```java
+User user = session.getAttribute("user");
+```
+
+> Internally → Serializable is required
+
+🤔 Serializable vs JSON
+
+| Serializable                      | JSON                        |
+| --------------------------------- | --------------------------- |
+| Java-specific                     | Language-independent        |
+| Binary (bytes)                    | Text (readable)             |
+| JVM handles it                    | Library handles it          |
+| Faster, smaller                   | Slower, bigger              |
+| Breaks easily on class change     | Tolerant to changes         |
+| Used internally (sessions, cache) | Used externally (REST APIs) |
+
+> `Serializable` is for **Java-to-Java internal object storage**.
+> `JSON` is for **sharing data between systems**.
+
+---
+
 ### ❓ Explain JVM memory structure. Heap vs Stack vs Metaspace
 
 ### 📝 Answer
@@ -942,3 +1066,31 @@ Contains:
 - Same bytecode runs unchanged on any platform
 
 > 👉 “Write Once, Run Anywhere (WORA)”
+
+---
+
+### ❓ How Do You Build a Java Application?
+
+### 📝 Answer
+
+🔹 Build tools
+
+- Maven (most common)
+- Gradle
+
+🔹 Build flow (Maven)
+
+```text
+Code → Compile → Test → Package → Deploy
+```
+
+Commands:
+
+```bash
+mvn clean install
+```
+
+Output:
+
+- JAR (Spring Boot)
+- WAR (Traditional apps)

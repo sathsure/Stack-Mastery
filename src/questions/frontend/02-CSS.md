@@ -936,12 +936,10 @@ CSS layouts are based on **two logical axes**, not left/right/top/bottom:
 #### Common cases:
 
 - English (LTR):
-
   - inline → left ➜ right
   - block → top ➜ bottom
 
 - Arabic (RTL):
-
   - inline → right ➜ left
   - block → top ➜ bottom
 
@@ -1405,3 +1403,103 @@ Browsers simulate hover inconsistently.
 Design interactions that don’t depend on hover.
 
 ---
+
+### ❓ justify-self vs justify-content
+
+### 📝 Answer
+
+| Property          | Controls                               | Applies To       |
+| ----------------- | -------------------------------------- | ---------------- |
+| `justify-content` | **How multiple items are distributed** | Flexbox, Grid    |
+| `justify-self`    | **How a single item aligns itself**    | Item (Grid only) |
+
+---
+
+### ❓ align-self vs align-items
+
+### 📝 Answer
+
+| Property      | Controls                                  | Applies To    |
+| ------------- | ----------------------------------------- | ------------- |
+| `align-items` | **Aligns all items inside the container** | Flexbox, Grid |
+| `align-self`  | **Aligns one specific item**              | Flexbox, Grid |
+
+Aligns along the cross-axis
+
+- Flexbox → vertical (row direction)
+- Grid → block axis (vertical in LTR)
+
+> ❗ `align-self` works in Flexbox & Grid,
+> ❗ `justify-self` works only in Grid
+
+---
+
+### ❓ What is `inset` in CSS?
+
+### 📝 Answer
+
+`inset` is a shorthand property for positioning an element using **top, right, bottom, and left** — mainly used with `position: absolute` or `position: fixed`.
+
+> inset = top + right + bottom + left (all in one line)
+
+```css
+.box {
+  position: fixed;
+  inset: 0;
+}
+```
+
+✅ What this means
+
+```css
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+```
+
+```css
+inset: 10px; /* all sides */
+inset: 10px 20px; /* top/bottom | left/right */
+inset: 10px 20px 30px; /* top | left/right | bottom */
+inset: 10px 20px 30px 40px; /* top | right | bottom | left */
+```
+
+---
+
+### ❓ What is a pseudo-class and pseudo-element?
+
+### 📝 Answer
+
+🔹 Pseudo-Class
+
+A **pseudo-class** defines a **state** of an element.
+
+```css
+button:hover {
+}
+input:focus {
+}
+li:first-child {
+}
+```
+
+✔ Describes _when_ an element is in a certain condition
+
+🔹 Pseudo-Element
+
+A **pseudo-element** styles **a specific part** of an element.
+
+```css
+p::first-line {
+}
+p::before {
+}
+p::after {
+}
+```
+
+✔ Describes _which part_ of an element
+
+> **Pseudo-class → state**
+> **Pseudo-element → part**

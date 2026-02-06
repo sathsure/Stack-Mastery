@@ -1,3 +1,29 @@
+### ❓ Merge Two Arrays Alternately
+
+> ```java
+> // INPUT
+> int[] x = {6, 4, 8, 3, 5};
+> int[] y = {4, 5, 1, 3, 8};
+>
+> // OUTPUT
+> int[] k = {4, 6, 5, 4, 1, 8, 3, 3, 8, 5};
+> ```
+
+### 📝 Answer
+
+```java
+List<Integer> list = new ArrayList<>();
+
+for (int i = 0; i < x.length; i++) {
+    list.add(y[i]);  // auto-boxing int → Integer
+    list.add(x[i]);
+}
+
+int[] k = list.stream()
+              .mapToInt(Integer::intValue)
+              .toArray();
+```
+
 ### ❓ Reverse an Array
 
 ### 📝 Answer
