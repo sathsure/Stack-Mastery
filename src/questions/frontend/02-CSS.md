@@ -1413,6 +1413,63 @@ Design interactions that don’t depend on hover.
 | `justify-content` | **How multiple items are distributed** | Flexbox, Grid    |
 | `justify-self`    | **How a single item aligns itself**    | Item (Grid only) |
 
+Example: **`justify-content`**
+
+```css
+.container {
+  display: flex;
+  justify-content: center;
+}
+```
+
+```less
+|       A B       | ← both items horizontally centered
+```
+
+Example: **`justify-self`**
+
+```css
+.box-B-div {
+  justify-self: end;
+}
+```
+
+```less
+|  A        |       B | ← A stays default, B moves right inside its own cell
+```
+
+---
+
+### ❓ justify-content vs align-content
+
+### 📝 Answer
+
+`justify-content` controls spacing along the main axis (horizontal),
+`align-content` controls spacing between **multiple rows/columns** on the cross axis (vertical).
+
+> ❗ If there is only one row, `align-content` does nothing.
+> Works ONLY when items wrap. Requires: `flex-wrap: wrap;`
+
+Example: **`align-content`**
+
+```css
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* space between cards */
+  justify-content: center; /* horizontal alignment */
+  align-content: space-between; /* vertical spacing between rows */
+  height: 400px; /* important for align-content */
+}
+```
+
+```less
+| Card 1  Card 2  Card 3 | ← start
+|                        | ← free space
+| Card 4  Card 5  Card 6 | ← end
+
+```
+
 ---
 
 ### ❓ align-self vs align-items
@@ -1431,6 +1488,34 @@ Aligns along the cross-axis
 
 > ❗ `align-self` works in Flexbox & Grid,
 > ❗ `justify-self` works only in Grid
+
+Example: **`align-items`**
+
+```css
+.container {
+  display: flex;
+  align-items: center;
+}
+```
+
+```less
+|                |
+|   A   B        | ← both items vertically centered
+|                |
+```
+
+Example: **`align-self`**
+
+```css
+.box:last-child {
+  align-self: flex-end;
+}
+```
+
+```less
+|      A         |
+|          B     |   ← only B moves
+```
 
 ---
 
