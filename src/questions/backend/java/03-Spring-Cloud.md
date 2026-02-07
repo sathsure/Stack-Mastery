@@ -488,7 +488,7 @@ spring:
 
 ✔️ Expected Senior Answer
 
-> “In microservices, multiple backend services expose APIs. An API Gateway provides a single entry point to handle cross-cutting concerns like routing, authentication, authorization, rate limiting, and logging, while keeping backend services focused on business logic.”
+> In microservices, multiple backend services expose APIs. An API Gateway provides a single entry point to handle cross-cutting concerns like routing, authentication, authorization, rate limiting, and logging, while keeping backend services focused on business logic.
 
 🧠 Key Understanding
 
@@ -592,7 +592,7 @@ uri: lb://inventory-service
 
 ✔️ Senior Answer
 
-> “Authentication should happen at the Gateway. Authorization can happen at both Gateway and downstream services depending on sensitivity.”
+> Authentication should happen at the Gateway. Authorization can happen at both Gateway and downstream services depending on sensitivity.
 
 Example (JWT at Gateway)
 
@@ -612,7 +612,7 @@ http
 
 ✔️ Correct Answer
 
-> “Yes, but only for lightweight aggregation. Complex orchestration should be handled by a dedicated service.”
+> Yes, but only for lightweight aggregation. Complex orchestration should be handled by a dedicated service.
 
 ✖️ Bad Practice
 
@@ -647,7 +647,7 @@ filters:
 
 ✔️ Senior Answer
 
-> “API Gateway is a critical component and must be deployed in a highly available and scalable manner. Usually, multiple instances are deployed behind a load balancer.”
+> API Gateway is a critical component and must be deployed in a highly available and scalable manner. Usually, multiple instances are deployed behind a load balancer.
 
 🧠 Rules
 
@@ -707,7 +707,7 @@ traceId → service → service → service
 
 🤔 Why do we need distributed tracing in microservices?
 
-> “In microservices, a single request flows across multiple services. Distributed tracing allows us to track that request end-to-end using a traceId, making debugging and performance analysis possible.”
+> In microservices, a single request flows across multiple services. Distributed tracing allows us to track that request end-to-end using a traceId, making debugging and performance analysis possible.
 
 🔑 Key Understanding
 
@@ -758,7 +758,7 @@ X-B3-TraceId
 X-B3-SpanId
 ```
 
-> “As long as services use supported HTTP clients (Feign, RestTemplate, WebClient), propagation is automatic.”
+> As long as services use supported HTTP clients (Feign, RestTemplate, WebClient), propagation is automatic.
 
 🧠 RULES
 
@@ -768,7 +768,7 @@ X-B3-SpanId
 
 🤔 What annotations are used in Spring for tracing?
 
-> “In modern Spring Boot (3+), tracing is mostly automatic. Annotations are optional and used for custom spans.”
+> In modern Spring Boot (3+), tracing is mostly automatic. Annotations are optional and used for custom spans.
 
 ```java
 @Observed(name = "inventory.check")
@@ -824,7 +824,7 @@ management:
 
 🤔 How do logs relate to distributed tracing?
 
-> “Logs become useful only when correlated with traceId.”
+> Logs become useful only when correlated with traceId.
 
 ```text
 [traceId=abc123, spanId=def456] Order created
@@ -841,7 +841,7 @@ management:
 
 🤔 What happens if one service is not instrumented?
 
-> “The trace breaks at that service. Downstream calls will start a new trace.”
+> The trace breaks at that service. Downstream calls will start a new trace.
 
 - Partial instrumentation = partial visibility
 - All services must participate
@@ -860,7 +860,7 @@ management:
 | Scope     | Single service | Aggregated | End-to-end      |
 | Debugging | Limited        | Symptoms   | Root cause      |
 
-> “Metrics show that a problem exists; traces show where and why.”
+> Metrics show that a problem exists; traces show where and why.
 
 🤔 What are common mistakes teams make with distributed tracing?
 
@@ -875,7 +875,7 @@ management:
 ✔ Propagate trace across events
 ✔ Secure trace headers
 
-> “Distributed tracing allows us to track a request end-to-end across multiple microservices using a traceId and spans. In Spring Boot, tracing is mostly automatic using Micrometer Tracing, with optional custom spans. It relies on context propagation via HTTP headers and integrates with backends like Zipkin or Jaeger. Tracing is essential for debugging latency and failures in distributed systems.”
+> Distributed tracing allows us to track a request end-to-end across multiple microservices using a traceId and spans. In Spring Boot, tracing is mostly automatic using Micrometer Tracing, with optional custom spans. It relies on context propagation via HTTP headers and integrates with backends like Zipkin or Jaeger. Tracing is essential for debugging latency and failures in distributed systems.
 
 ---
 
@@ -1105,20 +1105,39 @@ http
 
 ### 📝 Answer
 
-Distributed transactions do not scale.
+**Saga Pattern** is a way to manage transactions across multiple services by breaking them into small steps and undoing steps if something fails.
 
-**Saga Pattern**
+Imagine **one business action** needs **multiple services**.
 
-```
-Order → Inventory → Payment
-   ↘ Compensation ↙
-```
+Example: **Online Order**
 
-🧠 RULES
+1. Order Service → creates order
+2. Payment Service → takes money
+3. Inventory Service → reduces stock
 
-✔ Eventual consistency
-❌ No 2PC
-✔ Compensating transactions
+Each service:
+
+- Has **its own database**
+- Works **independently**
+
+❌ There is **NO single big transaction** across all services.
+
+_How Saga Works (Step by Step)_
+
+- Order is created
+- Payment is successful
+- Inventory update fails
+- Now What? 🤔
+  - If step 3 fails, **undo step 2**
+  - If step 2 is undone, **undo step 1**
+
+Undo actions are called: **Compensating Transactions**
+
+| Step | Action       | If fails       |
+| ---- | ------------ | -------------- |
+| 1    | Create Order | Cancel Order   |
+| 2    | Take Payment | Refund Payment |
+| 3    | Update Stock | (End)          |
 
 ---
 

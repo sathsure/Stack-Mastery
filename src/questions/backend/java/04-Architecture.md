@@ -779,3 +779,21 @@ SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 - Updated `application.yml`
 
 > Upgrading needs dependency alignment, code refactoring, and proper testing.
+
+---
+
+### ❓ What is Idempotency?
+
+### 📝 Answer
+
+Idempotency means: If you send the same request again and again, the final result stays the same.
+
+| Action                   | Idempotent?        | Reason                                             |
+| ------------------------ | ------------------ | -------------------------------------------------- |
+| Read data (GET)          | ✅ Yes             | only reads data, does not change anything          |
+| Update full data (PUT)   | ✅ Yes             | replaces a resource, No Addition, Same final state |
+| Delete something         | ✅ Yes             | removes a resource, Same final state               |
+| Create new record (POST) | ❌ No (by default) | Different result each time, Multiple side effects  |
+
+> `GET` reads, `PUT` replaces, `DELETE` removes
+> Repeating them doesn’t change the final result.
