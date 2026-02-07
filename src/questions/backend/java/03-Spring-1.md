@@ -1070,9 +1070,41 @@ public class GlobalExceptionHandler {
 
 ---
 
-### ❓ Important http status codes to know
+### ❓ Important HTTP Status Codes to Know
 
 ### 📝 Answer
+
+**1xx – Informational**
+
+- `100` Continue
+
+**2xx – Success**
+
+- `200` OK
+- `201` Created
+- `204` No Content
+
+**3xx – Redirection**
+
+- `301` Moved Permanently
+- `302` Found
+- `304` Not Modified
+
+**4xx – Client Errors**
+
+- `400` Bad Request
+- `401` Unauthorized
+- `403` Forbidden
+- `404` Not Found
+- `409` Conflict
+- `429` Too Many Requests
+
+**5xx – Server Errors**
+
+- `500` Internal Server Error
+- `502` Bad Gateway
+- `503` Service Unavailable
+- `504` Gateway Timeout
 
 ---
 
@@ -1962,4 +1994,3 @@ class UserControllerTest {
 > Write unit tests with Mockito and integration tests using `@SpringBootTest`.
 
 ---
-
