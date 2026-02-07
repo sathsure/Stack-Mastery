@@ -1588,3 +1588,88 @@ p::after {
 
 > **Pseudo-class → state**
 > **Pseudo-element → part**
+
+---
+
+### ❓ `*` vs `:root` vs `body`
+
+### 📝 Answer
+
+| Selector | What it affects | Key use                   |
+| -------- | --------------- | ------------------------- |
+| `*`      | Every element   | Reset styles              |
+| `:root`  | `html` element  | CSS variables, `rem` base |
+| `body`   | Page content    | Layout, fonts, background |
+
+- `*` → reset everything
+- `:root` → global settings
+- `body` → visible page
+
+---
+
+### ❓ CSS Units – Simple Differences
+
+### 📝 Answer
+
+📏 `px`
+
+| Meaning           | Fixed unit |
+| ----------------- | ---------- |
+| Changes with zoom | ❌         |
+| Responsive        | ❌         |
+
+**Use:** borders, icons
+
+📐 `em`
+
+| Meaning       | Relative to parent |
+| ------------- | ------------------ |
+| Inherits size | ✅                 |
+| Can compound  | ⚠️                 |
+
+**Use:** padding inside components
+
+📐 `rem`
+
+| Meaning       | Relative to `:root` |
+| ------------- | ------------------- |
+| Consistent    | ✅                  |
+| Scales layout | ✅                  |
+
+**Use:** fonts, spacing (preferred)
+
+🖥️ `vh`
+
+| Meaning             | % of viewport height |
+| ------------------- | -------------------- |
+| 100vh = full screen | ✅                   |
+
+**Use:** full-screen sections
+
+🖥️ `vw`
+
+| Meaning            | % of viewport width |
+| ------------------ | ------------------- |
+| Can cause overflow | ⚠️                  |
+
+**Use:** hero layouts
+
+📦 `%`
+
+| Meaning           | Relative to parent |
+| ----------------- | ------------------ |
+| Context dependent | ⚠️                 |
+
+**Use:** widths in layouts
+
+🧩 `fr` (Grid only)
+
+| Meaning      | Fraction of space |
+| ------------ | ----------------- |
+| Auto adjusts | ✅                |
+
+**Use:** grid layouts
+
+> Use `rem` for consistency, `em` for components, `vh/vw` for screens, `fr` for grids.
+
+---
