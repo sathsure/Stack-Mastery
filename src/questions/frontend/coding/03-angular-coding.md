@@ -70,7 +70,7 @@ export class UserService {
 ```ts
 @Component({
   selector: "app-user-list",
-  template: ``,
+  templateUrl: "./user-list.component.html",
 })
 export class UserListComponent implements OnInit {
   users$ = this.userService.users$;
@@ -105,12 +105,60 @@ export class UserListComponent implements OnInit {
 }
 ```
 
+**user-list.component.html**
+
+```html
+<div class="container">
+  <h2>Users</h2>
+
+  <button mat-raised-button color="primary" routerLink="/add">Add User</button>
+
+  <table mat-table [dataSource]="users$ | async" class="mat-elevation-z8">
+    <!-- ID -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+    </ng-container>
+
+    <!-- Name -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+    </ng-container>
+
+    <!-- Email -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let user">
+        <button mat-button (click)="goToDetails(user)">View</button>
+        <button mat-button color="accent" (click)="editUser(user)">Edit</button>
+        <button mat-button color="warn" (click)="deleteUser(user.id)">
+          Delete
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['id','name','email','actions']"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['id','name','email','actions']; trackBy: trackById"
+    ></tr>
+  </table>
+</div>
+```
+
 4️⃣ **Reactive Form Component (Add User)**
 
 ```ts
 @Component({
   selector: "app-user-form",
-  template: ``,
+  templateUrl: "./user-form.component.html",
 })
 export class UserFormComponent {
   form = this.fb.group({
@@ -142,12 +190,39 @@ export class UserFormComponent {
 }
 ```
 
+**user-form.component.html**
+
+```html
+<div class="container">
+  <h2>Add User</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" appInvalidHighlight />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Save</button>
+  </form>
+</div>
+```
+
 5️⃣ **Dialog Component (Edit User + Unsaved Changes Guard)**
 
 ```ts
 @Component({
   selector: "app-user-dialog",
-  template: ``,
+  templateUrl: "./user-dialog.component.html",
 })
 export class UserDialogComponent {
   form: FormGroup;
@@ -185,12 +260,40 @@ export class UserDialogComponent {
 }
 ```
 
+**user-dialog.component.html**
+
+```html
+<h2 mat-dialog-title>Edit User</h2>
+
+<form [formGroup]="form" mat-dialog-content>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Phone</mat-label>
+    <input matInput formControlName="phone" />
+  </mat-form-field>
+</form>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>
+```
+
 6️⃣ **Details Page (No API Call)**
 
 ```ts
 @Component({
   selector: "app-user-details",
-  template: ``,
+  templateUrl: "./user-details.component.html",
 })
 export class UserDetailsComponent implements OnInit {
   user?: User;
@@ -205,6 +308,31 @@ export class UserDetailsComponent implements OnInit {
     this.user = this.userService.getUserById(id);
   }
 }
+```
+
+**user-details.component.html**
+
+```html
+<div class="container" *ngIf="user">
+  <h2>User Details</h2>
+
+  <p><strong>ID:</strong> {{ user.id }}</p>
+  <p><strong>Name:</strong> {{ user.name }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+  <p><strong>Phone:</strong> {{ user.phone | phonePostal }}</p>
+
+  <button mat-button routerLink="/users">Back</button>
+</div>
+```
+
+app.component.html
+
+```html
+<mat-toolbar color="primary">
+  <span>User Management</span>
+</mat-toolbar>
+
+<router-outlet></router-outlet>
 ```
 
 7️⃣ **Custom Pipe (Phone Formatter)**
@@ -245,6 +373,77 @@ Usage:
 const routes: Routes = [
   { path: "users", component: UserListComponent },
   { path: "users/:id", component: UserDetailsComponent },
+  { path: "add", component: UserFormComponent },
+
+  {
+    path: "admin",
+    canMatch: [AdminCanMatchGuard],
+    loadComponent: () =>
+      import("./admin/admin.component").then((c) => c.AdminComponent),
+  },
+
   { path: "", redirectTo: "users", pathMatch: "full" },
 ];
+```
+
+🔟 **Auth Model** - `auth.model.ts`
+
+```ts
+export type Role = "ADMIN" | "USER";
+```
+
+1️⃣1️⃣ **Auth Service (Role-based logic)** - `auth.service.ts`
+
+```ts
+@Injectable({ providedIn: "root" })
+export class AuthService {
+  private role: Role = "USER"; // change to ADMIN to allow access
+
+  isAdmin(): boolean {
+    return this.role === "ADMIN";
+  }
+
+  getRole(): Role {
+    return this.role;
+  }
+}
+```
+
+1️⃣2️⃣ **`canMatch` Guard** - `admin-can-match.guard.ts`
+
+```ts
+@Injectable({ providedIn: "root" })
+export class AdminCanMatchGuard implements CanMatch {
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
+
+  canMatch(): boolean | UrlTree {
+    if (this.auth.isAdmin()) {
+      return true;
+    }
+
+    return this.router.parseUrl("/users");
+  }
+}
+```
+
+✔ Prevents module loading
+✔ Redirects unauthorized users
+✔ Synchronous → fast
+
+1️⃣3️⃣ **Lazy-loaded Admin Component** - `admin-dashboard.component.ts`
+
+```ts
+@Component({
+  selector: "app-admin",
+  template: `
+    <div class="container">
+      <h2>Admin Panel</h2>
+      <p>Only admins can access this page.</p>
+    </div>
+  `,
+})
+export class AdminComponent {}
 ```
