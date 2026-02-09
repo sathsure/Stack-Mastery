@@ -447,3 +447,123 @@ export class AdminCanMatchGuard implements CanMatch {
 })
 export class AdminComponent {}
 ```
+
+---
+
+### ❓ You are building a search autocomplete. You must debounce user input, avoid multiple API calls, cache results for 5 minutes, and cancel stale requests. How would you design this in Angular using RxJS?
+
+### 📝 Answer
+
+```ts
+import "zone.js";
+import { Component, OnInit, inject } from "@angular/core";
+import { bootstrapApplication } from "@angular/platform-browser";
+import { HttpClient, provideHttpClient } from "@angular/common/http";
+import { Subject, of } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  map,
+  tap,
+} from "rxjs/operators";
+
+@Component({
+  selector: "app-root",
+  standalone: true,
+  template: `
+    <input type="text" placeholder="Search user" (input)="onInput($event)" />
+
+    @if (filteredUsers.length) {
+      <ul>
+        @for (user of filteredUsers; track user.id) {
+          <li>{{ user.name }}</li>
+        }
+      </ul>
+    }
+  `,
+})
+export class App implements OnInit {
+  private http = inject(HttpClient);
+
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+  private cache: {
+    users: User[] | null;
+    timestamp: number;
+  } = {
+    users: null,
+    timestamp: 0,
+  };
+
+  filteredUsers: User[] = [];
+  search$ = new Subject<string>();
+
+  ngOnInit() {
+    this.initSearchStream();
+  }
+
+  private initSearchStream() {
+    this.search$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) => this.searchUsers$(value)),
+      )
+      .subscribe((users) => {
+        this.filteredUsers = users;
+      });
+  }
+
+  private searchUsers$(value: string) {
+    const search = value.trim().toLowerCase();
+
+    // 1️⃣ Empty input → hide list
+    if (!search) {
+      return of([] as User[]);
+    }
+
+    // 2️⃣ Use cache if valid
+    if (this.isCacheValid()) {
+      return of(this.filterUsers(this.cache.users!, search));
+    }
+
+    // 3️⃣ Fetch, cache with TTL, then filter
+    return this.http
+      .get<User[]>("https://jsonplaceholder.typicode.com/users")
+      .pipe(
+        tap((users) => {
+          this.cache = {
+            users,
+            timestamp: Date.now(),
+          };
+        }),
+        map((users) => this.filterUsers(users, search)),
+      );
+  }
+
+  private isCacheValid(): boolean {
+    return (
+      !!this.cache.users && Date.now() - this.cache.timestamp < this.CACHE_TTL
+    );
+  }
+
+  private filterUsers(users: User[], search: string): User[] {
+    return users.filter((u) => u.name.toLowerCase().includes(search));
+  }
+
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.search$.next(value);
+  }
+}
+
+bootstrapApplication(App, {
+  providers: [provideHttpClient()],
+});
+
+interface User {
+  id: number;
+  name: string;
+}
+```
