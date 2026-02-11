@@ -74,25 +74,25 @@ This DB holds task summary + subtask status.
 
 **Table 1: dashboard_task**
 
-| Column         | Type      | Key   | Description    |
-| -------------- | --------- | ----- | -------------- |
-| id             | BIGINT    | ✅ PK | Unique Task ID |
-| task_name      | VARCHAR   |       | Name of task   |
-| overall_status | VARCHAR   |       | OPEN / CLOSED  |
-| created_at     | TIMESTAMP |       | Created time   |
-| updated_at     | TIMESTAMP |       | Last update    |
+| Column             | Type      | Key   | Description       |
+| ------------------ | --------- | ----- | ----------------- |
+| id                 | BIGINT    | ✅ PK | Unique Task ID    |
+| task_name          | VARCHAR   |       | Name of task      |
+| **overall_status** | VARCHAR   |       | **OPEN / CLOSED** |
+| created_at         | TIMESTAMP |       | Created time      |
+| updated_at         | TIMESTAMP |       | Last update       |
 
 **Table 2: dashboard_subtask**
 
-| Column       | Type      | Key   | Description                |
-| ------------ | --------- | ----- | -------------------------- |
-| id           | BIGINT    | ✅ PK | Subtask ID                 |
-| task_id      | BIGINT    | 🔗 FK | Links to dashboard_task.id |
-| subtask_type | VARCHAR   |       | CREDIT / UPI / WALLET      |
-| status       | VARCHAR   |       | OPEN / CLOSED              |
-| amount       | DECIMAL   |       | Payment amount             |
-| external_ref | VARCHAR   |       | Transaction reference      |
-| updated_at   | TIMESTAMP |       | Last update                |
+| Column           | Type      | Key       | Description                    |
+| ---------------- | --------- | --------- | ------------------------------ |
+| id               | BIGINT    | ✅ PK     | Subtask ID                     |
+| **task_id**      | BIGINT    | 🔗 **FK** | **Links to dashboard_task.id** |
+| **subtask_type** | VARCHAR   |           | **CREDIT / UPI / WALLET**      |
+| **status**       | VARCHAR   |           | **OPEN / CLOSED**              |
+| amount           | DECIMAL   |           | Payment amount                 |
+| external_ref     | VARCHAR   |           | Transaction reference          |
+| updated_at       | TIMESTAMP |           | Last update                    |
 
 👉 Total tables in dashboard_db = **2**
 
@@ -100,15 +100,15 @@ This DB holds task summary + subtask status.
 
 **Table 1: credit_payment**
 
-| Column               | Type      | Key         | Description      |
-| -------------------- | --------- | ----------- | ---------------- |
-| id                   | BIGINT    | ✅ PK       | Payment ID       |
-| dashboard_subtask_id | BIGINT    | Logical Ref | Subtask ID       |
-| card_number          | VARCHAR   |             | Card             |
-| amount               | DECIMAL   |             | Amount           |
-| transaction_ref      | VARCHAR   |             | Bank reference   |
-| status               | VARCHAR   |             | SUCCESS / FAILED |
-| processed_at         | TIMESTAMP |             | Processed time   |
+| Column                   | Type      | Key             | Description                        |
+| ------------------------ | --------- | --------------- | ---------------------------------- |
+| id                       | BIGINT    | ✅ PK           | Payment ID                         |
+| **dashboard_subtask_id** | BIGINT    | **Logical Ref** | **Reference to dashboard_subtask** |
+| card_number              | VARCHAR   |                 | Card                               |
+| amount                   | DECIMAL   |                 | Amount                             |
+| transaction_ref          | VARCHAR   |                 | Bank reference                     |
+| status                   | VARCHAR   |                 | SUCCESS / FAILED                   |
+| processed_at             | TIMESTAMP |                 | Processed time                     |
 
 👉 Total tables in credit_db = **1**
 
@@ -116,15 +116,15 @@ This DB holds task summary + subtask status.
 
 **Table 1: upi_payment**
 
-| Column               | Type          | Key         | Description                    |
-| -------------------- | ------------- | ----------- | ------------------------------ |
-| id                   | BIGINT        | ✅ PK       | Unique Payment ID              |
-| dashboard_subtask_id | BIGINT        | Logical Ref | Reference to dashboard_subtask |
-| upi_id               | VARCHAR(100)  |             | UPI ID (example: user@bank)    |
-| amount               | DECIMAL(15,2) |             | Payment amount                 |
-| transaction_ref      | VARCHAR(100)  |             | Bank reference number          |
-| status               | VARCHAR(20)   |             | SUCCESS / FAILED               |
-| processed_at         | TIMESTAMP     |             | Processing timestamp           |
+| Column                   | Type          | Key             | Description                        |
+| ------------------------ | ------------- | --------------- | ---------------------------------- |
+| id                       | BIGINT        | ✅ PK           | Unique Payment ID                  |
+| **dashboard_subtask_id** | BIGINT        | **Logical Ref** | **Reference to dashboard_subtask** |
+| upi_id                   | VARCHAR(100)  |                 | UPI ID (example: user@bank)        |
+| amount                   | DECIMAL(15,2) |                 | Payment amount                     |
+| transaction_ref          | VARCHAR(100)  |                 | Bank reference number              |
+| status                   | VARCHAR(20)   |                 | SUCCESS / FAILED                   |
+| processed_at             | TIMESTAMP     |                 | Processing timestamp               |
 
 👉 Total tables in upi_db = **1**
 
@@ -186,16 +186,16 @@ New DB: wallet_db
 
 **Table 1: wallet_payment**
 
-| Column               | Type        |
-| -------------------- | ----------- |
-| id                   | BIGINT (PK) |
-| dashboard_subtask_id | BIGINT      |
-| wallet_id            | VARCHAR     |
-| amount               | DECIMAL     |
-| balance_before       | DECIMAL     |
-| balance_after        | DECIMAL     |
-| transaction_ref      | VARCHAR     |
-| status               | VARCHAR     |
-| processed_at         | TIMESTAMP   |
+| Column                   | Type        |
+| ------------------------ | ----------- |
+| id                       | BIGINT (PK) |
+| **dashboard_subtask_id** | BIGINT      |
+| wallet_id                | VARCHAR     |
+| amount                   | DECIMAL     |
+| balance_before           | DECIMAL     |
+| balance_after            | DECIMAL     |
+| transaction_ref          | VARCHAR     |
+| status                   | VARCHAR     |
+| processed_at             | TIMESTAMP   |
 
 ---
