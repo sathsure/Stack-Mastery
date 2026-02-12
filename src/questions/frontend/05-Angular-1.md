@@ -9,22 +9,6 @@ AngularJS (1.x) is JavaScript-based, uses scopes/controllers, and a different ch
 
 ---
 
-### ❓ What role does the Angular CLI play in Angular development?
-
-### 📝 Answer
-
-It scaffolds projects, generates code, builds/serves apps, runs tests and linting, and manages configurations.
-
----
-
-### ❓ How do you configure different environments such as development, QA, and production in Angular?
-
-### 📝 Answer
-
-Through environment files and build configurations; or via runtime configuration (e.g. loading JSON config on startup).
-
----
-
 ## Components, Templates & Data Binding
 
 ### ❓ What types of data binding does Angular support?
@@ -222,12 +206,6 @@ Yes (`ngOnInit`, `ngOnChanges`, etc.)
 
 3️⃣ Which directive manipulates DOM structure?
 Structural directives like `*ngIf`, `*ngFor`
-
----
-
-Below is a **complete interview-ready answer set** exactly in the structure you asked for, written in **simple, precise, managerial-round language**, with **trap clarity** (no vague statements).
-
-I’ll reference **Angular** once for correctness.
 
 ---
 
@@ -512,7 +490,7 @@ export class ChildComponent
 
 ---
 
-## Directives & Structural Directives
+## Directives
 
 ### ❓ How do `*ngIf` and `*ngFor` work conceptually in Angular?
 
@@ -844,7 +822,7 @@ Providers can be registered in modules, components, or via `providedIn`. The inj
 ### 📝 Answer
 
 A provider configuration with the multi: true property, telling Angular's Dependency Injection (DI) to collect all providers for a specific token into an array instead of replacing them.  
-When a component requests a dependency using a token (often an InjectionToken), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.
+When a component requests a dependency using a token (often an `InjectionToken`), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.
 
 ```ts
 // 1. Define a token for validators
