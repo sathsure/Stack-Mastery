@@ -689,3 +689,11 @@ export class App {
   }
 }
 ```
+
+---
+
+### ❓ Why is exposing a `BehaviorSubject` directly from a service considered a design smell?
+
+### 📝 Answer
+
+Consumers can emit directly, breaking encapsulation and invariants. Prefer exposing `asObservable()` or `readonly` signals/selectors, and keep writable subjects private.
