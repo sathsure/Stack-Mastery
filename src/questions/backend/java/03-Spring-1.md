@@ -1,4 +1,4 @@
-## 1️⃣ Spring Core & Fundamentals
+## Spring Core & Fundamentals
 
 ### ❓ What is Spring, Why it was introduced?
 
@@ -21,7 +21,7 @@ Spring is a **lightweight, modular, inversion-of-control (IoC) based framework**
 
 ### 📝 Answer
 
-1️⃣ **Inversion of Control (IoC)**
+**Inversion of Control (IoC)**
 
 Control of **object creation is transferred** from the application code **to the Spring container**.
 
@@ -34,7 +34,10 @@ Service service = new ServiceImpl();
 private Service service;
 ```
 
-1. **Dependency Injection (DI)** – Core IoC Implementation
+> IoC (in Spring) → Spring container controls object creation and lifecycle.
+> DI (in Spring) → Spring injects required dependencies into those objects.
+
+_a. **Dependency Injection (DI)** – Core IoC Implementation_
 
 Spring implements IoC mainly using **Dependency Injection**, where dependencies are provided to an object rather than the object creating them itself.
 
@@ -69,7 +72,6 @@ What Goes Wrong Here
 - **Dependencies are hidden → class contract is unclear**
 - **Object can be created in an invalid state**
 - **No immutability (`final` not possible)**
-- **Hard to unit test (needs Spring / reflection)**
 
 ```java
 OrderService service = new OrderService();
@@ -100,7 +102,7 @@ public class OrderService {
 - Prevents Circular Dependency Bugs
 - Works Perfectly with Spring Boot Auto-Configuration (Use `@RequiredArgsConstructor` - Lombok)
 
-2. Spring IoC Container (Core Implementation Mechanism)
+_b. Spring IoC Container (Core Implementation Mechanism)_
 
 The **IoC container** is responsible for:
 
@@ -113,7 +115,7 @@ The **IoC container** is responsible for:
 
 Two Main IoC Containers
 
-🔹 1. **BeanFactory (Basic Container)**
+🔹 **BeanFactory (Basic Container)**
 
 BeanFactory is the basic container in Spring used to **Creates objects (beans), Stores them, provide when needed**.
 
@@ -126,7 +128,7 @@ MyService service = factory.getBean(MyService.class);
 
 ➡ Bean is created only when `getBean()` is called, makes it **lazy initialization**
 
-🔹 2. **ApplicationContext (Advanced – Most Used)**
+🔹 **ApplicationContext (Advanced – Most Used)**
 
 ApplicationContext is the advanced Spring container
 
@@ -160,11 +162,15 @@ AnnotationConfigApplicationContext context =
 
 > **Spring Boot always uses ApplicationContext**
 
-3. **Bean Configuration Approaches** (How IoC Is Implemented)
+---
+
+### ❓ What are the different bean configuration approaches used to implement IoC in Spring?
+
+### 📝 Answer
 
 Spring provides multiple ways to define **what objects the container manages**.
 
-🔹 1. **XML-Based Configuration (Legacy)**
+🔹 **XML-Based Configuration (Legacy)**
 
 ```xml
 <bean id="paymentService" class="com.app.PaymentService"/>
@@ -172,7 +178,7 @@ Spring provides multiple ways to define **what objects the container manages**.
 
 ❌ Verbose, hard to maintain
 
-🔹 2. **Annotation-Based Configuration (Most Common)**
+🔹 **Annotation-Based Configuration (Most Common)**
 
 Annotation-Based Configuration → Spring creates beans automatically by scanning classes
 
@@ -191,7 +197,7 @@ private PaymentService paymentService;
 ✅ Cleaner
 ✅ Modern standard
 
-🔹 3. **Java-Based Configuration (Best Practice)**
+🔹 **Java-Based Configuration (Best Practice)**
 
 Java-Based Configuration → Explicitly tell Spring how to create beans inside a configuration class.
 
@@ -210,252 +216,199 @@ public class AppConfig {
 ✅ Refactoring-friendly
 ✅ Preferred in enterprise apps
 
-4. **Annotations**
+---
 
-![SpringAnnotations Image](/src/assets/backend/spring-annotations.png)
+### ❓ Common Spring Dependency Injection Errors – Why Do They Happen?
 
-🔹 1. Bean Creation (Stereotype Annotations)
+### 📝 Answer
 
-| **Annotation**    | **What it Means**           | **Main Purpose**                                                        |
-| ----------------- | --------------------------- | ----------------------------------------------------------------------- |
-| `@Component`      | This class is a Spring bean | Tells Spring to automatically create and manage an object of this class |
-| `@Service`        | Business logic component    | Marks service-layer classes for better design clarity and readability   |
-| `@Repository`     | Database access component   | Marks DAO classes and enables automatic DB exception translation        |
-| `@Controller`     | Web request handler         | Handles HTTP requests and returns views (MVC pattern)                   |
-| `@RestController` | REST request handler        | Used for REST APIs; returns JSON/XML instead of views                   |
+🤔❓ My class is not getting injected. Spring says `NoSuchBeanDefinitionException`. Why?
 
-🔹 2. Dependency Injection Annotations
+❌ Spring does not know the class. Spring only creates objects for classes it knows about
+✅ Mark the class with a stereotype annotation.
 
-| **Annotation** | **What it Means**          | **Main Purpose**                               |
-| -------------- | -------------------------- | ---------------------------------------------- |
-| `@Autowired`   | Inject required dependency | Automatically injects a matching bean by type  |
-| `@Qualifier`   | Choose specific bean       | Used when multiple beans of same type exist    |
-| `@Primary`     | Default bean               | Marks one bean as the preferred choice         |
-| `@Resource`    | Inject by name             | Java standard annotation; injects bean by name |
+```java
+@Component
+public class EmailService {}
+// using @Service is better practice.
+```
 
-🔹 3. Configuration Annotations
+🤔❓ I am getting `NullPointerException` when using a dependency. Why?
 
-| **Annotation**   | **What it Means**     | **Main Purpose**                                                  |
-| ---------------- | --------------------- | ----------------------------------------------------------------- |
-| `@Configuration` | Configuration class   | Defines Java-based Spring configuration instead of XML            |
-| `@Bean`          | Method creates a bean | Used to define beans manually, especially for third-party classes |
-| `@ComponentScan` | Scan packages         | Tells Spring where to search for annotated classes                |
-| `@Import`        | Import configuration  | Combines multiple configuration classes                           |
+❌ Dependency is not injected.
+✅ Use `@Autowired` (prefer **constructor injection**).
 
-🔹 4. Bean Lifecycle Annotations
+🤔❓ Spring throws `NoUniqueBeanDefinitionException`. Why?
 
-| **Annotation**   | **What it Means**       | **Main Purpose**                                             |
-| ---------------- | ----------------------- | ------------------------------------------------------------ |
-| `@PostConstruct` | Run after bean creation | Used to initialize resources after dependencies are injected |
-| `@PreDestroy`    | Run before bean removal | Used to clean up resources before bean destruction           |
+❌ More than one implementation exists.
 
-🔹 5. Bean Scope & Loading Annotations
-
-| **Annotation**        | **What it Means**       | **Main Purpose**                                          |
-| --------------------- | ----------------------- | --------------------------------------------------------- |
-| `@Scope("singleton")` | Single instance         | One shared bean instance for entire application (default) |
-| `@Scope("prototype")` | New instance every time | Creates a new object each time it is requested            |
-| `@RequestScope`       | One per HTTP request    | Bean lives for a single web request                       |
-| `@SessionScope`       | One per HTTP session    | Bean lives for a user session                             |
-| `@Lazy`               | Create when needed      | Delays bean creation until first use                      |
-
-🔹 6. Transaction & AOP Annotations
-
-| **Annotation**                   | **What it Means**        | **Main Purpose**                                                  |
-| -------------------------------- | ------------------------ | ----------------------------------------------------------------- |
-| `@Transactional`                 | Manage transactions      | Automatically handles commit and rollback of DB operations        |
-| `@Aspect`                        | Cross-cutting logic      | Defines reusable logic like logging or security                   |
-| `@Before` / `@After` / `@Around` | Run logic around methods | Used inside aspects to execute code before/after method execution |
-
-🔹 7. Web & REST Annotations
-
-| **Annotation**    | **What it Means**    | **Main Purpose**                         |
-| ----------------- | -------------------- | ---------------------------------------- |
-| `@RequestMapping` | Map URL              | Maps HTTP requests to controller methods |
-| `@GetMapping`     | Handle GET           | Used for fetching data                   |
-| `@PostMapping`    | Handle POST          | Used for creating data                   |
-| `@PutMapping`     | Handle PUT           | Used for updating data                   |
-| `@DeleteMapping`  | Handle DELETE        | Used for deleting data                   |
-| `@PathVariable`   | Read URL value       | Extracts values from URI path            |
-| `@RequestParam`   | Read query parameter | Reads values from request parameters     |
-| `@RequestBody`    | Read request body    | Converts JSON/XML to Java object         |
-| `@ResponseBody`   | Return data          | Sends data directly in HTTP response     |
-
-🔹 8. Spring Boot Core Annotations
-
-| **Annotation**             | **What it Means** | **Main Purpose**                                              |
-| -------------------------- | ----------------- | ------------------------------------------------------------- |
-| `@SpringBootApplication`   | Start Boot app    | Entry point; enables auto-config, scanning, and configuration |
-| `@EnableAutoConfiguration` | Auto setup        | Automatically configures beans based on classpath             |
-| `@ConfigurationProperties` | Bind properties   | Maps configuration values to Java objects                     |
-| `@Value`                   | Inject property   | Reads values from application properties                      |
-
-🔹 9.Testing Annotations
-
-| **Annotation**    | **What it Means**     | **Main Purpose**                              |
-| ----------------- | --------------------- | --------------------------------------------- |
-| `@SpringBootTest` | Load full context     | Runs full application for integration testing |
-| `@MockBean`       | Mock Spring bean      | Replaces real bean with mock during testing   |
-| `@WebMvcTest`     | Test controllers only | Loads only MVC components for fast testing    |
-
-    a. My class is not getting injected. Spring says `NoSuchBeanDefinitionException`. Why?
-
-    ❌ Spring does not know the class. Spring only creates objects for classes it knows about
-    ✅ Mark the class with a stereotype annotation.
-
-    ```java
-    @Component
-    public class EmailService {}
-    // using @Service is better practice.
-    ```
-
-    b. I am getting `NullPointerException` when using a dependency. Why?
-    ❌ Dependency is not injected.
-    ✅ Use `@Autowired` (prefer **constructor injection**).
-
-    c. Spring throws `NoUniqueBeanDefinitionException`. Why?
-    ❌ More than one implementation exists.
-
-    ```java
-    public interface PaymentService {
-        void pay();
-    }
-
-    @Service
-    public class CreditCardPaymentService implements PaymentService {
-    public void pay() {
-    System.out.println("Paid using Credit Card");
-    }
-    }
-    @Service
-    public class UpiPaymentService implements PaymentService {
-    public void pay() {
-    System.out.println("Paid using UPI");
-    }
-    }
-
-    @Service
-    public class CheckoutService {
-
-        @Autowired
-        private PaymentService paymentService; // ❌ Ambiguous. Spring does not know which implementation to inject.
-
-    }
-
-    ```
-
-    ✅ Use `@Qualifier` or `@Primary`.
-
-    ```java
-    /* Qualifier on injection point */
-    @Component
-    public class CheckoutService {
-
-        @Autowired
-        @Qualifier("creditCardPaymentService") // ✅ Spring injects CreditCardPaymentService (defaults to class name with first letter lowercase)
-        private PaymentService paymentService;
-    }
-
-    /* Custom qualifier name */
-    @Component("creditPayment")
-    public class CreditCardPaymentService implements PaymentService {
-        public void pay() {}
-    }
-
+```java
+public interface PaymentService {
+    void pay();
+}
+@Service
+public class CreditCardPaymentService implements PaymentService {
+public void pay() {
+System.out.println("Paid using Credit Card");
+}
+}
+@Service
+public class UpiPaymentService implements PaymentService {
+public void pay() {
+System.out.println("Paid using UPI");
+}
+}
+@Service
+public class CheckoutService {
     @Autowired
-    @Qualifier("creditPayment")
+    private PaymentService paymentService; // ❌ Ambiguous. Spring does not know which implementation to inject.
+}
+```
+
+✅ Use `@Qualifier` or `@Primary`.
+
+```java
+/* Qualifier on injection point */
+@Component
+public class CheckoutService {
+    @Autowired
+    @Qualifier("creditCardPaymentService") // ✅ Spring injects CreditCardPaymentService (defaults to class name with first letter lowercase)
     private PaymentService paymentService;
+}
+/* Custom qualifier name */
+@Component("creditPayment")
+public class CreditCardPaymentService implements PaymentService {
+    public void pay() {}
+}
+@Autowired
+@Qualifier("creditPayment")
+private PaymentService paymentService;
+/* using @Primary */
+@Primary  // Spring will inject UpiPaymentService unless overridden by @Qualifier.
+@Component
+public class UpiPaymentService implements PaymentService {
+    public void pay() {}
+}
+```
 
-    /* using @Primary */
-    @Primary  // Spring will inject UpiPaymentService unless overridden by @Qualifier.
-    @Component
-    public class UpiPaymentService implements PaymentService {
-        public void pay() {}
-    }
-    ```
+🤔❓ What happens if both `@Primary` and `@Qualifier` are used?
 
-    d. What happens if both `@Primary` and `@Qualifier` are used?
+✅ `@Qualifier` overrides `@Primary`
 
-    ✅ `@Qualifier` overrides `@Primary`
+🤔❓ Does `@Autowired` inject by type or name?
 
-    e. Does `@Autowired` inject by type or name?
+✅ By type first, then by name if needed
 
-    ✅ By type first, then by name if needed
+```
+1. By Type
+2. @Qualifier (if present)
+3. @Primary
+4. By Name
+5. Exception
+```
 
-    ```
-    1. By Type
-    2. @Qualifier (if present)
-    3. @Primary
-    4. By Name
-    5. Exception
-    ```
+🤔❓ @Component vs @Bean
 
-    f. I cannot add `@Component` to a library class. Third-party classes cannot be annotated.. How to create object?
+🔹 @Component
 
-    ✅ Define the bean using `@Bean` in the `@Configuration` class.
+- Class-level
+- Auto-scanned
+- Used for your own classes
 
-    g. My application startup is slow because a specific bean is being initialized at launch. How to fix it?
+```java
+@Component
+public class MyService {}
+```
 
-    ✅Use `@Lazy`
+🔹 @Bean
 
-    ```java
-    @Lazy
-    @Component
-    public class ReportService {
-    }
-    ```
+- Method-level
+- Inside `@Configuration` class
+- Used when you want manual object creation
 
-    > Bean will be created only when needed.
+```java
+@Bean
+public DataSource dataSource() {
+   return new HikariDataSource();
+}
+```
 
-    h. I need to execute a logic immediately after a bean is create. How can I do it?
+🤔❓ What is the Return type of `@Bean`?
 
-    ✅Use `@PostConstruct`
+Return type = Object you want Spring to manage.
 
-    ```java
-    @PostConstruct
-    public void init() {
-        System.out.println("Bean initialized");
-    }
-    ```
+🤔❓ Can we have Multiple `@Bean`?
 
-    ```
-    Constructor
-    ↓
-    @Autowired
-    ↓
-    @PostConstruct
-    ```
+Use:
 
-    > Runs after dependencies are injected.
+- Method name as bean name
+- OR `@Bean(name="customName")`
+- OR `@Qualifier`
 
-    i. I’m seeing resource leaks where **DB connections and threads** aren't closing on shutdown; how can I fix it?
+🤔❓ I cannot add `@Component` to a library class. Third-party classes cannot be annotated.. How to create object?
 
-    ✅ Use `@PreDestroy`
+✅ Define the bean using `@Bean` in the `@Configuration` class.
 
-    ```java
-    @PreDestroy
-    public void cleanup() {
-        System.out.println("Releasing resources");
-    }
-    ```
+🤔❓ My application startup is slow because a specific bean is being initialized at launch. How to fix it?
 
-    > Runs just before bean destruction.
+✅Use `@Lazy`
 
-    j. I see that my DB changes aren't rolling back on exceptions. how can I fix this?
+```java
+@Lazy
+@Component
+public class ReportService {
+}
+```
 
-    ✅Use `@Transactional`
+> Bean will be created only when needed.
+> h. I need to execute a logic immediately after a bean is create. How can I do it?
+> ✅Use `@PostConstruct`
 
-    ```java
-    @Transactional
-    public void saveOrder() {
-        orderRepository.save(order);
-        throw new RuntimeException("Error");
-    }
-    ```
+```java
+@PostConstruct
+public void init() {
+    System.out.println("Bean initialized");
+}
+```
 
-    > Spring manages commit & rollback automatically
+```
+Constructor
+↓
+@Autowired
+↓
+@PostConstruct
+```
 
-5. **Bean Scope Management (IoC Control)**
+> Runs after dependencies are injected.
+> i. I’m seeing resource leaks where **DB connections and threads** aren't closing on shutdown; how can I fix it?
+> ✅ Use `@PreDestroy`
+
+```java
+@PreDestroy
+public void cleanup() {
+    System.out.println("Releasing resources");
+}
+```
+
+> Runs just before bean destruction.
+> j. I see that my DB changes aren't rolling back on exceptions. how can I fix this?
+> ✅Use `@Transactional`
+
+```java
+@Transactional
+public void saveOrder() {
+    orderRepository.save(order);
+    throw new RuntimeException("Error");
+}
+```
+
+> Spring manages commit & rollback automatically
+
+---
+
+### ❓ Can you explain the different bean scopes in Spring?
+
+### 📝 Answer
 
 Spring controls **how many instances** of a bean exist.
 
@@ -473,9 +426,13 @@ Spring controls **how many instances** of a bean exist.
 public class ReportGenerator {}
 ```
 
-6. **Bean Lifecycle Management (Advanced IoC)**
+---
 
-🔹 1. JVM STARTS → `main()` METHOD
+### ❓ Explain the lifecycle of a Spring bean and how you can intervene at different stages of its initialization and destruction.
+
+### 📝 Answer
+
+🔹 JVM STARTS → `main()` METHOD
 
 ```java
 @SpringBootApplication // Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
@@ -490,7 +447,7 @@ public class MyApplication {
 - JVM calls `main()`
 - Control enters Spring Boot
 
-🔹 2. `SpringApplication.run()` runs and create `SpringApplication` object
+🔹 `SpringApplication.run()` runs and create `SpringApplication` object
 
 ```java
 public static ConfigurableApplicationContext run(
@@ -510,7 +467,7 @@ public static ConfigurableApplicationContext run(Class<?> primarySource, String.
 
 ✔ Static method → creates instance → instance drives everything
 
-🔹 3. Application Type Detection (Servlet vs Reactive)
+🔹 Application Type Detection (Servlet vs Reactive)
 
 Inside the **SpringApplication constructor**, Spring checks the **classpath**, NOT annotations.
 
@@ -536,7 +493,7 @@ Classpath contains:
 
 > ➡ Spring Boot chooses SERVLET
 
-🔹 4. `run()` METHOD – High Level Flow
+🔹 `run()` METHOD – High Level Flow
 
 Once the `SpringApplication` object exists, its **instance `run()`** method executes:
 
@@ -547,7 +504,7 @@ Once the `SpringApplication` object exists, its **instance `run()`** method exec
 5. Create beans
 6. Start web server
 
-🔹 5. Environment Preparation (ONLY properties loading)
+🔹 Environment Preparation (ONLY properties loading)
 
 Spring loads configuration properties **before** creating the container.
 
@@ -564,7 +521,7 @@ Spring loads configuration properties **before** creating the container.
 ✔ Used later during bean creation
 ✔ No beans created here
 
-🔹 6. ApplicationContext Creation
+🔹 ApplicationContext Creation
 
 After environment is ready, Spring creates the container.
 
@@ -584,7 +541,7 @@ It creates an empty Spring ApplicationContext object that is capable of:
 
 > At this point, Spring has NOT started yet
 
-🔹 6. `refresh()` is called (the real work starts)
+🔹 `refresh()` is called (the real work starts)
 
 Spring now calls:
 
@@ -607,7 +564,7 @@ DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
   - `@ComponentScan`
   - `@EnableAutoConfiguration`
 
-🔹7. `@SpringBootConfiguration` or `@Configuration`?
+🔹 `@SpringBootConfiguration` or `@Configuration`?
 
 ```java
 @SpringBootConfiguration
@@ -624,7 +581,7 @@ public class MyApplication {}
 
 > ⚠️ No beans created yet
 
-🔹8. `@ComponentScan`
+🔹 `@ComponentScan`
 
 **Find components in packages**
 
@@ -637,7 +594,7 @@ public class MyApplication {}
 
 > ⚠️ Still no objects created
 
-🔹9. `@EnableAutoConfiguration`
+🔹 `@EnableAutoConfiguration`
 
 - Reads a list of auto-configuration classes from:
 
@@ -661,7 +618,7 @@ Example:
 
 > ⚠️ Still no objects created
 
-🔹10. **Beans are created ONLY after all configuration and scanning is complete**
+🔹 **Beans are created ONLY after all configuration and scanning is complete**
 
 **Trigger point**
 
@@ -674,17 +631,17 @@ preInstantiateSingletons()
 - Call `@PostConstruct`
 - Bean is ready
 
-❓ Is `@PostConstruct` called once or after all beans?
+🤔❓ Is `@PostConstruct` called once or after all beans?
 
 ✅ Once per bean
 ❌ Not after all beans are created
 
-❓ What about @Lazy beans?
+🤔❓ What about @Lazy beans?
 
 - Skipped in preInstantiateSingletons()
 - Created later when first requested
 
-❓ What about prototype beans?
+🤔❓ What about prototype beans?
 
 - NOT created in preInstantiateSingletons()
 - Created every time they are requested
@@ -697,7 +654,7 @@ preInstantiateSingletons()
 
 A Spring Profile is a way to activate different configurations for different environments (like `dev`, `test`, `qa`, `prod`) without changing code.
 
-1️⃣ **Using Profiles with `application.properties`**
+1. **Using Profiles with `application.properties`**
 
 **application-dev.properties**
 
@@ -738,7 +695,7 @@ spring.profiles.default=dev
 
 > 📌 **Only `dev` configuration loads**
 
-2️⃣ **Using `@Profile` Annotation (Beans Level)**
+2. **Using `@Profile` Annotation (Beans Level)**
 
 **Dev Configuration**
 
@@ -770,9 +727,7 @@ public class ProdConfig {
 
 > 📌 Only **one DataSource bean** is created based on active profile.
 
----
-
-3️⃣ **Profile-Specific Beans (Same Interface)**
+3. **Profile-Specific Beans (Same Interface)**
 
 ```java
 public interface NotificationService {
@@ -806,27 +761,27 @@ public class EmailNotificationService implements NotificationService {
 
 > 📌 Spring injects the **correct implementation automatically**
 
-1. Can multiple profiles be active at the same time?
+🤔❓ Can multiple profiles be active at the same time?
 
 ✔️ Yes. Spring loads beans from **all active profiles**.
 
-2. What happens if two profiles define the same bean?
+🤔❓ What happens if two profiles define the same bean?
 
 ⚠️ Bean conflict → Spring throws `NoUniqueBeanDefinitionException` unless qualified.
 
-3. Difference between `@Profile` and `@Conditional`?
+🤔❓ Difference between `@Profile` and `@Conditional`?
 
 | `@Profile`        | `@Conditional`     |
 | ----------------- | ------------------ |
 | Environment-based | Custom logic-based |
 | Simple            | More powerful      |
 
-4. Are profiles evaluated at runtime?
+🤔❓ Are profiles evaluated at runtime?
 
 ❌ No.
 ✔️ Profiles are resolved **at application startup**.
 
-5. Why `@Conditional` Is Used?
+🤔❓ Why `@Conditional` Is Used?
 
 - When `@Profile` is not flexible enough
 - When bean creation depends on:
@@ -903,15 +858,39 @@ By default, only `/health` and `/info` are exposed.
 management.endpoints.web.exposure.include=health,info,metrics
 ```
 
-❓ Difference between Actuator and Logging?
+🤔❓ Is Spring Boot Actuator enabled by default in a Spring Boot application?
+
+❌ **No.**
+
+Spring Boot Actuator is **not enabled by default**.
+
+You must add the dependency:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+🤔❓ Difference between Actuator and Logging?
 
 - **Logging** shows what happened.
 - **Actuator** shows current system state.
 
-❓ Difference between Actuator and Swagger?
+🤔❓ Difference between Actuator and Swagger?
 
 - **Actuator** is for operations & monitoring,
 - **Swagger** is for API documentation & testing.
+
+🤔❓ How do you enable only /health and /info endpoints in Spring Boot Actuator?
+
+Configure it in `application.properties`:
+
+```properties
+management.endpoints.web.exposure.include=health,info
+management.endpoints.web.exposure.exclude=*
+```
 
 ![SpringActuator Image](/src/assets/backend/spring-actuator.png)
 
@@ -970,7 +949,7 @@ public class OrderService {
 
 ✅ **With AOP (Clean & Maintainable)**
 
-1️⃣ Business Logic (NO logging code)
+1. Business Logic (NO logging code)
 
 ```java
 @Service
@@ -982,7 +961,7 @@ public class OrderService {
 }
 ```
 
-2️⃣ Logging Aspect
+2. Logging Aspect
 
 ```java
 @Aspect
@@ -1005,18 +984,18 @@ public class LoggingAspect {
 }
 ```
 
-❓ How Spring AOP Works Internally
+🤔❓ How Spring AOP Works Internally
 
 - Spring creates a proxy object
 - Calls go through the proxy
 - Proxy executes aspect logic
 - Then calls actual method
 
-❓ Can Spring AOP intercept private methods?
+🤔❓ Can Spring AOP intercept private methods?
 
     No. It works on public/protected methods via proxies.
 
-❓ Spring AOP vs AspectJ
+🤔❓ Spring AOP vs AspectJ
 
 | Spring AOP          | AspectJ                          |
 | ------------------- | -------------------------------- |
@@ -1024,29 +1003,6 @@ public class LoggingAspect {
 | Method-level only   | Fields, constructors, methods    |
 | Easy & lightweight  | Powerful but complex             |
 | Used in Spring apps | Used for deep instrumentation    |
-
----
-
-### ❓ How doe you handle Exception in your application?
-
-### 📝 Answer
-
-✔ Use **`@RestControllerAdvice` + `@ExceptionHandler`**
-✔ Never expose stack trace to clients
-✔ Create **custom exceptions**
-✔ Map exceptions to proper **HTTP status codes**
-✔ Log errors centrally
-
-```java
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-
-  @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<String> handleNotFound() {
-    return ResponseEntity.status(404).body("Not Found");
-  }
-}
-```
 
 ---
 
@@ -1067,737 +1023,6 @@ public class GlobalExceptionHandler {
 | **Spring Web Layer**                 | Spring MVC, Spring WebFlux (Reactive)                                   |
 | **Spring Security**                  | Authentication, Authorization, CSRF protection, OAuth2, JWT             |
 | **Spring AOP**                       | Logging, Security, Transactions, Auditing                               |
-
----
-
-### ❓ Important HTTP Status Codes to Know
-
-### 📝 Answer
-
-**1xx – Informational**
-
-- `100` Continue
-
-**2xx – Success**
-
-- `200` OK
-- `201` Created
-- `204` No Content
-
-**3xx – Redirection**
-
-- `301` Moved Permanently
-- `302` Found
-- `304` Not Modified
-
-**4xx – Client Errors**
-
-- `400` Bad Request
-- `401` Unauthorized
-- `403` Forbidden
-- `404` Not Found
-- `409` Conflict
-- `429` Too Many Requests
-
-**5xx – Server Errors**
-
-- `500` Internal Server Error
-- `502` Bad Gateway
-- `503` Service Unavailable
-- `504` Gateway Timeout
-
----
-
-## Spring Security
-
-### ❓ What is Spring Security and why do we need it??
-
-### 📝 Answer
-
-**Spring Security** is a **framework that handles authentication, authorization, and protection against security vulnerabilities** in Spring-based applications.
-
-Without Spring Security:
-
-- We would manually write login logic
-- We would manually protect URLs
-- We might forget edge cases like CSRF, session fixation, etc.
-
-Spring Security solves this using **filters**, **contexts**, and **standard security patterns**.
-
----
-
-### ❓ Explain authentication vs authorization with a real example.
-
-### 📝 Answer
-
-- **Authentication** answers: _Who are you?_
-- **Authorization** answers: _What are you allowed to do?_
-
-**Example:**
-
-- Logging in with username/password → Authentication
-- Accessing `/admin/deleteUser` → Authorization
-
-👉 Authentication happens **before** authorization.
-
----
-
-### ❓ Can authorization happen without authentication?
-
-### 📝 Answer
-
-👉 **No.**
-Authorization **always depends on authentication**.
-
-Spring Security **never checks permissions for an anonymous user unless explicitly allowed** (`permitAll()`).
-
----
-
-### ❓ What happens when we add `spring-boot-starter-security`?
-
-### 📝 Answer
-
-Spring Security automatically:
-
-- Secures all endpoints
-- Creates a default login page
-- Creates a default user
-- Prints a generated password in logs
-
-This is called **auto-configuration**.
-
----
-
-### ❓ Explain Spring Security architecture.
-
-### 📝 Answer
-
-Spring Security works using a **Filter Chain**.
-
-1. HTTP request enters application
-2. Goes through **Security Filters**
-3. Authentication is performed
-4. Authorization decision is made
-5. Request allowed or rejected
-
-Each filter has **one responsibility**.
-
----
-
-### ❓ What is SecurityFilterChain?
-
-### 📝 Answer
-
-It defines **how requests are secured**:
-
-- Which URLs are protected
-- Which authentication method is used
-- Which filters are enabled
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-        .formLogin();
-    return http.build();
-}
-```
-
----
-
-### ❓ How do you allow public and secured endpoints?
-
-```java
-http.authorizeHttpRequests(auth -> auth
-    .requestMatchers("/login", "/public").permitAll()
-    .requestMatchers("/admin/**").hasRole("ADMIN")
-    .anyRequest().authenticated()
-);
-```
-
-**Explanation:**
-Rules are evaluated **top-down**.
-The first match wins.
-
----
-
-### ❓ Why is /admin accessible even after removing hasRole?
-
-### 📝 Answer
-
-Because:
-
-- You may have **method-level security**
-- Or a **global rule** like `anyRequest().authenticated()`
-
-Spring Security rules are **additive**, not exclusive.
-
----
-
-### ❓ Difference between roles and authorities?
-
-### 📝 Answer
-
-- Roles are **coarse-grained**
-- Authorities are **fine-grained**
-
-```java
-hasRole("ADMIN")       // internally ROLE_ADMIN
-hasAuthority("DELETE")
-```
-
-👉 Roles are just authorities with a `ROLE_` prefix.
-
----
-
-### ❓ Can a user have authorities without roles?
-
-### 📝 Answer
-
-✅ **Yes**
-Spring Security doesn’t require roles at all.
-
-### ❓ Why do we need PasswordEncoder?
-
-### 📝 Answer
-
-Because:
-
-- Plain text passwords are insecure
-- Hashing prevents password leaks
-- BCrypt adds **salt + adaptive hashing**
-
-```java
-@Bean
-PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-}
-```
-
----
-
-### ❓ Explain JWT authentication flow.
-
-### 📝 Answer
-
-1. User logs in
-2. Server generates JWT
-3. Client stores token
-4. Token sent with each request
-5. Server validates token
-
-👉 No session stored on server.
-
-```java
-public class JwtFilter extends OncePerRequestFilter {
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
-            throws IOException, ServletException {
-
-        String header = request.getHeader("Authorization");
-
-        if (header != null && header.startsWith("Bearer ")) {
-            // validate token
-            // set authentication in SecurityContext
-        }
-
-        chain.doFilter(request, response);
-    }
-}
-```
-
-❓ Why OncePerRequestFilter?
-
-### 📝 Answer
-
-To prevent **multiple executions** of the same filter in a single request lifecycle.
-
----
-
-### ❓ How does Spring Security store authentication?
-
-### 📝 Answer
-
-Using **SecurityContext** stored in:
-
-- Session (stateful)
-- ThreadLocal
-- JWT token (stateless)
-
----
-
-### ❓ How would you secure microservices?
-
-### 📝 Answer
-
-- API Gateway authentication
-- JWT validation at gateway
-- Token propagation
-- Central auth server
-- Zero trust architecture
-
----
-
-### ❓ Is JWT always better than sessions?
-
-### 📝 Answer
-
-❌ **No**
-
-JWT drawbacks:
-
-- Token revocation is hard
-- Token size increases
-- Security risks if leaked
-
-Sessions are better for:
-
-- Small apps
-- Admin dashboards
-
----
-
-### ❓ Explain CSRF.
-
-### 📝 Answer
-
-CSRF happens when:
-
-- User is authenticated
-- Browser auto-sends cookies
-- Attacker triggers state-changing action
-
-Disable only for stateless APIs:
-
-```java
-http.csrf(csrf -> csrf.disable());
-```
-
----
-
-### ❓ How do you test secured endpoints?
-
-```java
-@WithMockUser(roles = "ADMIN")
-@Test
-void adminTest() {
-    // secured test
-}
-```
-
----
-
-### ❓ If Spring Security fails completely, what’s your debugging approach?
-
-### 📝 Answer
-
-1. Enable debug logs
-2. Check filter chain
-3. Verify password encoding
-4. Inspect SecurityContext
-5. Validate token/session
-
----
-
-### ❓ CORS vs CSRF vs OAuth2 vs JWT?
-
-### 📝 Answer
-
-- **CORS** is a **browser security mechanism** that controls _which origins can call your API_
-- **CSRF** is an **attack** that exploits _authenticated users via cookies_
-- **OAuth2** is an **authorization framework**
-- **JWT** is a **token format**
-
-👉 They solve **completely different problems**
-👉 They are **not competitors**
-👉 OAuth2 often **uses JWT**
-
-🔹 CORS (Cross-Origin Resource Sharing)
-
-A **browser-enforced rule** that prevents JavaScript on one origin from calling another origin **unless explicitly allowed**.
-
-**Key point:**
-👉 CORS is **not a Spring Security feature**
-👉 It is enforced by the **browser**, not the backend
-
-**Example:**
-
-```text
-Frontend: http://localhost:3000
-Backend:  http://api.company.com
-```
-
-Browser blocks the request unless backend allows it.
-
-🔹 CSRF (Cross-Site Request Forgery)
-
-A **security attack** where a malicious site tricks a logged-in user’s browser into sending authenticated requests.
-
-**Why it works:**
-
-- Browser automatically sends cookies
-- Server trusts cookies
-- Attacker exploits that trust
-
-🔹 OAuth2 Explained
-
-**OAuth2 is about delegation of access**
-
-**Example:**
-
-> Let Google authenticate the user, but let _my app_ access their profile.
-
-OAuth2 defines:
-
-- Authorization flows
-- Tokens
-- Roles of participants
-
-🔹 JWT Explained
-
-**JWT (JSON Web Token)** is:
-
-- A compact token format
-- Self-contained
-- Signed (and sometimes encrypted)
-
-```java
-@Configuration
-@EnableWebSecurity // Enables Spring Security for web (HTTP) requests
-public class SecurityConfig {
-
-    // 1️⃣ API SECURITY (Access Token - JWT - Stateless)
-    @Bean
-    @Order(1)
-    SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
-
-        http
-            .securityMatcher("/api/**")
-
-            // CORS needed for browser-based APIs
-            .cors(cors -> {})
-
-            // JWT in header → no CSRF needed
-            .csrf(csrf -> csrf.disable())
-
-            // Stateless
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
-            // Authorization
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-
-            // JWT validation
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt());
-
-        return http.build();
-    }
-
-    // 2️⃣ AUTH SECURITY (Refresh Token - Cookie - CSRF Protected)
-    @Bean
-    @Order(2)
-    SecurityFilterChain authSecurityChain(HttpSecurity http) throws Exception {
-
-        http
-            .securityMatcher("/auth/**")
-
-            // CORS often still needed
-            .cors(cors -> {})
-
-            // Cookie-based refresh → CSRF REQUIRED
-            .csrf(csrf -> csrf.enable())
-
-            // Usually no session, but IF_REQUIRED is ok
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            )
-
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/refresh").permitAll()
-                .anyRequest().authenticated()
-            )
-
-            // Optional: OAuth2 login (Google, GitHub, etc.)
-            .oauth2Login();
-
-        return http.build();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() { // Automatically gets called by .cors(cors -> {})
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
-}
-```
-
-❓ _Why `@Order` matters?_
-
-- Spring Security checks filter chains in order.
-- More specific (`/api/**`) must come first.
-
-❓ What happens when we call `.cors(cors -> {})`?
-
-Spring Security automatically looks for a `CorsConfigurationSource` bean in the application context and wires it into the `CorsFilter`
-
-❓ _Does Spring MVC CORS config also work here?_
-
-Spring Security **runs before MVC**, so:
-
-- Security CORS config takes precedence
-- **MVC `@CrossOrigin` may be ignored**
-
-❓ _Is `csrf(csrf -> csrf.disable())` enabled by default?_
-
-Yes. **CSRF protection is enabled by default** in Spring Security for web applications.
-When you add Spring Security:
-
-- CSRF protection is **ON by default**
-- Applies to **state-changing HTTP methods** (POST, PUT, DELETE, PATCH)
-- Uses a CSRF token **stored in session or cookie**
-
-❓ _Why CSRF is not needed for JWT?_
-
-CSRF protection is not needed for JWT because **JWT is not automatically sent by the browser**.
-
-CSRF exploits **cookie-based authentication**:
-
-- User logs into a site
-- Browser stores session cookie
-- **Browser automatically sends cookies with every request**
-- Malicious site triggers a request
-- Cookie is sent → request is authenticated
-
-With JWT authentication:
-
-- Token is stored in client-side memory (E.g `useState`, `NgRx`) or localstorage, sessionStorage
-- Not stored in cookies
-- Explicitly sent in headers
-
-❓ _Even JWT refresh token might need help from cookie and CSRF to protect, correct?_
-
-✅ Correct
-
-- Refresh tokens are often stored in **HttpOnly cookies**
-- Cookies are automatically sent by the browser
-- That reintroduces CSRF risk
-- So CSRF protection is required
-
-Access Token - Sent via `Authorization` header, Not automatically sent by the browser, **No CSRF Protection**
-Refresh Token - Automatically sent by the browser, **CSRF protection IS needed**
-
-❓ _Why Access Token in Header and Refresh Token in Cookie?_
-
-You must balance two threats:
-
-- ❌ XSS (JavaScript stealing tokens)
-- ❌ CSRF (browser auto-sending credentials)
-
-| Endpoint type | Auth mechanism   | CSRF          | Session      |
-| ------------- | ---------------- | ------------- | ------------ |
-| `/api/**`     | JWT (header)     | ❌ Not needed | ❌ Stateless |
-| `/auth/**`    | Cookie (refresh) | ✅ Required   | ⚠️ Minimal   |
-
-> You **cannot eliminate both completely** — you minimize damage.
-
-❓ _What SessionCreationPolicy Actually Controls?_
-
-**SessionCreationPolicy** tells Spring Security:
-
-> Should I create / use an **HTTP session** to store authentication?
-
-- `IF_REQUIRED` allows Spring Security to **create and use an HTTP session**, which is typical for stateful authentication.
-- `STATELESS` disables server-side session storage, which is commonly used with **JWT-based authentication**.
-
-  ❓ _Is OAuth2 authentication or authorization?_
-
-👉 **Authorization framework**
-
----
-
-### ❓ Filters vs Interceptors
-
-### 📝 Answer
-
-🔹 Spring Security **Filters**
-
-- Part of **Servlet container**
-- Execute **before the request reaches the Controller**
-- Used for **authentication & authorization**
-- Spring Security works **mainly using filters**
-
-📌 Examples:
-
-- `UsernamePasswordAuthenticationFilter`
-- `JwtAuthenticationFilter`
-
-🔹 Spring MVC **Interceptors**
-
-- Part of **Spring MVC**
-- Execute **after filter, before controller method**
-- Used for **logging, auditing, request modification**
-- **NOT** used for security
-
-🔁 Execution Flow
-
-```
-Client → Filters → Interceptors → Controller
-```
-
-✅ Simple Comparison Table
-
-| Feature                | Filter  | Interceptor |
-| ---------------------- | ------- | ----------- |
-| Layer                  | Servlet | Spring MVC  |
-| Runs before Controller | ✅      | ✅          |
-| Can block request      | ✅      | ❌ (mostly) |
-| Used for Security      | ✅      | ❌          |
-| Spring Security uses   | Filters | ❌          |
-
-> **Spring Security uses Filters because security must be applied before request reaches the controller.**
-
----
-
-### ❓ How Role-Based Access is Implemented in Spring Security
-
-### 📝 Answer
-
-🔹 Concept
-
-- Users are assigned **roles** (ADMIN, USER)
-- Roles are checked **before allowing access**
-
-🔹 Role vs Authority
-
-- `ROLE_ADMIN` → internally treated as **authority**
-- `hasRole("ADMIN")` → checks `ROLE_ADMIN`
-
-✅ Method-Level Security (Most Asked)
-
-```java
-@PreAuthorize("hasRole('ADMIN')")
-@GetMapping("/admin")
-public String adminOnly() {
-    return "Admin Access";
-}
-```
-
-✅ URL-Based Security
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/admin/**").hasRole("ADMIN")
-            .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-            .anyRequest().authenticated()
-        )
-        .httpBasic();
-    return http.build();
-}
-```
-
----
-
-### ❓ What is SAML?
-
-### 📝 Answer
-
-**SAML (Security Assertion Markup Language)** is an **XML-based authentication protocol** used for **Single Sign-On (SSO)**.
-
-📌 Example:
-
-> Login once → Access Gmail, Jira, Confluence without logging in again
-
-🔹 How SAML Works (Simple Flow)
-
-1. User tries to access App
-2. App redirects to **Identity Provider (IdP)** (like Okta)
-3. User logs in
-4. IdP sends **SAML Assertion (XML)**
-5. App trusts it → Login success
-
-🔹 Why SAML?
-
-- Used in **Enterprise applications**
-- Works well with **legacy systems**
-- Browser-based SSO
-
----
-
-### ❓ SAML vs JWT
-
-### 📝 Answer
-
-| Feature         | SAML             | JWT         |
-| --------------- | ---------------- | ----------- |
-| Format          | XML              | JSON        |
-| Size            | Large            | Small       |
-| Transport       | Browser Redirect | HTTP Header |
-| Common Use      | Enterprise SSO   | REST APIs   |
-| Mobile Friendly | ❌               | ✅          |
-| Complexity      | High             | Low         |
-
-> **SAML is XML-based and heavy, JWT is lightweight and ideal for APIs.**
-
----
-
-### ❓ SAML vs OAuth vs OIDC
-
-### 📝 Answer
-
-🔹 OAuth 2.0
-
-- **Authorization protocol**
-- Allows apps to access user data
-- Does **NOT authenticate users**
-
-📌 Example:
-
-> Allow this app to access your Google Drive
-
-🔹 OpenID Connect (OIDC)
-
-- Built **on top of OAuth**
-- Used for **Authentication**
-- Returns **ID Token (JWT)**
-
-📌 Example:
-
-> Login with Google
-
-🔹 SAML
-
-- Older SSO protocol
-- XML-based
-- Mostly enterprise usage
-
-✅ Comparison Table
-
-| Feature        | SAML           | OAuth         | OIDC           |
-| -------------- | -------------- | ------------- | -------------- |
-| Purpose        | Authentication | Authorization | Authentication |
-| Token Type     | XML Assertion  | Access Token  | ID Token (JWT) |
-| Modern APIs    | ❌             | ✅            | ✅             |
-| Mobile Support | ❌             | ✅            | ✅             |
-| Best For       | Enterprise SSO | API Access    | Login / SSO    |
 
 ---
 

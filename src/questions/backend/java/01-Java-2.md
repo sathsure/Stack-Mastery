@@ -845,7 +845,7 @@ class User implements Serializable {
 | Complexity  | Simple       | Complex                         |
 | Performance | Slower       | Faster (custom)                 |
 
-🤔 Where is Serializable used in real applications?
+🤔❓ Where is Serializable used in real applications?
 
 Common places:
 
@@ -859,7 +859,7 @@ User user = session.getAttribute("user");
 
 > Internally → Serializable is required
 
-🤔 Serializable vs JSON
+🤔❓ Serializable vs JSON
 
 | Serializable                      | JSON                        |
 | --------------------------------- | --------------------------- |
@@ -1048,7 +1048,7 @@ Contains:
 ✔ JDK needed for development
 ✔ Java is platform-independent (Same **.class** file runs on any platform as long as the correct JVM exists)
 
-🤔 **Java Compilation and Runtime Execution**
+🤔❓ **Java Compilation and Runtime Execution**
 
 - JDK’s `javac` compiles all `.java` files into `.class` files (written in **bytecode**)
 - Tomcat Startup
@@ -1058,7 +1058,7 @@ Contains:
     - Only Frequently executed methods / loops are detected
     - **JIT** compiles them into native machine code
 
-🤔 **Why Java is Platform Independent?**
+🤔❓ **Why Java is Platform Independent?**
 
 - Java code is compiled into bytecode (.class)
 - Bytecode runs on JVM, not directly on OS

@@ -223,3 +223,130 @@ Cypress is an end-to-end testing framework that:
 - Runs tests in a real browser
 - Simulates real user behavior
 - Is faster and more reliable than Protractor
+
+---
+
+### ❓How to Preserve form data on refresh but clear on browser close?
+
+### 📝 Answer
+
+Use:
+
+### 👉 `sessionStorage`
+
+```ts
+sessionStorage.setItem("formData", JSON.stringify(this.form.value));
+```
+
+On init:
+
+```ts
+this.form.patchValue(JSON.parse(sessionStorage.getItem("formData")));
+```
+
+SessionStorage:
+
+- Survives refresh
+- Cleared on tab/browser close
+
+---
+
+### ❓How to Preserve form data on refresh based on Role?
+
+### 📝 Answer
+
+Steps:
+
+1. On refresh → Check role from JWT
+2. If role === "developer"
+   - Restore from sessionStorage
+
+3. Else
+   - Clear sessionStorage
+
+```ts
+if (user.role === "developer") {
+  restore();
+} else {
+  sessionStorage.removeItem("formData");
+}
+```
+
+---
+
+### ❓ How to Hide backend endpoints in Network tab?
+
+### 📝 Answer
+
+🚫 Impossible.
+
+Browser MUST know endpoint to call it.
+
+But you can hide microservices behind:
+
+👉 API Gateway
+
+Instead of:
+
+```
+/user-service/users
+/order-service/orders
+```
+
+Expose:
+
+```
+/api/users
+/api/orders
+```
+
+Angular only calls gateway.
+
+---
+
+### ❓ Can we jump Angular 5 → Angular 19 directly?
+
+### 📝 Answer
+
+🚫 Not recommended.
+
+Too many breaking changes.
+
+Official way:
+
+Upgrade step-by-step:
+
+5 → 6 → 7 → 8 → ... → 19
+
+Use:
+
+```bash
+ng update
+```
+
+---
+
+### ❓ Name some Deprecated concepts Angular 5 → 19
+
+### 📝 Answer
+
+Major changes:
+
+- ViewEngine → Ivy
+- Http → HttpClient (deprecated old module)
+- Renderer → Renderer2
+- EntryComponents removed
+- RxJS version changes
+- Module-based apps → Standalone Components
+- Webpack → Vite (latest versions)
+- TSLint → ESLint
+- Angular CLI changes
+- Strict mode enabled
+- Differential loading removed
+
+Biggest impact:
+
+- RxJS pipeable operators
+- Lazy loading syntax changes
+- Zone optimizations
+- Signals (Angular 16+)

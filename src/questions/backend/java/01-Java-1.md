@@ -238,7 +238,7 @@ What composition solves
 
 ![CompositionVsInheritance Image](/src/assets/backend/composition-vs-inheritance.png)
 
-🤔🔹 What is a Pointer?
+🤔❓🔹 What is a Pointer?
 
 - A variable that **stores the memory address** of another variable
 - Common in **C / C++**
@@ -248,7 +248,7 @@ int x = 10;
 int *p = &x;   // p holds address of x
 ```
 
-🤔🔹 Why Java Does NOT use Pointers?
+🤔❓🔹 Why Java Does NOT use Pointers?
 
 Java **intentionally hides pointers** and uses **references** instead.
 
@@ -1233,7 +1233,7 @@ class MyUnchecked extends RuntimeException {}
 - **NoClassDefFoundError** – Class missing at runtime
 - **VirtualMachineError** – JVM internal failure
 
-🤔 **`throw` vs `throws`**
+🤔❓ **`throw` vs `throws`**
 
 | throw                                  | throws                        |
 | -------------------------------------- | ----------------------------- |
@@ -2033,7 +2033,7 @@ list.add("D"); // ❌ throws UnsupportedOperationException
 
 ```
 
-🤔 When is this useful?
+🤔❓ When is this useful?
 
 1.  When multiple threads read the same data
 
@@ -3163,68 +3163,6 @@ public class Cat extends Animal {
 
 ---
 
-## 5️⃣ Exception Handling – Senior Strategy
-
-### ❓ How do you design exception handling in large Java applications?
-
-### 📝 Answer
-
-**Define clear exception layers**
-
-```java
-try {
-    orderRepository.save(order);
-} catch (SQLException e) {
-    throw new OrderPersistenceException("Failed to save order", e);
-}
-```
-
-**Use a global exception handling mechanism**
-
-For large apps (especially Spring-based):
-
-- Centralize handling using: `@ControllerAdvice` (REST)
-- Convert exceptions into: Proper HTTP status codes
-
----
-
-### ❓ Checked vs unchecked exceptions – what is your strategy?
-
-### 📝 Answer
-
-**Checked exceptions**
-Exceptions that the Java compiler checks at **compile time**.
-If a method throws a checked exception, the programmer must either handle it using a **try-catch block** or declare it in the method signature using the `throws` keyword; otherwise, the code will not compile.
-
-Examples: IOException, SQLException, FileNotFoundException, ClassNotFoundException.
-
-```java
-try {
-    throw new Exception("Checked exception");
-} catch (Exception e) {
-    // must be handled
-}
-
-// or
-
-void checkedMethod() throws Exception { // must be declared using throws
-    throw new Exception("Checked exception");
-}
-```
-
-**Unchecked exceptions**
-Exceptions that occurs at **runtime**.
-Examples: NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException (e.g., division by zero), and IllegalArgumentException
-
-```java
-void uncheckedMethod() {
-    throw new RuntimeException("Unchecked exception");
-    // any code here is NEVER executed
-}
-```
-
----
-
 ## 6️⃣ Immutability & Object Design
 
 ### ❓ Why do you prefer immutable objects?
@@ -3578,7 +3516,7 @@ int x = 130;
 byte b = (byte) x;  // -126 (overflow)
 ```
 
-🤔 Why does Java allow `byte → double` but not `double → byte`?
+🤔❓ Why does Java allow `byte → double` but not `double → byte`?
 
 - byte → double is widening (safe range)
 - double → byte is narrowing (data loss risk)

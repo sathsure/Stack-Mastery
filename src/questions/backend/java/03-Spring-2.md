@@ -1,5 +1,30 @@
 ## Database
 
+### ❓ What is DataSource?
+
+### 📝 Answer
+
+DataSource = Connection factory to DB.
+
+Spring Boot default:
+
+- HikariCP
+
+Default pool size:
+
+- 10 connections
+
+Configured via:
+
+```properties
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.hikari.maximum-pool-size=20
+```
+
+---
+
 ### ❓ What is connection pooling?
 
 Connection pooling means reusing database connections instead of creating a new one every time.
@@ -54,7 +79,7 @@ SpringBoot uses auto-configuration and automatically creates these beans for you
 - JdbcTemplate (if JDBC starter is present)
 - EntityManagerFactory & TransactionManager (if JPA starter is present)
 
-🔹 🤔 What does an application server do?
+🤔❓ What does an application server do?
 
 - Runs Servlets & REST APIs
 - Manages thread pool
@@ -209,7 +234,7 @@ public class ApplicationRepository {
 
 ### 📝 Answer
 
-1️⃣ Declarative Transactions (Concept)
+1. Declarative Transactions (Concept)
 
 A **style of transaction management**, not a framework.
 
@@ -226,7 +251,7 @@ public void placeOrder() { }
 > ✔ Focus on _what_ should be transactional
 > ✔ Not _how_ it is implemented
 
-2️⃣ Spring Transactions (Implementation)
+2. Spring Transactions (Implementation)
 
 Spring’s **transaction management framework** provided by the **Spring Framework**.
 
@@ -249,7 +274,7 @@ public class OrderService { }
 
 > ✔ This is the **engine** that makes declarative transactions work
 
-3️⃣ Spring Data JPA (Usage Layer)
+3. Spring Data JPA (Usage Layer)
 
 A **data access abstraction** built on top of JPA + Spring Transactions.
 
@@ -266,7 +291,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 > ✔ You usually **don’t write transaction code**
 > ✔ Spring Data JPA handles it for you
 
-4️⃣ Transaction Propagation
+4. Transaction Propagation
 
 - REQUIRED (Default – 90% use case)
 
@@ -307,12 +332,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
   public void exportData() { }
   ```
 
-❓ What is Rollback and Commit?
+🤔❓ What is Rollback and Commit?
 
 **Rollback** - Reverts all DB changes made in the transaction
 **Commit** - Makes all DB changes save permanently
 
-❓ What happens if `@Transactional` is NOT used?
+🤔❓ What happens if `@Transactional` is NOT used?
 
 - Each DB operation runs independently
 - Partial data may be saved
@@ -324,7 +349,7 @@ repo.save(payment); // fails
 
 > Result: Inconsistent data
 
-❓ What happens if a Checked Exception is added?
+🤔❓ What happens if a Checked Exception is added?
 
 By default in Spring:
 
@@ -340,7 +365,7 @@ public void save() throws Exception {
 
 > ✔ Data is still saved
 
-❓ How to rollback for Checked Exception?
+🤔❓ How to rollback for Checked Exception?
 
 Use `rollbackFor = Exception.class` to explicitly roll back for checked exceptions.
 
@@ -348,7 +373,7 @@ Use `rollbackFor = Exception.class` to explicitly roll back for checked exceptio
 @Transactional(rollbackFor = Exception.class)
 ```
 
-❓ Do we need `@Transactional` with Spring Data JPA?
+🤔❓ Do we need `@Transactional` with Spring Data JPA?
 
 - Simple CRUD → often **not needed**
 - Multiple DB operations / service logic → **needed**
@@ -581,6 +606,8 @@ s.getCourses(); // courses loaded now
 | Loads immediately     | Loads only when accessed |
 | Risky for performance | Safe & recommended       |
 
+---
+
 ### ❓ How do Pagination and Sorting work in Spring Data JPA?
 
 ### 📝 Answer
@@ -725,7 +752,7 @@ stream…
 > Slice → Just tell me if there is a next page
 > List → Give me everything
 
-🔹 1. Use Page when Data size is large / UI needs page numbers
+🔹 Use Page when Data size is large / UI needs page numbers
 
     ```java
     /* ------REPOSITORY ----- */
@@ -746,7 +773,7 @@ stream…
     SELECT COUNT(*) FROM users;
     ```
 
-🔹 2. Use Slice when Data is large and need to know is there a next page?
+🔹 Use Slice when Data is large and need to know is there a next page?
 
     ```java
     /* ------REPOSITORY ----- */
@@ -769,7 +796,7 @@ stream…
     > ❌ No COUNT(*) query → faster.
     > Used for **Infinite scrolling**
 
-🔹 3. Use List when Data size is small / want all records at once
+🔹 Use List when Data size is small / want all records at once
 
     ```java
     public interface RoleRepository extends JpaRepository<Role, Long> {
@@ -777,7 +804,7 @@ stream…
     }
     ```
 
-❓ Difference between `CrudRepository`, `PagingAndSortingRepository`, `JpaRepository`
+🤔❓ Difference between `CrudRepository`, `PagingAndSortingRepository`, `JpaRepository`
 
 | Repository                   | What it Provides                                                                                                             |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -859,7 +886,7 @@ DELETE FROM users WHERE id IN (1,2,3);
 
 > deleteInBatch improves performance by executing a single delete query.
 
-❓ What is EntityManager
+🤔❓ What is EntityManager
 
 **EntityManager** is the core JPA interface that:
 
@@ -869,7 +896,7 @@ DELETE FROM users WHERE id IN (1,2,3);
 
 > Spring Data JPA internally uses EntityManager.
 
-❓ Difference between @Embeddable and @Embedded
+🤔❓ Difference between @Embeddable and @Embedded
 
 They help you group related fields into a reusable value object
 ➡️ without creating a separate table
@@ -920,7 +947,7 @@ INSERT INTO user (id, name, street, city, pincode)
 VALUES (1, 'Dev', 'MG Rd', 'BLR', '560001');
 ```
 
-❓ When Should You Use DTO?
+🤔❓ When Should You Use DTO?
 
 Use DTO when:
 
@@ -954,7 +981,7 @@ for (Order o : orders) {
 }
 ```
 
-🤔 What happens in DB?
+🤔❓ What happens in DB?
 
 ```sql
 1 query → fetch orders
@@ -986,6 +1013,48 @@ hibernate.default_batch_fetch_size=10
 ```
 
 > _N+1 occurs due to lazy loading. I solve it using fetch joins or EntityGraph._
+
+---
+
+### ❓ JPA vs Hibernate
+
+### 📝 Answer
+
+| JPA            | Hibernate                   |
+| -------------- | --------------------------- |
+| Specification  | Implementation              |
+| Interface      | Concrete ORM                |
+| Defines API    | Executes SQL                |
+| Vendor neutral | Hibernate specific features |
+
+👉 Simple answer:
+JPA is a contract. Hibernate is an implementation.
+
+---
+
+### ❓ Is @JoinColumn mandatory? If not, what happens if we don’t use it?
+
+### 📝 Answer
+
+Because relationship must map to a **foreign key column** in DB.
+
+```java
+@ManyToOne
+@JoinColumn(name="order_id")
+private Order order;
+```
+
+Without `@JoinColumn`:
+
+- Hibernate auto-generates column
+- But you lose control over column name & FK behavior
+
+It tells:
+
+- Which column
+- Nullable?
+- Unique?
+- FK constraint?
 
 ---
 
