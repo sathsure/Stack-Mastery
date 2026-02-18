@@ -19,10 +19,10 @@ CREATE TABLE employee (
 );
 ```
 
-❓ How is RDBMS different from DBMS?
+🤔❓ How is RDBMS different from DBMS?
 DBMS doesn’t enforce relationships or ACID strictly.
 
-❓ Can RDBMS scale?
+🤔❓ Can RDBMS scale?
 Vertically very well, horizontally with sharding/replication.
 
 ---
@@ -60,10 +60,10 @@ CREATE TABLE employee (
 );
 ```
 
-❓ Can a foreign key be NULL?
+🤔❓ Can a foreign key be NULL?
 Yes, unless **constrained**.
 
-❓ What Is a Composite Primary Key?
+🤔❓ What Is a Composite Primary Key?
 A composite primary key is a **primary key made up of more than one column**.
 
 ```sql
@@ -98,7 +98,7 @@ CREATE TABLE Employee_Project (
 
 ---
 
-### ❓What is Normalization?
+### ❓ What is Normalization?
 
 ### 📝 Answer
 
@@ -118,7 +118,7 @@ Normalization is a **DESIGN CHECK**, **not a DB rule.**
 
 > 👉 It happens at design time, when you analyze data relationships.
 
-1. **1NF - Can this column contain multiple values?**
+1️⃣ **1NF - Can this column contain multiple values?**
 
 ❌ Problem (Not in 1NF)
 
@@ -161,7 +161,7 @@ emp_id | phone_number
 
 > “1NF removes repeating groups and multi-valued attributes.”
 
-**2NF - Does this column depend on the FULL primary key?**
+2️⃣ **2NF - Does this column depend on the FULL primary key?**
 
 📌 Rule
 
@@ -213,7 +213,7 @@ emp_id | project_id
 
 > “2NF removes partial dependency from composite keys.”
 
-**3NF - Is a non-key column depending on another non-key column?**
+3️⃣ **3NF - Is a non-key column depending on another non-key column?**
 
 📌 Rule (What to add)
 
@@ -324,7 +324,7 @@ SELECT * FROM employee WHERE email = 'abc@xyz.com';
 - Frequent INSERT / UPDATE / DELETE
 - Small tables (table scan is faster)
 
-❓ How Many Indexes Can Be Used in a Query?
+🤔❓ How Many Indexes Can Be Used in a Query?
 
 - Usually only ONE index per table is used in a query execution plan.
 - However, Composite (multi-column) indexes count as one index
@@ -442,7 +442,7 @@ CALL increaseSalary(@sal);
 SELECT @sal;
 ```
 
-🔹 Stored Procedure vs Function?
+🤔❓ Stored Procedure vs Function?
 
 - **Stored Procedure** - Used to perform actions (insert, update, delete, complex logic), May or may not return a value
 - **Function** - Stored SQL block that **always returns a value**, Can be used inside SQL queries
@@ -459,24 +459,20 @@ END;
 SELECT calculateBonus(salary) FROM employee;
 ```
 
-🔹 Cursor in Stored Procedure
+🤔❓ Cursor in Stored Procedure
 
-    A cursor is used to fetch and process query results row by row inside a stored procedure.
+A cursor is used to fetch and process query results row by row inside a stored procedure.
 
-    ```sql
-    DECLARE cur CURSOR FOR SELECT salary FROM employee;
-
-    OPEN cur;
-
-    FETCH cur INTO empSalary;
-
-    CLOSE cur;
-
-    -- Each FETCH does
-    -- empSalary = 30000
-    -- empSalary = 40000
-    -- empSalary = 50000
-    ```
+```sql
+DECLARE cur CURSOR FOR SELECT salary FROM employee;
+OPEN cur;
+FETCH cur INTO empSalary;
+CLOSE cur;
+-- Each FETCH does
+-- empSalary = 30000
+-- empSalary = 40000
+-- empSalary = 50000
+```
 
 **Scenario:**
 You want to increase salary by 10% for employees one by one, and maybe do some logic per employee
@@ -514,7 +510,7 @@ You want to increase salary by 10% for employees one by one, and maybe do some l
     -- SET done = 1 → action to perform
     ```
 
-🔹 What is `REPLACE` in a Stored Procedure?
+🤔❓ What is `REPLACE` in a Stored Procedure?
 
 `REPLACE` is a string function used to replace part of a string with another string.
 
@@ -525,117 +521,7 @@ You want to increase salary by 10% for employees one by one, and maybe do some l
     -- Angular Developer
     ```
 
----
-
-### ❓ Tricky Questions
-
-### 📝 Answer
-
-1. **NULL Comparison**
-
-```sql
-SELECT * FROM employee WHERE salary = NULL;
-```
-
-**Output:** ❌ No rows
-
-✅ Correct:
-
-```sql
-WHERE salary IS NULL;
-```
-
-2: **COUNT(\*), COUNT(col)**
-
-```sql
-SELECT COUNT(*), COUNT(salary) FROM employee;
-```
-
-**Output Explanation**
-
-- `COUNT(*)` → all rows
-- `COUNT(salary)` → excludes NULLs
-
-3. **DELETE with JOIN**
-
-```sql
-DELETE e
-FROM employee e
-JOIN department d ON e.dept_id = d.dept_id
-WHERE d.name = 'HR';
-```
-
-**Output**
-
-✅ Deletes all HR employees
-
-4. **Second Highest Salary**
-
-```sql
-SELECT MAX(salary)
-FROM employee
-WHERE salary < (SELECT MAX(salary) FROM employee);
-```
-
-5. **Duplicate Records**
-
-```sql
-SELECT name, COUNT(*)
-FROM employee
-GROUP BY name
-HAVING COUNT(*) > 1;
-```
-
-6. **EXISTS vs IN**
-
-employee
-
-| id  | name  | dept_id |
-| --- | ----- | ------- |
-| 1   | Asha  | 10      |
-| 2   | Ravi  | 20      |
-| 3   | Meena | 10      |
-
-department
-
-| id  | dept_name |
-| --- | --------- |
-| 10  | IT        |
-| 20  | HR        |
-
-```sql
--- Using IN
-SELECT name
-FROM employee
-WHERE dept_id IN (
-  SELECT id FROM department WHERE dept_name = 'IT'
-);
-
--- OUTPUT:
--- Asha
--- Meena
-
---------------------------------------
-
--- Using EXISTS
-SELECT e.name
-FROM employee e
-WHERE EXISTS (
-  SELECT 1 FROM department d WHERE d.id = e.dept_id AND d.dept_name = 'IT'
-);
-
--- OUTPUT:
--- Asha
--- Meena
-```
-
-| **IN**                | **EXISTS**             |
-| --------------------- | ---------------------- |
-| Checks values list    | Checks row existence   |
-| Subquery runs first   | Stops when match found |
-| Slower for large data | Faster for large data  |
-
-7. `DISTINCT` with multiple columns
+🤔❓ What is `DISTINCT`?
 
 ```sql
 SELECT DISTINCT dept_id, salary FROM emp;
@@ -643,31 +529,55 @@ SELECT DISTINCT dept_id, salary FROM emp;
 
 **Explanation:** DISTINCT applies to the **combined values**, not individual columns.
 
-8. `WHERE` vs `HAVING`
+🤔❓ `WHERE` vs `HAVING`
+
+✅ WHERE
+
+- Filters **rows before GROUP BY**
+- Faster
+- Cannot use aggregate functions
 
 ```sql
-SELECT dept_id, COUNT(*)
-FROM emp
-GROUP BY dept_id
+SELECT * FROM orders WHERE status = 'PAID';
+```
+
+✅ HAVING
+
+- Filters **after GROUP BY**
+- Used with aggregate functions
+
+```sql
+SELECT user_id, COUNT(*)
+FROM orders
+GROUP BY user_id
 HAVING COUNT(*) > 5;
 ```
 
-**Why:** `WHERE` filters rows, `HAVING` filters groups.
+🔑 Key Difference
 
-9. Order of SQL execution (VERY COMMON)
+| WHERE           | HAVING             |
+| --------------- | ------------------ |
+| Before grouping | After grouping     |
+| No aggregates   | Aggregates allowed |
+| Faster          | Slower             |
+
+📌 **Rule**:
+👉 Use `WHERE` whenever possible, `HAVING` only when needed.
+
+🤔❓ Order of SQL execution (VERY COMMON)
 
 ```text
 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY
 ```
 
-10. `DELETE` vs `TRUNCATE`
+🤔❓ `DELETE` vs `TRUNCATE`
 
 ```sql
 DELETE FROM emp;      -- rollback possible
 TRUNCATE TABLE emp;   -- auto commit
 ```
 
-11. `BETWEEN` is inclusive
+🤔❓ `BETWEEN` is inclusive
 
 ```sql
 WHERE salary BETWEEN 5000 AND 10000;
@@ -675,7 +585,7 @@ WHERE salary BETWEEN 5000 AND 10000;
 
 Includes **5000 & 10000**.
 
-12. `LIKE` performance issue with `Index`
+🤔❓ `LIKE` performance issue with `Index`
 
 ```sql
 WHERE name LIKE '%John';
@@ -689,12 +599,12 @@ WHERE name LIKE 'John%';
 
 ✅ The database can jump directly to John in the index
 
-13. `UNION` vs `UNION ALL`
+🤔❓ `UNION` vs `UNION ALL`
 
 - UNION → Combines results of two or more SELECT queries and **Removes duplicate rows**
 - UNION ALL → Combines results of two or more SELECT queries and **Keeps all rows (including duplicates)**
 
-14. `COALESCE` vs `NVL`
+🤔❓ `COALESCE` vs `NVL`
 
 Both are used to **replace NULL values**
 
@@ -710,7 +620,7 @@ NVL(salary, 0)
 SELECT COALESCE(salary, 0) FROM emp;
 ```
 
-15. Difference between `CHAR` and `VARCHAR`
+🤔❓ Difference between `CHAR` and `VARCHAR`
 
 Both store text
 
@@ -731,6 +641,8 @@ Both store text
   -- OUTPUT
   -- 'ABC' (3 chars)
   ```
+
+---
 
 ### ❓ I see there is a performance issue with the DB. How will you identify the issue? Is there any log you can check?
 
@@ -857,45 +769,6 @@ CREATE INDEX idx_orders_user_id ON orders(user_id);
 
 ---
 
-### ❓ WHERE vs HAVING
-
-### 📝 Answer
-
-✅ WHERE
-
-- Filters **rows before GROUP BY**
-- Faster
-- Cannot use aggregate functions
-
-```sql
-SELECT * FROM orders WHERE status = 'PAID';
-```
-
-✅ HAVING
-
-- Filters **after GROUP BY**
-- Used with aggregate functions
-
-```sql
-SELECT user_id, COUNT(*)
-FROM orders
-GROUP BY user_id
-HAVING COUNT(*) > 5;
-```
-
-🔑 Key Difference
-
-| WHERE           | HAVING             |
-| --------------- | ------------------ |
-| Before grouping | After grouping     |
-| No aggregates   | Aggregates allowed |
-| Faster          | Slower             |
-
-📌 **Rule**:
-👉 Use `WHERE` whenever possible, `HAVING` only when needed.
-
----
-
 ### ❓ JOIN Types (INNER, LEFT, RIGHT)
 
 ### 📝 Answer
@@ -948,54 +821,6 @@ RIGHT JOIN orders o ON u.id = o.user_id;
 | INNER | Only matches        |
 | LEFT  | All left + matches  |
 | RIGHT | All right + matches |
-
----
-
-### ❓ How to Debug Slow Queries in Production
-
-### 📝 Answer
-
-✅ Step-by-step approach
-
-1️⃣ **Identify slow query**
-
-```sql
-SHOW PROCESSLIST;
-```
-
-2️⃣ **Enable Slow Query Log**
-
-```sql
-SET GLOBAL slow_query_log = 'ON';
-SET GLOBAL long_query_time = 1;
-```
-
-3️⃣ **Analyze query**
-
-```sql
-EXPLAIN ANALYZE SELECT ...
-```
-
-4️⃣ **Check indexes**
-
-```sql
-SHOW INDEX FROM table_name;
-```
-
-5️⃣ **Optimize**
-
-- Add missing indexes
-- Avoid `SELECT *`
-- Reduce joins
-- Limit result set
-
-🔧 **Common Tools Used**
-
-- MySQL Slow Query Log
-- `EXPLAIN ANALYZE`
-- Performance Schema
-- Application APM (New Relic, Datadog)
-- MySQL Workbench
 
 ---
 
@@ -1055,7 +880,7 @@ Writes → Primary
 Reads  → Replica
 ```
 
-🤔 How they stay synced
+🤔❓ How they stay synced?
 MySQL uses Asynchronous Replication by default. Here are the steps the system takes automatically:
 
 **Binary Log (Primary):** The Original database records every change (Insert, Update, Delete) into a file called the `binlog`.
@@ -1064,7 +889,7 @@ MySQL uses Asynchronous Replication by default. Here are the steps the system ta
 
 **Applier Thread (Replica):** The Replica executes the queries in the `relay log` one by one to update its own data.
 
-🤔 How to check Sync Status
+🤔❓ How to check Sync Status
 
 ```sql
 SHOW SLAVE STATUS\G
@@ -1238,3 +1063,265 @@ SELECT * FROM users WHERE email LIKE '%gmail.com';
 | **Create Index**   | High   | Reduces rows searched from millions to hundreds.         |
 | **Optimize Table** | Medium | Reclaims space and reorganizes data for faster disk I/O. |
 | **Rewrite Query**  | High   | Reduces CPU and memory load per request.                 |
+
+---
+
+### ❓ What happens internally when a transaction fails midway in a Spring Boot application?
+
+### 📝 Answer
+
+When a transaction fails midway in Spring Boot, the transaction is rolled back to maintain data consistency. Spring manages the transaction using `@Transactional`, but the actual rollback and consistency guarantees are enforced by the database.
+
+This behavior is based on the **ACID** principles, which guarantee reliable database transactions.
+
+ACID is a **set of properties that guarantee reliable database transactions**.
+
+It is **mainly a Database concept**, but used through **JPA / Spring Boot / Java** when you perform transactions.
+
+ACID stands for:
+
+- **A – Atomicity**
+- **C – Consistency**
+- **I – Isolation**
+- **D – Durability**
+
+These properties ensure **safe and reliable transactions** in databases.
+
+1️⃣ Atomicity (All or Nothing)
+
+👉 A transaction must either complete fully or rollback fully.
+
+Example:
+
+```java
+@Transactional
+public void transferMoney() {
+    debit(fromAccount);
+    credit(toAccount);
+}
+```
+
+If `credit()` fails → `debit()` must rollback.
+
+✅ Either both happen
+❌ Or none happen
+
+2️⃣ Consistency (Valid State Only)
+
+👉 After transaction, DB must follow all rules:
+
+- Primary key
+- Foreign key
+- Unique constraint
+- Check constraints
+
+Example:
+If balance cannot be negative,
+DB will reject invalid update.
+
+3️⃣ Isolation (No Interference Between Transactions)
+
+👉 Multiple users accessing same data should not corrupt it.
+
+Example:
+Two users booking last ticket at same time.
+
+Isolation Levels (DB concept):
+
+- READ UNCOMMITTED
+- READ COMMITTED
+- REPEATABLE READ
+- SERIALIZABLE
+
+In Spring:
+
+```java
+@Transactional(isolation = Isolation.SERIALIZABLE)
+```
+
+4️⃣ Durability (Permanent After Commit)
+
+👉 Once transaction is committed, it stays saved even if:
+
+- Server crashes
+- Power fails
+
+🔥 Where is ACID Used?
+
+| Layer       | Is ACID Here? | Explanation                       |
+| ----------- | ------------- | --------------------------------- |
+| Java        | ❌ No         | Java is just programming language |
+| JPA         | ⚠️ Partial    | JPA manages transactions          |
+| Spring Boot | ⚠️ Partial    | Uses `@Transactional`             |
+| Database    | ✅ YES        | ACID is implemented at DB level   |
+
+> ACID is **implemented by the Database**
+> Spring / JPA just **use it via transactions**
+
+---
+
+### ❓ How do you handle if multiple users / threads access same DB data at the same time?
+
+### 📝 Answer
+
+When multiple users hit your Spring Boot app:
+
+```
+User 1 → Thread 1 → DB
+User 2 → Thread 2 → DB
+User 3 → Thread 3 → DB
+```
+
+Each request runs in its own thread,
+but isolation control happens at **database level**.
+
+🔥 **How DB Handles Multiple Transactions**
+
+Database uses:
+
+1. **Locks**
+2. **MVCC (Multi Version Concurrency Control)**
+3. **Isolation Levels**
+
+Let’s see how.
+
+1️⃣ Using Isolation Levels in Spring
+
+In Spring Boot:
+
+```java
+@Transactional(isolation = Isolation.REPEATABLE_READ)
+public void bookTicket() {
+    ...
+}
+```
+
+Common levels:
+
+| Level                | Simple Explanation                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **READ_UNCOMMITTED** | Can see uncommitted changes from other transactions (dirty reads possible). Rarely used.                                                   |
+| **READ_COMMITTED**   | Each `SELECT` sees only committed data. If another transaction commits changes, the next read will see the updated value.                  |
+| **REPEATABLE_READ**  | Within the same transaction, reading the same row twice gives the same result, even if another transaction updates and commits in between. |
+| **SERIALIZABLE**     | Transactions behave as if executed one by one (like a queue). Prevents almost all concurrency issues but reduces performance.              |
+
+Most DBs (like MySQL default) use:
+👉 **REPEATABLE_READ**
+
+🏦 Scenario
+
+Initial value in DB:
+
+```
+balance = 1000
+```
+
+Two transactions:
+
+T1 → Reads balance twice
+T2 → Updates balance to 2000 (but timing differs)
+
+| Isolation Level  | What T1 Sees                              |
+| ---------------- | ----------------------------------------- |
+| READ_UNCOMMITTED | 2000 (even though T2 not committed)       |
+| READ_COMMITTED   | 1000 → 2000 (Only committed data visible) |
+| REPEATABLE_READ  | 1000 → 1000 (Snapshot view)               |
+| SERIALIZABLE     | 1000 (T2 waits)                           |
+
+2️⃣ Locking Mechanism
+
+When two users try to update same row:
+
+Example:
+Two users booking last seat.
+
+DB does:
+
+- First transaction → acquires row lock
+- Second transaction → waits
+
+After first commit:
+
+- Second continues
+- Or fails (depending on logic)
+
+🔹 **Pessimistic Locking (DB Level Lock)**
+
+Used when you want strict control.
+
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT s FROM Seat s WHERE s.id = :id")
+Seat findSeatForUpdate(Long id);
+```
+
+This prevents others from reading/updating that row.
+
+🔹 **Optimistic Locking (Version Based)**
+
+Very common in enterprise apps.
+
+```java
+@Version
+private Long version;
+```
+
+Flow:
+
+1. User A reads version = 1
+2. User B reads version = 1
+3. User A updates → version becomes 2
+4. User B tries to update → fails (version mismatch)
+
+This throws:
+
+```
+OptimisticLockException
+```
+
+Then you retry or show error.
+
+3️⃣ Multiple Threads in Java
+
+Important:
+
+Each HTTP request → separate thread
+Spring does NOT share transaction between threads.
+
+Example:
+
+```java
+@Transactional
+public void updateBalance() {
+   ...
+}
+```
+
+Each thread gets:
+
+- Separate DB connection
+- Separate transaction
+
+Thread safety at Java level is different from DB isolation.
+
+If you modify shared memory in Java, then you need:
+
+- synchronized
+- ReentrantLock
+- Concurrent collections
+
+But for DB operations:
+👉 Isolation is DB responsibility.
+
+🧠 Real Example: Bank Transfer
+
+_Scenario:_
+Two users try to withdraw ₹1000 from same account with ₹1000 balance.
+
+_Without isolation:_
+Balance becomes -1000 ❌
+
+_With proper isolation:_
+
+- First succeeds
+- Second fails or waits

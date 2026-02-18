@@ -119,125 +119,248 @@ Spring Security doesn’t require roles at all.
 
 ### 📝 Answer
 
-1. User logs in
-2. Server generates JWT
-3. Client stores token
-4. Token sent with each request
-5. Server validates token
+🔐 First Understand the Big Picture
 
-👉 No session stored on server.
+When a user logs in:
 
-```java
-public class JwtFilter extends OncePerRequestFilter {
+👉 Backend verifies username/password
+👉 Backend generates **2 tokens**
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
-            throws IOException, ServletException {
+- Access Token (short life)
+- Refresh Token (long life)
 
-        String header = request.getHeader("Authorization");
+Access Token and Refresh Token are two JWTs used for different purposes.
 
-        if (header != null && header.startsWith("Bearer ")) {
-            // validate token
-            // set authentication in SecurityContext
-        }
+Think like this:
 
-        chain.doFilter(request, response);
-    }
+- 🪪 **Access token = Entry ticket**
+- 🔑 **Refresh token = Ticket renewal pass**
+
+1️⃣ When user logs in, We send both access & refresh token
+
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-❓ Why OncePerRequestFilter?
+- Purpose of Access Token is to access protected APIs.
 
-### 📝 Answer
+Every API request sends:
 
-To prevent **multiple executions** of the same filter in a single request lifecycle.
+```
+Authorization: Bearer <access_token>
+```
 
----
+⏳ Access Token Life: Short-lived (5–15 minutes usually)
 
-### ❓ How does Spring Security store authentication?
+- Purpose of Refresh Token to generate a new access token without asking user to login again.
 
-### 📝 Answer
+It is like:
 
-Using **SecurityContext** stored in:
+> “Hey server, my entry ticket expired, but I still have renewal pass.”
 
-- Session (stateful)
-- ThreadLocal
-- JWT token (stateless)
+⏳ Refresh Token Life: Long-lived (7 days usually)
 
----
+🔄 Refresh Flow:
 
-### ❓ How would you secure microservices?
+```
+Frontend → /refresh API → Send refresh token
+Backend validates refresh token
+Backend generates new access token
+Backend sends new access token
+```
 
-### 📝 Answer
+```json
+{
+  "accessToken": "new_access_token_here"
+}
+```
 
-- API Gateway authentication
-- JWT validation at gateway
-- Token propagation
-- Central auth server
-- Zero trust architecture
+🤔❓ Structure of JWT
 
----
+JWT = **JSON Web Token**
 
-### ❓ Is JWT always better than sessions?
+It has 3 parts:
 
-### 📝 Answer
+```
+HEADER (algorithm)
++
+PAYLOAD (user data)
++
+SIGNATURE (security)
+```
 
-❌ **No**
+Each part is Base64 encoded.
 
-JWT drawbacks:
+1️⃣ Header
 
-- Token revocation is hard
-- Token size increases
-- Security risks if leaked
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
 
-Sessions are better for:
+2️⃣ Payload
 
-- Small apps
-- Admin dashboards
+```json
+{
+  "sub": "dev",
+  "role": "USER",
+  "iat": 1707000000,
+  "exp": 1707000600
+}
+```
 
----
+3️⃣ Signature
 
-### ❓ Explain CSRF.
+```
+HMACSHA256(
+   base64UrlEncode(header) + "." +
+   base64UrlEncode(payload),
+   secret_key
+)
+```
 
-### 📝 Answer
+🤔❓ How to Generate Access Token?
+
+```java
+public String generateAccessToken(String username) {
+    return Jwts.builder()
+            .setSubject(username)
+            .claim("role", "USER")
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) // 10 mins
+            .signWith(SignatureAlgorithm.HS256, "mySecretKey")
+            .compact();
+}
+```
+
+🤔❓ How to Generate Refresh Token?
+
+```java
+public String generateRefreshToken(String username) {
+    return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days
+            .signWith(SignatureAlgorithm.HS256, "mySecretKey")
+            .compact();
+}
+```
+
+🤔❓ What happens when Access Token expires?
+
+Backend will return:
+
+```
+401 Unauthorized
+```
+
+Frontend then:
+
+1. Detects 401
+2. Calls **Refresh API (/refresh)**
+3. Backend validates refresh token and generates new access token and send to Frontend
+4. Retries original API
+
+User does NOT see logout.
+
+🤔❓ What if Refresh Token expires?
+
+Then user must login again.
+
+Backend returns:
+
+```
+403 Forbidden
+```
+
+Frontend:
+👉 Clears tokens
+👉 Redirects to Login page
+
+🤔❓ Where should tokens be stored?
+
+✅ Access Token
+
+- Store in **memory (variable)**
+- Or in **HttpOnly cookie**
+
+Not recommended:
+
+- ❌ localStorage (XSS risk)
+
+✅ Refresh Token
+
+- Store in **HttpOnly Secure Cookie**
+
+🤔❓ Why store refresh token in HttpOnly cookie and Access Token in Memory? Why not in localstorage or sessionstorage?
+
+🔐 First Understand the Risk: XSS
+
+XSS = Cross Site Scripting attack
+
+If attacker injects JavaScript into your app, they can read:
+
+```js
+localStorage.getItem("token");
+sessionStorage.getItem("token");
+```
+
+So anything stored there can be stolen.
+
+⚡ Access Token in memory
+
+- Not stored permanently
+- Disappears on refresh
+- Harder to steal
+- Not accessible after page reload
+
+If attacker injects script: They can only steal it while page is active.
+
+Limited exposure.
+
+⚡ Refresh Token in HttpOnly Cookie
+
+- ❌ Cannot be accessed by JavaScript
+- ❌ Cannot be read via localStorage
+- Automatically sent by browser
+- Secure + SameSite options available
+
+🤔❓ Why NOT store both in cookies?
+
+If Access Token is also in cookie:
+
+- It is auto-sent with every request
+- **Increases CSRF attack**
+
+🤔❓ What is CSRF?
+
+**CSRF (Cross-Site Request Forgery)** is an attack where a malicious website tricks a logged-in user’s browser into sending an unwanted request to another site.
 
 CSRF happens when:
 
-- User is authenticated
-- Browser auto-sends cookies
-- Attacker triggers state-changing action
+- User is already authenticated
+- Browser automatically sends cookies
+- Attacker triggers a state-changing request (POST/PUT/DELETE)
 
-Disable only for stateless APIs:
+Because **cookies are automatically sent by the browser**, even if the request was triggered from another website.
+
+**Authorization headers (Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9)** are not automatically sent, so they reduce CSRF risk.
+
+🤔❓ When Can We Disable CSRF in Spring?
+
+If your API is:
+
+- Stateless (The server does NOT store any user session data between requests)
+- Uses JWT in Authorization header
 
 ```java
 http.csrf(csrf -> csrf.disable());
 ```
-
----
-
-### ❓ How do you test secured endpoints?
-
-```java
-@WithMockUser(roles = "ADMIN")
-@Test
-void adminTest() {
-    // secured test
-}
-```
-
----
-
-### ❓ If Spring Security fails completely, what’s your debugging approach?
-
-### 📝 Answer
-
-1. Enable debug logs
-2. Check filter chain
-3. Verify password encoding
-4. Inspect SecurityContext
-5. Validate token/session
 
 ---
 
@@ -249,10 +372,6 @@ void adminTest() {
 - **CSRF** is an **attack** that exploits _authenticated users via cookies_
 - **OAuth2** is an **authorization framework**
 - **JWT** is a **token format**
-
-👉 They solve **completely different problems**
-👉 They are **not competitors**
-👉 OAuth2 often **uses JWT**
 
 🔹 CORS (Cross-Origin Resource Sharing)
 
@@ -270,16 +389,6 @@ Backend:  http://api.company.com
 ```
 
 Browser blocks the request unless backend allows it.
-
-🔹 CSRF (Cross-Site Request Forgery)
-
-A **security attack** where a malicious site tricks a logged-in user’s browser into sending authenticated requests.
-
-**Why it works:**
-
-- Browser automatically sends cookies
-- Server trusts cookies
-- Attacker exploits that trust
 
 🔹 OAuth2 Explained
 
@@ -386,23 +495,23 @@ public class SecurityConfig {
 }
 ```
 
-❓ _Why `@Order` matters?_
+🤔❓ _Why `@Order` matters?_
 
 - Spring Security checks filter chains in order.
 - More specific (`/api/**`) must come first.
 
-❓ What happens when we call `.cors(cors -> {})`?
+🤔❓ What happens when we call `.cors(cors -> {})`?
 
 Spring Security automatically looks for a `CorsConfigurationSource` bean in the application context and wires it into the `CorsFilter`
 
-❓ _Does Spring MVC CORS config also work here?_
+🤔❓ _Does Spring MVC CORS config also work here?_
 
 Spring Security **runs before MVC**, so:
 
 - Security CORS config takes precedence
 - **MVC `@CrossOrigin` may be ignored**
 
-❓ _Is `csrf(csrf -> csrf.disable())` enabled by default?_
+🤔❓ _Is `csrf(csrf -> csrf.disable())` enabled by default?_
 
 Yes. **CSRF protection is enabled by default** in Spring Security for web applications.
 When you add Spring Security:
@@ -411,7 +520,7 @@ When you add Spring Security:
 - Applies to **state-changing HTTP methods** (POST, PUT, DELETE, PATCH)
 - Uses a CSRF token **stored in session or cookie**
 
-❓ _Why CSRF is not needed for JWT?_
+🤔❓ _Why CSRF is not needed for JWT?_
 
 CSRF protection is not needed for JWT because **JWT is not automatically sent by the browser**.
 
@@ -429,7 +538,7 @@ With JWT authentication:
 - Not stored in cookies
 - Explicitly sent in headers
 
-❓ _Even JWT refresh token might need help from cookie and CSRF to protect, correct?_
+🤔❓ _Even JWT refresh token might need help from cookie and CSRF to protect, correct?_
 
 ✅ Correct
 
@@ -441,7 +550,7 @@ With JWT authentication:
 Access Token - Sent via `Authorization` header, Not automatically sent by the browser, **No CSRF Protection**
 Refresh Token - Automatically sent by the browser, **CSRF protection IS needed**
 
-❓ _Why Access Token in Header and Refresh Token in Cookie?_
+🤔❓ _Why Access Token in Header and Refresh Token in Cookie?_
 
 You must balance two threats:
 
@@ -455,7 +564,7 @@ You must balance two threats:
 
 > You **cannot eliminate both completely** — you minimize damage.
 
-❓ _What SessionCreationPolicy Actually Controls?_
+🤔❓ _What SessionCreationPolicy Actually Controls?_
 
 **SessionCreationPolicy** tells Spring Security:
 
@@ -464,7 +573,7 @@ You must balance two threats:
 - `IF_REQUIRED` allows Spring Security to **create and use an HTTP session**, which is typical for stateful authentication.
 - `STATELESS` disables server-side session storage, which is commonly used with **JWT-based authentication**.
 
-  ❓ _Is OAuth2 authentication or authorization?_
+🤔❓ _Is OAuth2 authentication or authorization?_
 
 👉 **Authorization framework**
 

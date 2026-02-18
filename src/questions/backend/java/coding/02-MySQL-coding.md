@@ -32,3 +32,119 @@ JOIN orders o
 GROUP BY c.country                                   -- Grouping by country
 ORDER BY c.country;                                  -- Ordering result by country
 ```
+
+---
+
+### ❓ What is the output of the following query?
+
+> ```sql
+> SELECT * FROM employee WHERE salary = NULL;
+> ```
+
+### 📝 Answer
+
+**Output:** ❌ No rows
+
+✅ Correct:
+
+```sql
+WHERE salary IS NULL;
+```
+
+---
+
+### ❓ **COUNT(\*), COUNT(col)**
+
+> ```sql
+> SELECT COUNT(*), COUNT(salary) FROM employee;
+> ```
+
+### 📝 Answer
+
+- `COUNT(*)` → all rows
+- `COUNT(salary)` → excludes NULLs
+
+---
+
+### ❓ **Second Highest Salary**
+
+### 📝 Answer
+
+```sql
+SELECT MAX(salary)
+FROM employee
+WHERE salary < (SELECT MAX(salary) FROM employee);
+
+-- OR
+
+SELECT age
+FROM users
+ORDER BY age DESC
+LIMIT 1 OFFSET 1
+```
+
+---
+
+### ❓ **Duplicate Records**
+
+### 📝 Answer
+
+```sql
+SELECT name, COUNT(*)
+FROM employee
+GROUP BY name
+HAVING COUNT(*) > 1;
+```
+
+---
+
+### ❓ **EXISTS vs IN**
+
+> employee
+>
+> | id  | name  | dept_id |
+> | --- | ----- | ------- |
+> | 1   | Asha  | 10      |
+> | 2   | Ravi  | 20      |
+> | 3   | Meena | 10      |
+>
+> department
+>
+> | id  | dept_name |
+> | --- | --------- |
+> | 10  | IT        |
+> | 20  | HR        |
+
+### 📝 Answer
+
+```sql
+-- Using IN
+SELECT name
+FROM employee
+WHERE dept_id IN (
+  SELECT id FROM department WHERE dept_name = 'IT'
+);
+
+-- OUTPUT:
+-- Asha
+-- Meena
+
+--------------------------------------
+
+-- Using EXISTS
+SELECT e.name
+FROM employee e
+WHERE EXISTS (
+  SELECT 1 FROM department d WHERE d.id = e.dept_id AND d.dept_name = 'IT'
+);
+
+-- OUTPUT:
+-- Asha
+-- Meena
+```
+
+| **IN**                | **EXISTS**             |
+| --------------------- | ---------------------- |
+| Checks values list    | Checks row existence   |
+| Subquery runs first   | Stops when match found |
+| Slower for large data | Faster for large data  |

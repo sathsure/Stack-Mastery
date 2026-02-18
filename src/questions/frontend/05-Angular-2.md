@@ -156,20 +156,20 @@ Code → Ivy Compiler
 > 📌 HTML disappears after Ivy runs
 > 📌 esbuild does not understand Angular decorators
 
-❓ Webpack vs Vite
-👉 Vite is faster because it doesn’t bundle everything upfront.
+🤔❓ Webpack vs Vite
+Vite is faster because it doesn’t bundle everything upfront.
 
-❓ Ivy vs View Engine
-👉 Ivy is faster, smaller, and more flexible.
+🤔❓ Ivy vs View Engine
+Ivy is faster, smaller, and more flexible.
 
-❓ AOT vs JIT
-👉 AOT for production, JIT for development.
+🤔❓ AOT vs JIT
+AOT for production, JIT for development.
 
-❓ Dirty checking
-👉 Angular checks bindings on every change detection cycle.
+🤔❓ Dirty checking
+Angular checks bindings on every change detection cycle.
 
-❓ HMR
-👉 Updates modules without reloading the page.
+🤔❓ HMR
+Updates modules without reloading the page.
 
 ---
 

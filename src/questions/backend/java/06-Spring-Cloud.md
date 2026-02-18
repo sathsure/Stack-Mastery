@@ -1160,7 +1160,7 @@ _How Saga Works (Step by Step)_
 - Order is created
 - Payment is successful
 - Inventory update fails
-- Now What? 🤔❓
+- 🤔❓ Now What?
   - If step 3 fails, **undo step 2**
   - If step 2 is undone, **undo step 1**
 
