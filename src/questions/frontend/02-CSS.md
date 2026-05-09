@@ -1,11 +1,18 @@
-### ❓ What is CSS?
+﻿# 🎨 CSS Interview Preparation
+
+---
+
+# 🧱 Part 1 — Fundamentals
+
+### ❓ In simple terms, what is CSS and how does it relate to HTML?
 
 ### 📝 Answer
 
-CSS (Cascading Style Sheets) describes **how elements should look** — colors, spacing, layout, and positioning.
+CSS (**Cascading Style Sheets**) describes **how elements should look** — colors, spacing, layout, and positioning.
 
-HTML defines _structure_, CSS defines _presentation_.
-CSS is declarative: you describe **rules**, and the browser decides **how to apply them**.
+- HTML defines _structure_
+- CSS defines _presentation_
+- CSS is **declarative**: you describe **rules**, and the browser decides **how to apply them**
 
 ---
 
@@ -13,55 +20,38 @@ CSS is declarative: you describe **rules**, and the browser decides **how to app
 
 ### 📝 Answer
 
-CSS follows a **cascade**:
+CSS follows a **cascade** — a priority system that resolves conflicts:
 
-```
+```text
 Browser default
 ↓
 External CSS
 ↓
-Internal CSS
+Internal CSS (<style>)
 ↓
-Inline styles
+Inline styles (style="...")
 ↓
 !important
 ```
 
-The browser follows this order **step by step**:
+The browser resolves conflicts using these rules **in order**:
 
-1. **Specificity** (stronger selector wins)
-2. **Source order** (later wins if specificity is equal)
-3. **`!important`** (overrides normal rules)
+1. **Origin & importance** (user-agent → author → `!important`)
+2. **Specificity** (stronger selector wins)
+3. **Source order** (later rule wins if specificity is equal)
 
 ```html
 <p id="text" class="highlight">Hello CSS</p>
 ```
 
 ```css
-/* Element selector */
-p {
-  color: blue;
-}
-
-/* Class selector */
-.highlight {
-  color: green;
-}
-
-/* ID selector */
-#text {
-  color: orange;
-}
-
-/* Same specificity, later rule */
-#text {
-  color: purple;
-}
+p              { color: blue; }    /* (0,0,0,1) */
+.highlight     { color: green; }   /* (0,0,1,0) */
+#text          { color: orange; }  /* (0,1,0,0) */
+#text          { color: purple; }  /* same specificity, later wins */
 ```
 
-**Final Output**
-
-**Text color: purple**
+✅ **Final color: purple**
 
 ---
 
@@ -71,388 +61,202 @@ p {
 
 ```html
 <!-- Inline -->
-<div style="color:red"></div>
+<div style="color: red"></div>
 
 <!-- Internal -->
 <style>
-  div {
-    color: blue;
-  }
+  div { color: blue; }
 </style>
 
 <!-- External -->
 <link rel="stylesheet" href="styles.css" />
 ```
 
-- Inline styles apply directly to the element
-- Internal styles live in `<style>` tags
-- External styles live in `.css` files
-- External styles are preferred because they scale and are easier to maintain.
+- **Inline** styles apply directly to the element (highest specificity except `!important`)
+- **Internal** styles live in `<style>` tags (page-scoped)
+- **External** styles live in `.css` files (cacheable, scalable, **preferred**)
 
 ---
 
-### ❓ What are CSS selectors, and how do they determine which elements styles are applied to?
+### ❓ What are CSS selectors and what types are available?
 
 ### 📝 Answer
 
 Selectors define **which elements** a style rule applies to.
 
 ```css
-p {
-  color: black;
-}
+/* Element */         p {}
+/* Class */           .card {}
+/* ID */              #header {}
+/* Attribute */       input[type="text"] {}
+/* Group */           h1, h2 {}
+/* Universal */       * {}
+/* Descendant */      .card p {}
+/* Child */           .card > p {}
+/* Adjacent sibling */ h1 + p {}
+/* General sibling */ h1 ~ p {}
 ```
 
-CSS first selects elements, then applies rules.
-Most CSS issues start with **wrong or overly complex selectors**.
+> 📌 Classes are reusable, IDs are unique, attribute selectors are powerful but slower if overused.
 
 ---
 
-### ❓ What different types of CSS selectors are available, and when would you use each?
+### ❓ Descendant vs child selectors
 
 ### 📝 Answer
 
 ```css
-/* Element */
-p {
-}
-
-/* Class */
-.card {
-}
-
-/* ID */
-#header {
-}
-
-/* Attribute */
-input[type="text"] {
-}
-
-/* Group */
-h1,
-h2 {
-}
-```
-
-- Classes are reusable
-- IDs are unique
-- Attribute selectors are powerful but slower if overused
-
----
-
-### ❓ How do descendant selectors differ from child selectors, and how does nesting affect selector behavior?
-
-### 📝 Answer
-
-```css
-/* Descendant */
-.card p {
-}
-
-/* Direct child */
-.card > p {
-}
-```
-
-![Descendants Image](/src/assets/css-descendants.png)
-
-Descendant selectors match deeply nested elements.
-Overusing them makes CSS fragile and hard to remove later.
-
-1. Descendant Selector (space)
-
-```css
-.parent .child {
-  color: red;
-}
+.parent .child   { color: red;  }  /* any depth */
+.parent > .child { color: blue; }  /* direct child only */
 ```
 
 ```html
 <div class="parent">
   <div>
-    <p class="child">Hello</p>
+    <p class="child">Hello</p>  <!-- ✅ matches .parent .child only -->
   </div>
 </div>
 ```
 
-Selects **any matching element inside**, at **any depth**.
+| Selector             | Matches                  |
+| -------------------- | ------------------------ |
+| `.parent .child`     | Any depth ✅             |
+| `.parent > .child`   | Direct child only ✅     |
 
-- Very flexible
-- Easy to overuse
-- Can accidentally affect deeply nested elements
-
-2. Child Selector (`>`)
-
-```css
-.parent > .child {
-  color: blue;
-}
-```
-
-```html
-<div class="parent">
-  <p class="child">Hello</p>
-</div>
-```
-
-Selects **only direct children**, not grandchildren.
-
-- More predictable
-- Safer for large codebases
-- Breaks if DOM structure changes
-
-```
-.parent .child     → any level deep ✅
-.parent > .child   → direct child only ✅
-```
-
-3. Element Selector
-
-```css
-p {
-  color: black;
-}
-```
-
-Selects all `<p>` elements.
-
-4. Class Selector
-
-```css
-.card {
-  border: 1px solid;
-}
-```
-
-Selects all elements with class `card`.
-
-5. ID Selector
-
-```css
-#header {
-  height: 60px;
-}
-```
-
-Selects the element with id `header`.
-
-6. Group Selector
-
-```css
-h1,
-h2,
-h3 {
-  font-weight: bold;
-}
-```
-
-Applies the same styles to multiple selectors.
-
-7. Attribute Selector
-
-```css
-input[type="text"] {
-  border-color: blue;
-}
-```
-
-Selects elements based on attributes.
-
-8. Pseudo-class Selector (state-based)
-
-```css
-button:hover {
-  background: red;
-}
-```
-
-Applies styles based on **state or position**.
-
-✅ Other common ones
-
-```css
-:first-child
-:last-child
-:nth-child(2)
-:focus
-:checked
-```
-
-9. Pseudo-element Selector (virtual elements)
-
-```css
-p::before {
-  content: "→ ";
-}
-```
-
-Represents **parts of an element**, not real DOM nodes.
-
-✅ Common ones
-
-```css
-::before
-::after
-::first-line
-::first-letter
-```
-
-![PseudoElements Image](/src/assets/pseudo-elements.png)
-
-10. Universal Selector
-
-```css
-* {
-  box-sizing: border-box;
-}
-```
-
-Selects **all elements**.
-Use sparingly.
-
-11. Adjacent Sibling Selector (`+`)
-
-```css
-h1 + p {
-  color: red;
-}
-```
-
-Selects the **first sibling immediately after** the element.
-
-12. General Sibling Selector (`~`)
-
-```css
-h1 ~ p {
-  color: blue;
-}
-```
-
-Selects **all siblings after** the element.
-
-✅ Selector Strength (Mental Order)
-
-```
-Element < Class / Attribute < ID < Inline < !important
-```
+> ⚠️ Overusing descendant selectors makes CSS fragile and hard to refactor.
 
 ---
 
-### ❓ What is CSS specificity, and how does it influence which style rule is applied?
+### ❓ What are pseudo-classes vs pseudo-elements?
 
 ### 📝 Answer
 
-Specificity is the rule the browser uses to decide which CSS rule wins when multiple rules target the same element.
-
-It is not random, not based only on order, and not about how long a selector is.
-It is a priority system.
-
-**The Specificity Levels (From weakest → strongest)**
-
-| Selectors                                  | Example                         |
-| ------------------------------------------ | ------------------------------- |
-| Element selectors                          | div, p, span                    |
-| Class / attribute / pseudo-class selectors | .card, [type="text"], :hover    |
-| ID selectors                               | #header                         |
-| Inline styles                              | <div style="color:red">         |
-| !important                                 | Absolute override (last resort) |
-
-**The Scoring Mental Model (Very Important)**
-
-Specificity can be imagined as a 4-part score:
-
-( inline , ID , class , element )
-
-💡Examples
-
-p → (0,0,0,1)
-.card → (0,0,1,0)
-#app → (0,1,0,0)
-#app .card p → (0,1,1,1)
-
-The browser compares from left to right.
-The first higher value wins.
-
-**Example 3 — Combined Selector vs Single ID**
+🔹 **Pseudo-class** → describes a **state** of an element
 
 ```css
-#app {
-  color: green;
-}
-
-#app .card p {
-  color: red;
-}
+button:hover       {}
+input:focus        {}
+li:first-child     {}
+input:checked      {}
+a:visited          {}
 ```
 
-```html
-<div id="app">
-  <div class="card">
-    <p>Hello</p>
-  </div>
-</div>
+🔹 **Pseudo-element** → styles a **part** of an element
+
+```css
+p::first-line   {}
+p::first-letter {}
+p::before       { content: "→ "; }
+p::after        { content: " ←"; }
+::selection     {}
 ```
 
-✅ Specificity
+> 💡 **Mnemonic**
+>
+> - **Pseudo-class** → _state_ (single colon `:`)
+> - **Pseudo-element** → _part_ (double colon `::`)
 
-```
-#app            → (0,1,0,0)
-#app .card p    → (0,1,1,1)
-```
-
-**Output**
-
-**Text color: red**
-
-Both rules have one ID, but the second rule adds class and element selectors, making it more specific.
+<img src="../../assets/pseudo-elements.png" alt="PseudoElements Image" width="500" />
 
 ---
 
-### ❓ Why `!important` is risky?
+### ❓ Can you walk me through CSS specificity and how it affects style resolution?
+
+### 📝 Answer
+
+Specificity is the rule the browser uses to decide which CSS rule wins when **multiple rules target the same element**.
+
+It is **not** random, **not** based on order, and **not** about selector length. It is a **priority system**.
+
+**Specificity score: `(inline, ID, class, element)`**
+
+| Selector            | Score       |
+| ------------------- | ----------- |
+| `p`                 | (0, 0, 0, 1) |
+| `.card`             | (0, 0, 1, 0) |
+| `[type="text"]`     | (0, 0, 1, 0) |
+| `:hover`            | (0, 0, 1, 0) |
+| `#app`              | (0, 1, 0, 0) |
+| `#app .card p`      | (0, 1, 1, 1) |
+| `style="color:red"` | (1, 0, 0, 0) |
+| `!important`        | overrides all |
+
+The browser compares from **left to right**. The first higher value wins.
+
+**Example**
+
+```css
+#app           { color: green; }   /* (0,1,0,0) */
+#app .card p   { color: red;   }   /* (0,1,1,1) ✅ wins */
+```
+
+---
+
+#### ↳ Follow-up: Why is `!important` risky?
 
 ### 📝 Answer
 
 ```css
-p {
-  color: red !important;
-}
+p { color: red !important; }
 ```
 
-`!important` breaks the natural cascade.
-Once used, future overrides become harder and force more `!important`.
+`!important` **breaks the natural cascade**. Once used, future overrides become harder and force more `!important` — a downward spiral.
+
+> ⚠️ **Use only for**: utility classes, accessibility overrides, or fighting third-party CSS as a last resort.
 
 ---
 
-### ❓ How does the CSS box model work, and how does it affect element sizing and layout?
+# 📦 Part 2 — Box Model, Display & Units
+
+### ❓ How does the CSS box model work?
 
 ### 📝 Answer
 
-![BoxModel Image](/src/assets/box-model.png)
+Every element is a rectangle made of:
 
-Every element is a rectangle made of content, padding, border, and margin.
-Misunderstanding this causes layout bugs.
+```text
+┌───────────────────────────┐
+│        margin             │
+│  ┌─────────────────────┐  │
+│  │     border          │  │
+│  │  ┌───────────────┐  │  │
+│  │  │   padding     │  │  │
+│  │  │  ┌─────────┐  │  │  │
+│  │  │  │ content │  │  │  │
+│  │  │  └─────────┘  │  │  │
+│  │  └───────────────┘  │  │
+│  └─────────────────────┘  │
+└───────────────────────────┘
+```
+
+<img src="../../assets/box-model.png" alt="BoxModel Image" width="500" />
+
+Misunderstanding this causes the **majority of layout bugs**.
 
 ---
 
-### ❓ What is the difference between `content-box` and `border-box`?
+### ❓ Difference between `content-box` and `border-box`?
 
-`content-box` and `border-box` define **how the browser calculates an element’s width and height**.
+### 📝 Answer
 
-- **`content-box`** → width/height apply to **content only**
+`box-sizing` controls **how the browser calculates an element's width and height**.
+
+- **`content-box`** (default) → width/height apply to **content only**
 - **`border-box`** → width/height include **content + padding + border**
 
-👉 `box-sizing: content-box` (Default)
+```css
+/* Content-box: total width = 200 + 20 + 4 = 224px */
+.box-1 {
+  box-sizing: content-box;
+  width: 200px; padding: 10px; border: 2px solid;
+}
 
-The browser treats width as **content-only**.
-This often causes layouts to grow larger than expected.
-
-👉 `box-sizing: border-box`
-
-The browser adjusts content size so the **overall element size stays fixed**.
-This makes layouts predictable and easier to reason about.
-
-👉 Side-by-Side Summary
+/* Border-box: total width = 200px (content shrinks) */
+.box-2 {
+  box-sizing: border-box;
+  width: 200px; padding: 10px; border: 2px solid;
+}
+```
 
 | Property               | content-box | border-box       |
 | ---------------------- | ----------- | ---------------- |
@@ -462,550 +266,372 @@ This makes layouts predictable and easier to reason about.
 | Easy layout math       | ❌ No       | ✅ Yes           |
 | Preferred in real apps | ❌ Rarely   | ✅ Almost always |
 
-1️⃣ ❓ does adding padding break my layout?
+> 💡 **One-Line Mental Model**
+>
+> - `content-box`: width = content only
+> - `border-box`: width = the whole box
 
-Because you are using `content-box`, and padding increases the total size.
-
-2️⃣ ❓ doesn’t width change when I add padding?
-
-Because you are using `border-box`, and padding is absorbed inside.
-
-💡 One-Line Mental Model
-
-> **`content-box`: width means content only
-> `border-box`: width means the whole box**
-
-![BorderContent Image](/src/assets/border-content.png)
-
-### ❓ What are the different CSS display types, and how do they impact layout and element behavior?
-
-### 📝 Answer
-
-| Display      | Width | Height | Line Break |
-| ------------ | ----- | ------ | ---------- |
-| block        | ✔     | ✔      | ✔          |
-| inline       | ✖     | ✖      | ✖          |
-| inline-block | ✔     | ✔      | ✖          |
-| none         | ✖     | ✖      | removed    |
-
-Inline elements ignore width and height.
-Many alignment issues come from using the wrong display type.
-
-![DisplayType Image](/src/assets/display-type.png)
-
----
-
-### ❓ What CSS position types are available, and how does each one affect document flow and positioning?
-
-### 📝 Answer
+✅ **Best practice (universal reset)**
 
 ```css
-static
-relative
-absolute
-fixed
-sticky
+*, *::before, *::after { box-sizing: border-box; }
 ```
 
-![Positioning Image](/src/assets/positioning.jpg)
-
-1️⃣ position: static
-
-- Default positioning
-- Element follows normal document flow
-- top / left / right / bottom do nothing
-
-2️⃣ position: relative
-
-- Element stays in normal flow
-- Can be offset visually using top/left
-- Creates positioning context for absolute children
-
-3️⃣ position: absolute
-
-- Removed from document flow
-- Positioned relative to nearest positioned ancestor
-- Parent height does not include it
-
-4️⃣ position: fixed
-
-- Removed from flow
-- Positioned relative to viewport
-- Does not move during scroll
-
-5️⃣ position: sticky
-
-- Hybrid of relative + fixed
-- Scrolls normally, then sticks at a threshold
-- Fails if parent has overflow: hidden/auto
-
-💡 Diagram
-
-```
-relative parent
- └── absolute child
-```
-
-Absolute elements position relative to the nearest positioned ancestor.
-Sticky needs scroll context and fails with overflow clipping.
+<img src="../../assets/border-content.png" alt="BorderContent Image" width="500" />
 
 ---
 
-### ❓ Where height and width apply?
+### ❓ What are the different CSS display types?
+
+### 📝 Answer
+
+| Display        | Width Respected | Height Respected | Line Break |
+| -------------- | --------------- | ---------------- | ---------- |
+| `block`        | ✅              | ✅               | ✅         |
+| `inline`       | ❌              | ❌               | ❌         |
+| `inline-block` | ✅              | ✅               | ❌         |
+| `flex`         | ✅              | ✅               | ✅ (block-level) |
+| `grid`         | ✅              | ✅               | ✅ (block-level) |
+| `none`         | —               | —                | Removed from layout |
+
+> ⚠️ Inline elements ignore `width`/`height`. Many alignment issues come from using the wrong display type.
+
+<img src="../../assets/display-type.png" alt="DisplayType Image" width="500" />
+
+---
+
+#### ↳ Follow-up: Where do `width` and `height` apply?
 
 ### 📝 Answer
 
 | Element        | Width | Height |
 | -------------- | ----- | ------ |
-| block          | ✔     | ✔      |
-| inline         | ✖     | ✖      |
-| flex/grid item | ✔     | ✔      |
-
-Inline elements flow with text and ignore dimensions.
-Use `inline-block`, flex, or grid for sizing.
+| block          | ✅    | ✅     |
+| inline         | ❌    | ❌     |
+| inline-block   | ✅    | ✅     |
+| flex/grid item | ✅    | ✅     |
 
 ---
 
-### ❓ Why `height: 100%` fails?
+#### ↳ Follow-up: Why does `height: 100%` fail?
 
 ### 📝 Answer
 
-Percentage heights work only if the parent has an explicit height.
-Without it, the browser cannot calculate the value.
+Percentage heights work **only if the parent has an explicit height**. Without it, the browser cannot calculate the value.
+
+```css
+/* ❌ Doesn't work */
+.parent { /* height: auto */ }
+.child  { height: 100%; }
+
+/* ✅ Works */
+.parent { height: 500px; }
+.child  { height: 100%; }
+```
+
+✅ **Modern alternative**: use `100dvh` (dynamic viewport height) or flex/grid.
 
 ---
 
-### ❓ How do different CSS units differ from each other, and how does the browser interpret them?
+### ❓ How do CSS units differ?
 
 ### 📝 Answer
 
-Below is a **clean, beginner-to-clear explanation** of **CSS units**, expanding your table with **what each unit really means, when to use it, and common traps**, plus **one visual image** to lock the concepts in.
+| Unit  | Based On         | What It Means                  |
+| ----- | ---------------- | ------------------------------ |
+| `px`  | Fixed            | Absolute pixel, doesn't scale  |
+| `em`  | Parent font-size | Relative to parent text        |
+| `rem` | Root font-size   | Relative to `<html>`           |
+| `%`   | Parent           | Percentage of parent dimension |
+| `vw`  | Viewport width   | 1vw = 1% of viewport width     |
+| `vh`  | Viewport height  | 1vh = 1% of viewport height    |
+| `svh`/`dvh`/`lvh` | Viewport (smallest/dynamic/largest) | Mobile-safe heights |
+| `fr`  | Fraction (Grid)  | Share of remaining space       |
+| `ch`  | Character width  | Useful for text columns        |
 
-| Unit  | Based On         | What It Really Means          |
-| ----- | ---------------- | ----------------------------- |
-| `px`  | Fixed            | Absolute size, does not scale |
-| `em`  | Parent font-size | Relative to parent text       |
-| `rem` | Root font-size   | Relative to `<html>`          |
-| `vw`  | Viewport width   | Percentage of screen width    |
-| `vh`  | Viewport height  | Percentage of screen height   |
+<img src="../../assets/units.png" alt="Units Image" width="500" />
 
-![Units Image](/src/assets/units.png)
-
-**px — Fixed Unit**
-
-```css
-.box {
-  width: 200px;
-}
-```
-
-`px` is a fixed unit.
-It does **not scale** with screen size or user font settings.
-
-✔ Good for:
-
-- Borders
-- Small precise spacing
-
-❌ Not good for:
-
-- Responsive layouts
-- Accessibility-friendly text
-
-**em — Relative to Parent**
-
-```css
-.parent {
-  font-size: 20px;
-}
-
-.child {
-  font-size: 2em; /* 40px */
-}
-```
-
-`em` depends on the **parent’s font size**.
-This can compound when elements are nested.
-
-⚠️ Common trap:
-
-```css
-.child {
-  padding: 2em;
-}
-```
-
-Padding grows as font size grows.
-
-**rem — Relative to Root (`<html>`)**
-
-```css
-html {
-  font-size: 16px;
-}
-
-.box {
-  font-size: 1.5rem; /* 24px */
-}
-```
-
-`rem` always refers to the root font size.
-This makes layouts **predictable and scalable**.
-
-✔ Best for:
-
-- Typography
-- Spacing systems
-- Scalable layouts
-
-**vw — Viewport Width**
-
-```css
-.hero {
-  width: 50vw;
-}
-```
-
-`1vw` = 1% of browser width.
-Elements resize automatically when the screen width changes.
-
-✔ Useful for:
-
-- Full-width layouts
-- Fluid typography (with clamp)
-
-**vh — Viewport Height**
-
-```css
-.section {
-  height: 100vh;
-}
-```
-
-`1vh` = 1% of viewport height.
-Commonly used for full-screen sections.
-
-⚠️ Mobile issue:
-
-- Browser address bars change viewport height
-- Can cause layout jumps
-
-✔ Better alternative:
-
-```css
-min-height: 100svh;
-```
-
-💡 Practical Rule of Thumb (Very Important)
+**Practical Rule of Thumb**
 
 | Use Case             | Best Unit  |
 | -------------------- | ---------- |
-| Text                 | `rem`      |
-| Layout spacing       | `rem`      |
-| Borders              | `px`       |
-| Full screen sections | `vh / svh` |
-| Responsive widths    | `% / vw`   |
+| Body text            | `rem`      |
+| Component spacing    | `rem`      |
+| Borders, shadows     | `px`       |
+| Full-screen sections | `dvh`      |
+| Responsive widths    | `%` / `vw` |
+| Grid columns         | `fr`       |
 
-1️⃣ ❓ does `em` behave unexpectedly?
-
-Because it compounds with nesting.
-
-2️⃣ ❓ is `rem` preferred?
-
-Because it scales from a **single reference point**.
+> 💡 Use `rem` for consistency, `em` for component-scoped sizing, `vh/dvh` for screens, `fr` for grids.
 
 ---
 
-### ❓ Why `100vh` is tricky?
+### ❓ Why is `100vh` tricky on mobile?
 
 ### 📝 Answer
 
-Mobile browsers resize the viewport dynamically.
-This causes layout jumps when using fixed viewport heights.
+Mobile browsers dynamically change viewport height when the address bar shows/hides. This causes **layout jumps** when using a`100vh`.
 
-✔ Better:
+✅ **Modern fix**:
 
 ```css
-min-height: 100svh;
+.section { min-height: 100dvh; }  /* dynamic viewport height */
+```
+
+| Unit   | Behavior                                  |
+| ------ | ----------------------------------------- |
+| `100vh`| Largest viewport (when address bar hidden) |
+| `100svh`| Smallest viewport (when address bar visible) |
+| `100dvh`| Dynamic — adjusts as bar shows/hides     |
+| `100lvh`| Largest viewport (alias of `vh`)         |
+
+---
+
+# 🎯 Part 3 — Positioning
+
+### ❓ What CSS position types exist?
+
+### 📝 Answer
+
+```css
+position: static;    /* default */
+position: relative;
+position: absolute;
+position: fixed;
+position: sticky;
+```
+
+<img src="../../assets/positioning.jpg" alt="Positioning Image" width="500" />
+
+| Position | In Flow? | Positioned Relative To | Notes |
+| -------- | -------- | ---------------------- | ----- |
+| `static` | ✅       | —                      | Default; `top`/`left` ignored |
+| `relative` | ✅     | Itself                 | Creates positioning context for absolute children |
+| `absolute` | ❌     | Nearest positioned ancestor | Removed from flow; parent height ignores it |
+| `fixed`  | ❌       | Viewport               | Stays during scroll |
+| `sticky` | ✅       | Scroll container       | Hybrid; fails if parent has `overflow: hidden/auto` |
+
+```text
+relative parent
+ └── absolute child   ← positioned relative to parent
+```
+
+> 📌 **Common trap**: `absolute` looks for the nearest **positioned** ancestor (`relative`, `absolute`, `fixed`, `sticky`). If none exists, it positions relative to the `<html>` element.
+
+---
+
+### ❓ How does the `inset` shorthand work in CSS and what problem does it solve?
+
+### 📝 Answer
+
+`inset` is shorthand for `top`, `right`, `bottom`, `left` — used with `position: absolute/fixed/sticky`.
+
+```css
+.box {
+  position: fixed;
+  inset: 0;       /* equivalent to top:0; right:0; bottom:0; left:0; */
+}
+
+.box-2 {
+  inset: 10px 20px;          /* top/bottom | left/right */
+  inset: 10px 20px 30px;     /* top | left/right | bottom */
+  inset: 10px 20px 30px 40px;/* top | right | bottom | left */
+}
+```
+
+✅ Common use: full-screen overlay → `position: fixed; inset: 0;`
+
+---
+
+# 📐 Part 4 — Flexbox
+
+### ❓ What problem does Flexbox solve?
+
+### 📝 Answer
+
+**Flexbox is a layout system designed to distribute space and align items along ONE direction at a time** — either a row or a column.
+
+```text
+flex-direction: row    →  Main axis horizontal, Cross axis vertical
+flex-direction: column →  Main axis vertical,   Cross axis horizontal
+```
+
+<img src="../../assets/flexbox.png" alt="Flexbox Image" width="500" />
+
+The browser's job in Flexbox is:
+> _"Given available space, how should items grow, shrink, and align?"_
+
+**Two roles**
+
+1. **Flex container** (parent) → `display: flex`
+2. **Flex items** (direct children only)
+
+---
+
+#### ↳ Follow-up: Explain `flex-grow`, `flex-shrink`, `flex-basis`
+
+### 📝 Answer
+
+These three together decide **how items share available space**.
+
+| Property      | Purpose                              | Default |
+| ------------- | ------------------------------------ | ------- |
+| `flex-basis`  | **Initial size** before grow/shrink  | `auto`  |
+| `flex-grow`   | Share of **extra** space             | `0`     |
+| `flex-shrink` | Share of **negative** space (when overflowing) | `1` |
+
+**Shorthand**
+
+```css
+.item { flex: 1; }
+/* equivalent to:
+   flex-grow: 1;
+   flex-shrink: 1;
+   flex-basis: 0;     ← THIS is why width gets ignored
+*/
+```
+
+> ⚠️ **`flex: 1` overrides `width`** because it sets `flex-basis: 0` ("ignore content, distribute equally").
+
+✅ To preserve width:
+
+```css
+.item { flex: 0 0 300px; }   /* don't grow, don't shrink, base 300px */
 ```
 
 ---
 
-### ❓ What problem does Flexbox solve, and how does it manage alignment and space distribution?
+#### ↳ Follow-up: Common Flexbox confusions
 
 ### 📝 Answer
 
-```
-Main Axis  → →
-Cross Axis ↓ ↓
-```
+❓ **`width` doesn't work?** — `flex-basis` is taking priority. Use `flex: 0 0 <width>`.
 
-![Flexbox Image](/src/assets/flexbox.png)
+❓ **Items overflow?** — Default `min-width: auto` prevents shrinking below content size.
+✅ Fix: `.item { min-width: 0; }`
 
-**Flexbox is a layout system designed to distribute space and align items along one direction at a time.**
+❓ **Vertical centering fails?** — Confused main vs cross axis.
+✅ For `flex-direction: row`: `align-items: center` (vertical), `justify-content: center` (horizontal).
 
-That direction can be:
+---
 
-- **horizontal (row)** or
-- **vertical (column)**
+#### ↳ Follow-up: `justify-content` vs `align-content` vs `align-items` vs `justify-self` vs `align-self`?
 
-The browser’s job in Flexbox is:
+### 📝 Answer
 
-> _“Given available space, how should items grow, shrink, and align?”_
+| Property          | Axis             | Applies To       | Notes |
+| ----------------- | ---------------- | ---------------- | ----- |
+| `justify-content` | Main axis        | Container        | Distributes items along main axis |
+| `align-items`     | Cross axis       | Container        | Aligns ALL items on cross axis |
+| `align-content`   | Cross axis       | Container        | Distributes **rows** (only when wrapped) |
+| `align-self`      | Cross axis       | Single item      | Overrides `align-items` for one item |
+| `justify-self`    | Main axis        | Single item (Grid only) | Aligns one item along main axis |
 
-**Flexbox Has Two Roles**
-
-#### 1️⃣ Flex Container
-
-The parent that controls layout behavior.
+> ⚠️ `align-content` only works when items wrap (`flex-wrap: wrap`).
+> ⚠️ `justify-self` only works in **Grid**, not Flexbox.
 
 ```css
+/* Container */
 .container {
   display: flex;
+  justify-content: center;  /* horizontal in row layout */
+  align-items: center;      /* vertical in row layout */
+}
+
+/* Single item override */
+.special-item {
+  align-self: flex-end;
 }
 ```
 
-#### 2️⃣ Flex Items
+---
 
-The direct children that are arranged.
-Only **direct children** participate in Flexbox.
+# 🔲 Part 5 — CSS Grid
 
+### ❓ How does CSS Grid work, and how is it different from Flexbox?
+
+### 📝 Answer
+
+**Grid is a 2-dimensional layout system** — it controls rows AND columns at the same time.
+
+```text
+Flexbox: 1D (row OR column)
+Grid:    2D (row AND column simultaneously)
 ```
-flex-direction: row
-→ main axis (horizontal)
-↓ cross axis (vertical)
 
-flex-direction: column
-↓ main axis (vertical)
-→ cross axis (horizontal)
-```
+<img src="../../assets/grid.png" alt="Grid Image" width="500" />
 
-Everything else in Flexbox works **relative to these axes**, not the screen.
+- **Lines** — horizontal and vertical dividers
+- **Tracks** — rows and columns (space between lines)
+- **Cells** — single units (intersection of row and column)
+- **Areas** — named groups of cells
+- Items can **span** multiple rows or columns
 
-#### flex-wrap (Single Line vs Multiple Lines)
+---
+
+#### ↳ Follow-up: Important Grid properties
+
+### 📝 Answer
 
 ```css
 .container {
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr;     /* 3 columns */
+  grid-template-rows: auto 1fr auto;         /* 3 rows */
+  gap: 16px;                                 /* spacing */
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
 }
-```
 
-Whether items stay on one line or wrap onto multiple lines.
-Without wrapping, Flexbox will shrink items aggressively to fit.
-
-#### flex-grow, flex-shrink, flex-basis (Space Calculation Engine)
-
-These three decide **how items share available space**.
-
-#### flex-basis (Starting Size)
-
-```css
 .item {
-  flex-basis: 200px;
+  grid-column: 1 / 3;       /* span columns 1 to 3 */
+  grid-row: span 2;          /* span 2 rows */
+  grid-area: header;         /* assign to named area */
 }
 ```
 
-The **initial size** before growing or shrinking.
-`flex-basis` overrides `width` in Flexbox calculations.
-
-#### flex-grow (Who Gets Extra Space)
+**Powerful patterns**
 
 ```css
-.item {
-  flex-grow: 1;
+/* Auto-fit responsive grid (no media queries needed!) */
+.responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 ```
 
-How much an item should grow **relative to others**.
-
-Example:
-
-```
-Item A: flex-grow: 1
-Item B: flex-grow: 2
-→ B gets twice the extra space
-```
-
-#### flex-shrink (Who Shrinks First)
-
-```css
-.item {
-  flex-shrink: 1;
-}
-```
-
-How much an item shrinks when space is tight.
-Setting `flex-shrink: 0` prevents shrinking.
-
-#### flex (Shorthand)
-
-```css
-.item {
-  flex: 1;
-}
-```
-
-Expands to:
-
-```css
-flex-grow: 1;
-flex-shrink: 1;
-flex-basis: 0;
-```
-
-`flex-basis: 0` means:
-
-> “Ignore content width, distribute space evenly.”
-
-This explains many “why is width ignored?” issues.
-
-#### Common Flexbox Confusions (Clarified)
-
-#### ❓ width doesn’t work?
-
-Because `flex-basis` is taking priority.
-
-#### ❓ items overflow?
-
-Because default `min-width: auto` prevents shrinking.
-
-Fix:
-
-```css
-.item {
-  min-width: 0;
-}
-```
-
-#### ❓ vertical centering fails?
-
-Because people confuse main vs cross axis.
+| `auto-fit` vs `auto-fill` | Behavior |
+| ---------------------------- | -------- |
+| `auto-fit`  | Stretches items to fill empty space |
+| `auto-fill` | Keeps empty tracks even when no items |
 
 ---
 
-### ❓ How does CSS Grid work, and how is it different from other layout systems?
+# 🌍 Part 6 — Logical Properties
+
+### ❓ What are logical properties and why prefer them over physical ones?
 
 ### 📝 Answer
 
-```
-Rows + Columns
-```
+**Logical properties define layout based on content flow, not physical screen directions.** They adapt automatically to writing direction (LTR/RTL) and writing mode (horizontal/vertical).
 
-![Grid Image](/src/assets/grid.png)
+**Two logical axes**
 
-Grid controls space in two dimensions at the same time.
-You define the grid; the browser places items inside it.
-
-- Horizontal lines = rows
-- Vertical lines = columns
-- Spaces between lines = tracks
-- Box intersections = cells
-- Items can span multiple tracks
-- The browser fills empty cells automatically unless told otherwise
-
----
-
-### ❓ Important grid properties
-
-### 📝 Answer
+- **Inline axis** → direction text flows (LTR: left→right, RTL: right→left)
+- **Block axis** → direction content stacks (top→bottom in horizontal modes)
 
 ```css
-grid-template-columns
-grid-template-rows
-gap
-auto-fit
-minmax()
-```
-
----
-
-### ❓ How do CSS inline and block logical properties work, and why are they preferred over physical properties like left, right, top, and bottom in direction-aware layouts?
-
-### 📝 Answer
-
-**CSS inline and block logical properties define layout based on content flow, not physical screen directions.**
-They adapt automatically to writing direction (LTR/RTL) and writing mode (horizontal/vertical), making layouts flexible and internationalization-friendly.
-
-#### 1️⃣ What “inline” and “block” Mean in CSS
-
-CSS layouts are based on **two logical axes**, not left/right/top/bottom:
-
-- **Inline axis** → direction in which text flows
-- **Block axis** → direction in which content stacks (new lines)
-
-#### Common cases:
-
-- English (LTR):
-  - inline → left ➜ right
-  - block → top ➜ bottom
-
-- Arabic (RTL):
-  - inline → right ➜ left
-  - block → top ➜ bottom
-
-#### 2️⃣ Inline Logical Properties
-
-Inline properties work along the **text direction**.
-
-```css
-margin-inline-start: 16px;
-margin-inline-end: 16px;
-padding-inline-start: 8px;
-```
-
-- `inline-start` → where text **starts**
-- `inline-end` → where text **ends**
-
-- LTR → `inline-start = left`
-- RTL → `inline-start = right`
-
-You do **not** need separate CSS for LTR and RTL.
-
-#### 3️⃣ Block Logical Properties
-
-Block properties work along the **stacking direction** (top to bottom in most cases).
-
-```css
-margin-block-start: 12px;
-margin-block-end: 12px;
-padding-block-start: 8px;
-```
-
-- `block-start` → top in horizontal writing
-- `block-end` → bottom in horizontal writing
-
-If writing mode changes (for example, vertical text), these adapt automatically.
-
-#### 4️⃣ Why Logical Properties Are Preferred Over Physical Ones
-
-#### ❌ Physical properties (direction-dependent)
-
-```css
+/* ❌ Physical (direction-dependent) */
 margin-left: 16px;
 padding-top: 8px;
-```
 
-Problems:
-
-- Break in RTL layouts
-- Require duplicate CSS rules
-- Hard to maintain for global applications
-
-#### ✅ Logical properties (direction-aware)
-
-```css
+/* ✅ Logical (direction-aware) */
 margin-inline-start: 16px;
 padding-block-start: 8px;
 ```
-
-Benefits:
-
-- Automatically support LTR and RTL
-- Work with vertical writing modes
-- Reduce conditional CSS
-- Future-proof for internationalization
-
-#### 5️⃣ Side-by-Side Comparison
 
 | Physical Property | Logical Equivalent    |
 | ----------------- | --------------------- |
@@ -1015,70 +641,178 @@ Benefits:
 | `padding-bottom`  | `padding-block-end`   |
 | `left`            | `inset-inline-start`  |
 | `top`             | `inset-block-start`   |
+| `width`           | `inline-size`         |
+| `height`          | `block-size`          |
 
-#### 6️⃣ When You Should Use Logical Properties
-
-Use logical properties when:
-
-- Building multilingual applications
-- Supporting RTL languages
-- Creating reusable UI components
-- Designing future-ready layouts
-
-Avoid physical properties unless:
-
-- You explicitly need fixed left/right behavior
-- The layout is guaranteed to be single-direction only
+> 💡 **Use when**: building multilingual apps, supporting RTL languages (Arabic, Hebrew), creating reusable component libraries.
 
 ---
 
-### ❓ Why styles sometimes don’t apply?
+# ✨ Part 7 — Modern CSS
+
+### ❓ What are CSS Custom Properties (Variables)?
+### 📝 Answer
+
+CSS Custom Properties allow you to define **reusable values** that can be inherited and updated dynamically.
+
+```css
+:root {
+  --primary-color: #007bff;
+  --spacing-md: 1rem;
+}
+
+.button {
+  background: var(--primary-color);
+  padding: var(--spacing-md);
+}
+
+/* Dynamic theming */
+[data-theme="dark"] {
+  --primary-color: #4dabf7;
+}
+```
+
+✅ **Advantages over Sass variables**
+
+- Live in the **browser** (can change at runtime via JS)
+- **Inheritable** through the DOM
+- Can be scoped to any selector
+
+```js
+// Update from JavaScript
+document.documentElement.style.setProperty('--primary-color', '#ff0000');
+```
+
+---
+
+### ❓ What are container queries?
+### 📝 Answer
+
+**Container queries let elements respond to their parent's size**, not the viewport's. This is huge for component-driven design.
+
+```css
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+@container card (min-width: 400px) {
+  .card { display: flex; }
+}
+
+@container card (max-width: 399px) {
+  .card { display: block; }
+}
+```
+
+> 💡 Same component can render differently in a sidebar (narrow) vs main content (wide) — without media queries!
+
+---
+
+### ❓ Can you explain the `:has()` selector and give a real-world example of where you'd use it?
+### 📝 Answer
+
+**`:has()` is the "parent selector"** — it lets you style an element based on its descendants.
+
+```css
+/* Style a card differently if it contains an image */
+.card:has(img) {
+  padding: 0;
+}
+
+/* Style a form field that has an invalid input */
+.field:has(input:invalid) {
+  border-color: red;
+}
+
+/* Highlight a row when checkbox is checked */
+tr:has(input[type="checkbox"]:checked) {
+  background: lightyellow;
+}
+```
+
+> 🔥 Game-changer for state-driven styling without JavaScript. Supported in all modern browsers since 2023.
+
+---
+
+### ❓ What's the difference between `*`, `:root`, and `body`?
+
+### 📝 Answer
+
+| Selector | What it affects | Key use                   |
+| -------- | --------------- | ------------------------- |
+| `*`      | Every element   | Resets (use sparingly)    |
+| `:root`  | `<html>` element | CSS variables, `rem` base |
+| `body`   | Page body       | Layout, fonts, background |
+
+---
+
+# ⚡ Part 8 — Performance & Animation
+
+### ❓ Why do some animations feel janky?
+### 📝 Answer
+
+Animating layout properties forces the browser to **recalculate layout (reflow) and repaint** every frame — expensive at 60fps.
+
+```css
+/* ❌ Triggers reflow every frame */
+.box { transition: width 0.3s, top 0.3s, margin 0.3s; }
+
+/* ✅ Only triggers compositing — GPU accelerated */
+.box { transition: transform 0.3s, opacity 0.3s; }
+```
+
+**Performance hierarchy**
+
+```text
+Layout (reflow)   ← most expensive (width, height, top, left, margin)
+   ↓
+Paint             ← medium     (color, background, box-shadow)
+   ↓
+Composite         ← cheapest   (transform, opacity)  ✅ animate these
+```
+
+✅ **`will-change` hint** (use sparingly):
+
+```css
+.box { will-change: transform; }
+```
+
+Tells browser to promote element to its own GPU layer in advance.
+
+---
+
+# 🎯 Trick Questions & Common Bugs
+
+### ❓ Why styles sometimes don't apply?
 
 ### 📝 Answer
 
 Common causes:
 
 - Higher specificity elsewhere
-- Inline styles
-- `!important`
-- Shadow or encapsulation
+- Inline styles win
+- `!important` somewhere
+- Shadow DOM encapsulation
 - Incorrect selector
+- CSS file not loaded (check Network tab)
 
-Most issues are not missing CSS — they are **conflicting CSS**.
+> 💡 Most issues are not _missing_ CSS — they are _conflicting_ CSS.
 
 ---
 
-### ❓ Why is `z-index` not working here?
+### ❓ Why is `z-index` not working?
 
 ### 📝 Answer
 
-```html
-<div class="parent">
-  <div class="child">Text</div>
-</div>
-```
-
 ```css
-.parent {
-  z-index: 1;
-}
-.child {
-  z-index: 999;
-}
+.parent { z-index: 1; }
+.child  { z-index: 999; }   /* ❌ Has no effect */
 ```
 
-### ❌ Expected (wrong)
+`z-index` works **only on positioned elements** (`relative`, `absolute`, `fixed`, `sticky`).
 
-Child should appear on top.
-
-### ✅ Actual behavior
-
-`z-index` has no effect.
-
-`z-index` works **only on positioned elements**.
-Since neither element has `position` set, the browser ignores `z-index`.
-
-✔ Fix:
+✅ **Fix**
 
 ```css
 .child {
@@ -1087,55 +821,33 @@ Since neither element has `position` set, the browser ignores `z-index`.
 }
 ```
 
----
-
-### ❓ Why does `height: 100%` not work?
-
-### 📝 Answer
-
-```css
-.child {
-  height: 100%;
-}
-```
-
-Percentage heights require the parent to have an **explicit height**.
-If the parent’s height is auto, the browser has nothing to calculate from.
-
-✔ Fix:
-
-```css
-.parent {
-  height: 300px;
-}
-```
+> **Bonus**: `z-index` also works on flex/grid items even without `position`. And `transform`, `filter`, `opacity < 1` create new **stacking contexts** that can trap `z-index`.
 
 ---
 
-### ❓ Why doesn’t `text-overflow: ellipsis` work?
+### ❓ Why doesn't `text-overflow: ellipsis` work?
 
 ### 📝 Answer
 
+Ellipsis works **only when ALL three conditions** are met:
+
 ```css
 .text {
-  text-overflow: ellipsis;
+  width: 200px;             /* 1. Constrained width */
+  overflow: hidden;          /* 2. Clip overflow */
+  white-space: nowrap;       /* 3. Prevent wrapping */
+  text-overflow: ellipsis;   /* 4. Show ellipsis */
 }
 ```
 
-Ellipsis works only when **all three conditions** are met:
-
-1. Fixed width
-2. `overflow: hidden`
-3. `white-space: nowrap`
-
-✔ Correct:
+ **Multi-line ellipsis**:
 
 ```css
 .text {
-  width: 200px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 ```
 
@@ -1145,92 +857,62 @@ Ellipsis works only when **all three conditions** are met:
 
 ### 📝 Answer
 
+Sticky positioning depends on a **scrollable ancestor**.
+
+❌ **Common breakers**
+
 ```css
-.container {
-  overflow: hidden;
-}
-.header {
-  position: sticky;
-  top: 0;
-}
+.container { overflow: hidden; }   /* breaks sticky */
+.container { overflow: auto; }     /* changes scroll context */
 ```
 
-Sticky positioning depends on a scrollable ancestor.
-When overflow is hidden or auto, the browser cannot determine sticky bounds.
+✅ **Fix**: Remove `overflow` clipping from ancestors, OR move sticky element outside.
 
-✔ Fix:
-Remove overflow or move sticky element outside.
+> 💡 **Pro tip**: `position: sticky` sticks ONLY inside its scrolling ancestor — not the viewport, unless the document itself is the scroll container.
 
 ---
 
-### ❓ Why does margin collapse happen here?
-
-### 📝 Answer
-
-```html
-<div class="box1"></div>
-<div class="box2"></div>
-```
-
-```css
-.box1 {
-  margin-bottom: 20px;
-}
-.box2 {
-  margin-top: 30px;
-}
-```
-
-Vertical margins of block elements collapse into a single margin.
-The browser uses the **largest margin**, not the sum.
-
-✔ Resulting margin: `30px`
-
----
-
-### ❓ Why does inline element ignore width and height?
+### ❓ Why does margin collapse happen?
 
 ### 📝 Answer
 
 ```css
-span {
-  width: 200px;
-  height: 100px;
-}
+.box1 { margin-bottom: 20px; }
+.box2 { margin-top: 30px; }
 ```
 
-Inline elements flow with text and do not accept box dimensions.
-They are sized by content only.
+Vertical margins of adjacent block elements **collapse** into a single margin — the browser uses the **largest**, not the sum.
 
-✔ Fix:
+✅ **Resulting margin: `30px`** (not `50px`)
 
-```css
-span {
-  display: inline-block;
-}
-```
+**Margin collapse occurs in 3 scenarios**
+
+1. Adjacent siblings (above)
+2. Empty blocks (no content/padding/border)
+3. Parent and first/last child (no separator)
+
+✅ **How to prevent it**
+
+- Add `padding` or `border` to the container
+- Use `display: flex` or `grid` (no collapse in flex/grid)
+- Use `overflow: auto` or `display: flow-root`
 
 ---
 
-### ❓ Why does `100vh` break on mobile?
+### ❓ Why do inline elements ignore width and height?
 
 ### 📝 Answer
 
 ```css
-.section {
-  height: 100vh;
-}
+span { width: 200px; height: 100px; }   /* ❌ Ignored */
 ```
 
-Mobile browsers dynamically change viewport height when address bars show/hide.
-This causes layout jumps.
+Inline elements flow with text and are **sized by content only**.
 
-✔ Fix:
+✅ **Fix**:
 
 ```css
-.section {
-  min-height: 100svh;
-}
+span { display: inline-block; }   /* respects dimensions, stays inline */
 ```
 
 ---
@@ -1240,21 +922,15 @@ This causes layout jumps.
 ### 📝 Answer
 
 ```css
-.item {
-  width: 300px;
-  flex: 1;
-}
+.item { width: 300px; flex: 1; }   /* width is ignored */
 ```
 
-`flex: 1` sets `flex-basis: 0`, which overrides width.
-Flexbox distributes available space equally.
+`flex: 1` expands to `flex-basis: 0`, which **overrides** `width`. Flexbox distributes available space equally.
 
-✔ Fix:
+✅ **Fix to preserve width**:
 
 ```css
-.item {
-  flex: 0 0 300px;
-}
+.item { flex: 0 0 300px; }   /* don't grow, don't shrink, basis 300px */
 ```
 
 ---
@@ -1264,50 +940,43 @@ Flexbox distributes available space equally.
 ### 📝 Answer
 
 ```css
-p {
-  color: red !important;
-}
+p { color: red !important; }
 ```
 
 ```html
-<p style="color: blue">Text</p>
+<p style="color: blue">Text</p>   <!-- Stays blue -->
 ```
 
-Inline styles have higher priority than external styles, even with `!important`.
-This surprises many people.
+**Inline styles have higher specificity than external styles**, even with `!important`.
 
-✔ Fix:
-Avoid inline styles or remove conflict.
+✅ **Override with**: `!important` on inline (rare), or use a more specific selector with `!important`, or remove the inline style.
+
+> 💡 Order of importance: **author `!important`** > inline > author normal > user > user-agent.
 
 ---
 
-### ❓ Why does this selector not apply?
+### ❓ Why does this child selector not match?
 
 ### 📝 Answer
 
 ```css
-.card > .title {
-  color: red;
-}
+.card > .title { color: red; }
 ```
 
 ```html
 <div class="card">
   <div>
-    <div class="title">Hello</div>
+    <div class="title">Hello</div>   <!-- ❌ not direct child -->
   </div>
 </div>
 ```
 
-The `>` selector matches **only direct children**.
-Here `.title` is nested deeper.
+The `>` selector matches **only direct children**. `.title` here is a grandchild.
 
-✔ Fix:
+✅ **Fix**: Use descendant selector
 
 ```css
-.card .title {
-  color: red;
-}
+.card .title { color: red; }   /* matches at any depth */
 ```
 
 ---
@@ -1316,17 +985,13 @@ Here `.title` is nested deeper.
 
 ### 📝 Answer
 
-```css
-.container {
-  overflow: hidden;
-}
-```
+`overflow: hidden` clips content outside the container. Dropdowns rely on overflowing content to extend beyond their parent.
 
-Overflow clipping hides content outside the container.
-Dropdowns often rely on overflowing content.
+✅ **Fix options**
 
-✔ Fix:
-Move dropdown outside or change layout strategy.
+- Move dropdown to `body` via portal/teleport (React, Vue)
+- Use `position: fixed` for the dropdown
+- Restructure layout to avoid the clipping ancestor
 
 ---
 
@@ -1334,40 +999,9 @@ Move dropdown outside or change layout strategy.
 
 ### 📝 Answer
 
-```css
-.child {
-  position: absolute;
-}
-```
+Absolutely positioned elements are **removed from document flow**, so parents no longer calculate height based on them.
 
-Absolutely positioned elements are removed from document flow.
-Parents no longer calculate height based on them.
-
-✔ Fix:
-Use relative positioning or include a wrapper.
-
----
-
-### ❓ Why does this animation feel janky?
-
-### 📝 Answer
-
-```css
-.box {
-  transition: width 0.3s;
-}
-```
-
-Animating layout properties forces recalculation and repaint.
-This is expensive and causes frame drops.
-
-✔ Fix:
-
-```css
-.box {
-  transition: transform 0.3s;
-}
-```
+✅ **Fix**: Use `position: relative` or set explicit parent height.
 
 ---
 
@@ -1376,19 +1010,18 @@ This is expensive and causes frame drops.
 ### 📝 Answer
 
 ```css
-grid-template-columns: 1fr 1fr;
+.grid { grid-template-columns: 1fr 1fr; }
 ```
 
-Grid items have a default `min-width: auto`, based on content size.
-Long content prevents shrinking.
+Grid items have a default `min-width: auto`, based on **content size**. Long content (long words, URLs) prevents shrinking.
 
-✔ Fix:
+✅ **Fix**:
 
 ```css
-grid-item {
-  min-width: 0;
-}
+.grid > * { min-width: 0; }
 ```
+
+> 💡 Same trap exists in Flexbox.
 
 ---
 
@@ -1396,280 +1029,42 @@ grid-item {
 
 ### 📝 Answer
 
-Touch devices do not have hover state.
-Browsers simulate hover inconsistently.
+Touch devices don't have a true hover state. Browsers simulate it inconsistently after a tap.
 
-✔ Solution:
-Design interactions that don’t depend on hover.
+✅ **Solution**: Design interactions that don't depend on hover. Use `:focus-visible` for keyboard, and consider `@media (hover: hover)` for hover-only styles.
+
+```css
+@media (hover: hover) {
+  button:hover { background: red; }
+}
+```
 
 ---
 
-### ❓ justify-self vs justify-content
-
+### ❓ How would you build a sticky header inside a scroll container?
 ### 📝 Answer
 
-| Property          | Controls                               | Applies To       |
-| ----------------- | -------------------------------------- | ---------------- |
-| `justify-content` | **How multiple items are distributed** | Flexbox, Grid    |
-| `justify-self`    | **How a single item aligns itself**    | Item (Grid only) |
-
-Example: **`justify-content`**
+```html
+<div class="container">
+  <div class="header">Sticky Header</div>
+  <div class="content">Long scrolling content...</div>
+</div>
+```
 
 ```css
 .container {
-  display: flex;
-  justify-content: center;
+  height: 400px;
+  overflow-y: auto;   /* scrolling ancestor */
+}
+.header {
+  position: sticky;
+  top: 0;
+  background: black;
+  color: white;
+  z-index: 10;
 }
 ```
 
-```less
-|       A B       | ← both items horizontally centered
-```
-
-Example: **`justify-self`**
-
-```css
-.box-B-div {
-  justify-self: end;
-}
-```
-
-```less
-|  A        |       B | ← A stays default, B moves right inside its own cell
-```
-
----
-
-### ❓ justify-content vs align-content
-
-### 📝 Answer
-
-`justify-content` controls spacing along the main axis (horizontal),
-`align-content` controls spacing between **multiple rows/columns** on the cross axis (vertical).
-
-> ❗ If there is only one row, `align-content` does nothing.
-> Works ONLY when items wrap. Requires: `flex-wrap: wrap;`
-
-Example: **`align-content`**
-
-```css
-.card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px; /* space between cards */
-  justify-content: center; /* horizontal alignment */
-  align-content: space-between; /* vertical spacing between rows */
-  height: 400px; /* important for align-content */
-}
-```
-
-```less
-| Card 1  Card 2  Card 3 | ← start
-|                        | ← free space
-| Card 4  Card 5  Card 6 | ← end
-
-```
-
----
-
-### ❓ align-self vs align-items
-
-### 📝 Answer
-
-| Property      | Controls                                  | Applies To    |
-| ------------- | ----------------------------------------- | ------------- |
-| `align-items` | **Aligns all items inside the container** | Flexbox, Grid |
-| `align-self`  | **Aligns one specific item**              | Flexbox, Grid |
-
-Aligns along the cross-axis
-
-- Flexbox → vertical (row direction)
-- Grid → block axis (vertical in LTR)
-
-> ❗ `align-self` works in Flexbox & Grid,
-> ❗ `justify-self` works only in Grid
-
-Example: **`align-items`**
-
-```css
-.container {
-  display: flex;
-  align-items: center;
-}
-```
-
-```less
-|                |
-|   A   B        | ← both items vertically centered
-|                |
-```
-
-Example: **`align-self`**
-
-```css
-.box:last-child {
-  align-self: flex-end;
-}
-```
-
-```less
-|      A         |
-|          B     |   ← only B moves
-```
-
----
-
-### ❓ What is `inset` in CSS?
-
-### 📝 Answer
-
-`inset` is a shorthand property for positioning an element using **top, right, bottom, and left** — mainly used with `position: absolute` or `position: fixed`.
-
-> inset = top + right + bottom + left (all in one line)
-
-```css
-.box {
-  position: fixed;
-  inset: 0;
-}
-```
-
-✅ What this means
-
-```css
-top: 0;
-right: 0;
-bottom: 0;
-left: 0;
-```
-
-```css
-inset: 10px; /* all sides */
-inset: 10px 20px; /* top/bottom | left/right */
-inset: 10px 20px 30px; /* top | left/right | bottom */
-inset: 10px 20px 30px 40px; /* top | right | bottom | left */
-```
-
----
-
-### ❓ What is a pseudo-class and pseudo-element?
-
-### 📝 Answer
-
-🔹 Pseudo-Class
-
-A **pseudo-class** defines a **state** of an element.
-
-```css
-button:hover {
-}
-input:focus {
-}
-li:first-child {
-}
-```
-
-✔ Describes _when_ an element is in a certain condition
-
-🔹 Pseudo-Element
-
-A **pseudo-element** styles **a specific part** of an element.
-
-```css
-p::first-line {
-}
-p::before {
-}
-p::after {
-}
-```
-
-✔ Describes _which part_ of an element
-
-> **Pseudo-class → state**
-> **Pseudo-element → part**
-
----
-
-### ❓ `*` vs `:root` vs `body`
-
-### 📝 Answer
-
-| Selector | What it affects | Key use                   |
-| -------- | --------------- | ------------------------- |
-| `*`      | Every element   | Reset styles              |
-| `:root`  | `html` element  | CSS variables, `rem` base |
-| `body`   | Page content    | Layout, fonts, background |
-
-- `*` → reset everything
-- `:root` → global settings
-- `body` → visible page
-
----
-
-### ❓ CSS Units – Simple Differences
-
-### 📝 Answer
-
-📏 `px`
-
-| Meaning           | Fixed unit |
-| ----------------- | ---------- |
-| Changes with zoom | ❌         |
-| Responsive        | ❌         |
-
-**Use:** borders, icons
-
-📐 `em`
-
-| Meaning       | Relative to parent |
-| ------------- | ------------------ |
-| Inherits size | ✅                 |
-| Can compound  | ⚠️                 |
-
-**Use:** padding inside components
-
-📐 `rem`
-
-| Meaning       | Relative to `:root` |
-| ------------- | ------------------- |
-| Consistent    | ✅                  |
-| Scales layout | ✅                  |
-
-**Use:** fonts, spacing (preferred)
-
-🖥️ `vh`
-
-| Meaning             | % of viewport height |
-| ------------------- | -------------------- |
-| 100vh = full screen | ✅                   |
-
-**Use:** full-screen sections
-
-🖥️ `vw`
-
-| Meaning            | % of viewport width |
-| ------------------ | ------------------- |
-| Can cause overflow | ⚠️                  |
-
-**Use:** hero layouts
-
-📦 `%`
-
-| Meaning           | Relative to parent |
-| ----------------- | ------------------ |
-| Context dependent | ⚠️                 |
-
-**Use:** widths in layouts
-
-🧩 `fr` (Grid only)
-
-| Meaning      | Fraction of space |
-| ------------ | ----------------- |
-| Auto adjusts | ✅                |
-
-**Use:** grid layouts
-
-> Use `rem` for consistency, `em` for components, `vh/vw` for screens, `fr` for grids.
+> ⚠️ **Don't add `overflow: hidden` to any ancestor** — it breaks sticky.
 
 ---

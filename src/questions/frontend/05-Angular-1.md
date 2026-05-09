@@ -1,25 +1,39 @@
-## Angular Basics & Architecture
+﻿# 🅰️ Angular Interview Preparation — Part 1
 
-### ❓ Can you explain what Angular is and how it differs from AngularJS?
-
-### 📝 Answer
-
-Angular is a TypeScript-based framework (2+) with component-based architecture, ahead-of-time compilation, RxJS, and modern tooling.  
-AngularJS (1.x) is JavaScript-based, uses scopes/controllers, and a different change detection mechanism (dirty checking).
 
 ---
 
-## Components, Templates & Data Binding
+# 🏛️ Part 1 — Angular Basics & Architecture
+
+### ❓ How would you describe Angular to someone coming from AngularJS — what are the fundamental differences?
+
+### 📝 Answer
+
+| Feature         | **AngularJS (1.x)**         | **Angular (2+)**                          |
+| --------------- | --------------------------- | ----------------------------------------- |
+| Language        | JavaScript                  | TypeScript                                |
+| Architecture    | MVC (Controllers + Scopes)  | Component-based                           |
+| Change Detection| Dirty checking ($digest)    | Zone.js + Ivy (signals in v16+)           |
+| Modules         | Angular modules + DI        | NgModules / Standalone Components         |
+| Data Binding    | Two-way by default          | One-way + opt-in two-way                  |
+| Performance     | Slower for large apps       | AOT compilation, tree-shakable            |
+| Mobile          | Limited                     | Full mobile + SSR support                 |
+
+> 💡 **Key takeaway**: Angular is a complete rewrite — not a version upgrade.
+
+---
+
+# 🧩 Part 2 — Components, Templates & Data Binding
 
 ### ❓ What types of data binding does Angular support?
 
 ### 📝 Answer
 
-**Interpolation (`{{ }}`)**
+Angular has **four primary types of binding**, plus a custom two-way pattern.
 
-Used to **display data from the component to the template**.  
-➡️ Reads the value and renders it as text.  
-➡️ **One-way binding (component → view)**.
+#### 1️⃣ Interpolation `{{ }}` — Component → View
+
+Display a value as text.
 
 ```ts
 name = "Dev";
@@ -29,11 +43,9 @@ name = "Dev";
 <p>Hello {{ name }}</p>
 ```
 
-**Property Binding (`[prop]`)**
+#### 2️⃣ Property Binding `[prop]` — Component → View
 
-Used to **bind a component value to an HTML or component property**.  
-➡️ Updates **DOM properties**, not strings.  
-➡️ **One-way binding (component → view)**.
+Set DOM/component properties.
 
 ```ts
 isDisabled = true;
@@ -43,27 +55,21 @@ isDisabled = true;
 <button [disabled]="isDisabled">Submit</button>
 ```
 
-**Event Binding (`(event)`)**
+#### 3️⃣ Event Binding `(event)` — View → Component
 
-Used to **listen to events from the template and trigger logic in the component**.  
-➡️ Sends data **from view → component**.  
-➡️ Common events: `click`, `input`, `change`, `keyup`.
+Listen to events.
 
 ```ts
-handleClick() {
-  console.log('Button clicked');
-}
+handleClick() { console.log("Clicked"); }
 ```
 
 ```html
 <button (click)="handleClick()">Click</button>
 ```
 
-**Two-Way Binding (`[(ngModel)]`)**
+#### 4️⃣ Two-Way Binding `[(ngModel)]` — Both directions
 
-Keeps **component and view in sync automatically**.
-➡️ Combines **property + event binding**.
-➡️ Requires `FormsModule`.
+Combines property + event binding (banana-in-a-box). Requires `FormsModule`.
 
 ```ts
 username = "";
@@ -74,64 +80,60 @@ username = "";
 <p>{{ username }}</p>
 ```
 
-**Custom Two-Way Binding (`@Input + @Output`)**
+#### 5️⃣ Custom Two-Way Binding `[(value)]` — `@Input` + `@Output`
 
-Used when creating **reusable components**.  
-➡️ Gives full control over two-way data flow.
+For reusable components.
 
 ```ts
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-
 @Component({
   selector: "app-input",
-  templateUrl: "./input.component.html",
   standalone: true,
+  template: `<input [value]="value" (input)="onInput($event)" />`,
 })
 export class InputComponent {
   @Input() value!: string;
   @Output() valueChange = new EventEmitter<string>();
 
   onInput(event: Event) {
-    const element = event.target as HTMLInputElement;
-    this.valueChange.emit(element.value);
+    this.valueChange.emit((event.target as HTMLInputElement).value);
   }
 }
 ```
 
 ```html
-<input [value]="value" (input)="onInput($event)" />
-```
-
-Usage:
-
-```html
 <app-input [(value)]="username"></app-input>
 ```
 
+> 💡 Angular recognizes `[(name)]` automatically when there's an `@Input() name` paired with `@Output() nameChange`.
+
 **Quick Summary**
 
-- `{{ }}` → Display data
-- `[prop]` → Set properties
-- `(event)` → Handle events
-- `[(ngModel)]` → Sync data both ways
+| Syntax           | Direction          | Use            |
+| ---------------- | ------------------ | -------------- |
+| `{{ }}`          | Comp → View        | Display data   |
+| `[prop]`         | Comp → View        | Set property   |
+| `(event)`        | View → Comp        | Handle event   |
+| `[(ngModel)]`    | Two-way            | Form sync      |
+| `[(value)]`      | Two-way (custom)   | Custom comp    |
 
 ---
 
-### ❓ What is the difference between components and directives in Angular?
+### ❓ Can you walk me through the difference between Components and Directives in Angular?
 
 ### 📝 Answer
 
+A **Component** is essentially a **Directive with a template** — it controls a piece of UI.
+A **Directive** modifies behavior or appearance of an existing element — **no template**.
+
+| Feature              | Component             | Directive                   |
+| -------------------- | --------------------- | --------------------------- |
+| Has template         | ✅ Yes                | ❌ No                       |
+| Creates UI           | ✅ Yes                | ❌ Modifies existing        |
+| Decorator            | `@Component`          | `@Directive`                |
+| Can use `<ng-content>` | ✅ Yes              | ❌ No                       |
+| Always has selector  | ✅ Yes                | ✅ As attribute or `*`      |
+
 **Component**
-
-A component is a **directive with a template** that controls a **part of the UI** and defines how it looks and behaves.
-
-**Key points**
-
-- Has its **own HTML template**
-- Used to **create UI blocks**
-- Always used with a **selector**
-
-**Example (Component):**
 
 ```ts
 @Component({
@@ -143,30 +145,10 @@ export class UserComponent {
 }
 ```
 
-```html
-<app-user></app-user>
-```
-
-**Directive**
-
-A directive is used to **change behavior or appearance** of an existing DOM element **without creating a UI**.
-
-**Key points**
-
-- **No template**
-- Used to **modify DOM or add behavior**
-- Applied as an **attribute**
-
-**Types of Directives**
-
-**1. Attribute Directive**
-
-Changes the appearance or behavior of an element.
+**Directive (Attribute)**
 
 ```ts
-@Directive({
-  selector: "[appHighlight]",
-})
+@Directive({ selector: "[appHighlight]" })
 export class HighlightDirective {
   constructor(el: ElementRef) {
     el.nativeElement.style.backgroundColor = "yellow";
@@ -175,102 +157,71 @@ export class HighlightDirective {
 ```
 
 ```html
-<p appHighlight>Highlighted text</p>
+<p appHighlight>Highlighted</p>
 ```
 
-**2. Structural Directive**
-
-Changes the DOM structure by adding or removing elements.
+**Directive (Structural)**
 
 ```html
 <div *ngIf="isLoggedIn">Welcome</div>
+<li *ngFor="let item of items">{{ item }}</li>
 ```
 
-➡️ `*ngIf` removes or adds elements to the DOM.
+#### ↳ **Follow-up:** Is every component a directive?
 
-**Key Differences**
+↪ ✅ Yes — a component is a directive with a template.
 
-| Component            | Directive                   |
-| -------------------- | --------------------------- |
-| Has template         | No template                 |
-| Creates UI           | Modifies existing UI        |
-| Uses `@Component`    | Uses `@Directive`           |
-| Can use `ng-content` | Cannot use `ng-content`     |
-| Always has selector  | Applied as attribute or `*` |
+#### ↳ **Follow-up:** Can directives have lifecycle hooks?
 
-1️⃣ Is every component a directive?
-Yes — every component is a directive with a template.
+↪ ✅ Yes (`ngOnInit`, `ngOnChanges`, etc.)
 
-2️⃣ Can directives have lifecycle hooks?
-Yes (`ngOnInit`, `ngOnChanges`, etc.)
+#### ↳ **Follow-up:** Which directive manipulates DOM structure?
 
-3️⃣ Which directive manipulates DOM structure?
-Structural directives like `*ngIf`, `*ngFor`
+↪ Structural directives (`*ngIf`, `*ngFor`, `*ngSwitch`).
 
 ---
 
-### ❓ What is ViewEncapsulation in Angular?
+### ❓ Can you explain ViewEncapsulation in Angular and the trade-offs between the available modes?
 
 ### 📝 Answer
 
-**ViewEncapsulation** in Angular controls **how component styles are scoped and applied to the DOM**.
+`ViewEncapsulation` controls **how component styles are scoped and applied to the DOM**.
 
-🔹 Types of ViewEncapsulation
+#### 1️⃣ Emulated (Default)
 
-1️⃣ **Emulated (Default)**
-
-- Angular simulates Shadow DOM behavior
-- Adds **generated attributes** to elements and styles
+Angular **simulates** Shadow DOM by adding generated attributes.
 
 ```css
-h1 {
-  color: red;
-}
+/* Source */
+h1 { color: red; }
+
+/* Compiled */
+h1[_ngcontent-c0] { color: red; }
 ```
 
-Becomes:
+✅ Scoped to component
+✅ Best balance of isolation + compatibility
+❌ Not real Shadow DOM
 
-```css
-h1[_ngcontent-c0] {
-  color: red;
-}
-```
+#### 2️⃣ None
 
-**Key Points**
+No encapsulation — styles are **global**.
 
-- Component styles are **scoped**
-- No real Shadow DOM
-- Best balance of isolation + compatibility
+✅ Useful for themes, layout overrides
+❌ Risk of leaking and conflicts
 
-2️⃣ **None**
+#### 3️⃣ ShadowDom
 
-- No encapsulation at all
-- Styles are **global**
+Uses **real browser Shadow DOM**.
 
-```css
-h1 {
-  color: red;
-}
-```
+✅ True isolation — global styles can't penetrate
+❌ Styling must be intentional (CSS variables, `::part()`)
 
-**Key Points**
+---
 
-- Styles leak to entire app
-- Risk of conflicts
-- Useful for themes or layout styles
+#### 🤔 Common confusions
 
-3️⃣ **ShadowDom**
-
-- Uses **real browser Shadow DOM**
-- Styles live inside a **shadow root**
-
-**Key Points**
-
-- True isolation
-- Global styles cannot penetrate
-- Styling must be intentional (variables, parts)
-
-🤔 ❓ If two components use `h1 { color: red }`, will they conflict?
+**↳ If two components use `h1 { color: red }`, will they conflict?**
 
 | Encapsulation | Conflict? |
 | ------------- | --------- |
@@ -278,102 +229,93 @@ h1 {
 | None          | ✅ Yes    |
 | ShadowDom     | ❌ No     |
 
-🤔 ❓ In Emulated, if I manually add the SAME selector with `_ngcontent-c0` in global CSS, will it override?
+**↳ Can `::ng-deep` override ShadowDom styles?**
 
-**✅ YES — it will override (based on load order).**
+↪ ❌ **No, never.** ShadowDom is enforced by the **browser**. Angular cannot bypass browser isolation.
 
-⚠️ **But this is unsafe** because `_ngcontent-c0` is **not stable**.
+**↳ Does `!important` or global CSS override ShadowDom?**
 
-🤔 ❓ What are **all the ways** to override ShadowDom styles?
+↪ ❌ **No.**
 
-1. **CSS Custom Properties (Variables)** ✅ _(Recommended)_
+**↳ What ARE the ways to style a ShadowDom component from outside?**
 
-```css
-:root {
-  --primary-color: red;
-}
-```
-
-2. **`::part()`** (if component exposes it)
-
-```css
-my-comp::part(button) {
-  color: red;
-}
-```
-
+1. **CSS Custom Properties** ✅ (recommended)
+   ```css
+   :root { --primary-color: red; }
+   ```
+2. **`::part()`** (if component exposes parts)
+   ```css
+   my-comp::part(button) { color: red; }
+   ```
 3. **`::slotted()`** (for projected content only)
 
-🚫 You **cannot force override** Shadow DOM selectors.
-
-🤔 ❓ Can `::ng-deep` override ShadowDom?
-
-**NO. Never.**
-
-**Why**
-
-- `::ng-deep` breaks **Angular encapsulation**
-- ShadowDom is enforced by the **browser**
-- Angular cannot bypass browser isolation
-
-🤔 ❓ Does `!important`/ **global styles** override ShadowDom?
-
-**❌ No**
-
 ---
 
-### ❓ What is the main use of `::ng-deep`?
+### ❓ When would you use `::ng-deep` in Angular, and what are the risks of relying on it?
 
 ### 📝 Answer
 
-It Override styles of **child or third-party components** that use Emulated encapsulation.
+To **override styles of child or third-party components** that use Emulated encapsulation.
 
-Common use cases
+| Fact                        | Status |
+| --------------------------- | ------ |
+| Breaks encapsulation        | ✅     |
+| Officially deprecated       | ⚠️     |
+| Still works in current Angular | ✅  |
+| Works with ShadowDom        | ❌     |
 
-- Angular Material overrides
-- Third-party UI libraries
-- Legacy component styling
+**Common use cases**: Angular Material overrides, third-party UI libraries.
 
-| Fact                 | Status |
-| -------------------- | ------ |
-| Breaks encapsulation | ✅     |
-| Deprecated           | ⚠️     |
-| Still works          | ✅     |
-| Works with ShadowDom | ❌     |
-
-> `::ng-deep` is mainly a workaround for overriding third-party component styles when no proper theming API is available.
+> 💡 Modern alternative: use library-provided theming APIs (CSS variables) instead of `::ng-deep`.
 
 ---
 
-## Lifecycle Hooks
+# ♻️ Part 3 — Lifecycle Hooks
 
-### ❓ What are Angular lifecycle hooks, and when are the most commonly used ones triggered?
+### ❓ What are Angular lifecycle hooks?
 
 ### 📝 Answer
 
-- **ngOnChanges** – Executes whenever an `@Input()` value changes and helps react to parent-to-child data updates.
-- **ngOnInit** – Executes once after inputs are initialized and is used for component initialization and API calls.
-- **ngDoCheck** – Executes on every change detection cycle and is used for custom change detection logic.
-- **ngAfterContentInit** – Executes once after projected content (`ng-content`) is initialized.
-- **ngAfterContentChecked** – Executes after every check of projected content.
-- **ngAfterViewInit** – Executes once after the component and child views are fully initialized and is the correct place to access the DOM.
-- **ngAfterViewChecked** – Executes after every view check and should be avoided unless necessary.
-- **ngOnDestroy** – Executes just before the component is destroyed and is used for cleanup.
+Lifecycle hooks let you tap into key moments in a component's life.
 
-**Execution Order**
+| Hook                    | When It Runs                                | Common Use                          |
+| ----------------------- | ------------------------------------------- | ----------------------------------- |
+| `ngOnChanges`           | Whenever an `@Input()` value changes        | React to parent updates             |
+| `ngOnInit`              | Once after first `ngOnChanges`              | Initialization, API calls           |
+| `ngDoCheck`             | Every change detection cycle                | Custom change detection (rare)      |
+| `ngAfterContentInit`    | Once after `<ng-content>` projected         | Access projected content            |
+| `ngAfterContentChecked` | After every projected content check         | React to content changes            |
+| `ngAfterViewInit`       | Once after view + child views initialized   | Access DOM via `@ViewChild`         |
+| `ngAfterViewChecked`    | After every view check                      | Measure layout (use sparingly)      |
+| `ngOnDestroy`           | Just before component is destroyed          | Cleanup subscriptions, intervals    |
 
-```
+**Execution order:**
+
+```text
 ngOnChanges
-→ ngOnInit
-→ ngDoCheck
-→ ngAfterContentInit
-→ ngAfterContentChecked
-→ ngAfterViewInit
-→ ngAfterViewChecked
-→ ngOnDestroy
+   ↓
+ngOnInit
+   ↓
+ngDoCheck
+   ↓
+ngAfterContentInit  → ngAfterContentChecked
+   ↓
+ngAfterViewInit     → ngAfterViewChecked
+   ↓
+(repeat DoCheck → AfterContentChecked → AfterViewChecked on each CD)
+   ↓
+ngOnDestroy
 ```
 
-**child.component.ts**
+![Angular_Lifecycle Image](/src/assets/angular-lifecycle.png)
+
+---
+
+#### ↳ Follow-up: Can you walk through a comprehensive lifecycle example?
+
+### 📝 Answer
+
+**`child.component.ts`**
 
 ```ts
 @Component({
@@ -381,74 +323,42 @@ ngOnChanges
   templateUrl: "./child.component.html",
 })
 export class ChildComponent
-  implements
-    OnChanges,
-    OnInit,
-    DoCheck,
-    AfterContentInit,
-    AfterContentChecked,
-    AfterViewInit,
-    AfterViewChecked,
-    OnDestroy
-{
+  implements OnChanges, OnInit, DoCheck, AfterContentInit,
+             AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy {
+
   @Input() value!: number;
 
-  // static:true → available in ngOnInit
+  // static: true → available in ngOnInit
   @ViewChild("box", { static: true }) box!: ElementRef;
 
   // Projected content queries
   @ContentChild("title") title!: ElementRef;
-  @ContentChild(".desc") description!: ElementRef;
-  @ContentChild("#footer") footer!: ElementRef;
 
   private intervalId!: number;
   private subscription!: Subscription;
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes["value"].currentValue);
-    // 1 → 2 → 3 (whenever parent updates input)
+    console.log("Input changed:", changes["value"].currentValue);
   }
 
   ngOnInit() {
-    console.log(this.box.nativeElement);
-    // <div>Child View Element</div> (because static:true)
-
-    // Correct place for:
-    // 1. HTTP calls
-    // this.http.get(...)
-
-    // 2. NgRx dispatch
-    // this.store.dispatch(loadUsers());
-
-    // Example resource to clean later
+    // ✅ Correct place for: HTTP calls, NgRx dispatch, init state
+    // this.http.get(...).subscribe(...);
     this.intervalId = window.setInterval(() => {}, 1000);
   }
 
   ngDoCheck() {
-    console.log(this.value);
-    // Runs every change detection cycle
-    // Used only for custom change detection (rare)
+    // Runs every CD cycle — use for CUSTOM change detection only
   }
 
   ngAfterContentInit() {
     console.log(this.title.nativeElement.textContent);
-    // "Projected Title from Parent"
-    // Content projected via <ng-content> is now accessible
-  }
-
-  ngAfterContentChecked() {
-    console.log(this.description.nativeElement.textContent);
-    // Used to react if projected content changes dynamically
+    // Projected content via <ng-content> is now accessible
   }
 
   ngAfterViewInit() {
+    // ✅ Safe DOM access for component template + child views
     console.log(this.box.nativeElement);
-    // Safe DOM access for component template + child views
-  }
-
-  ngAfterViewChecked() {
-    console.log(this.box.nativeElement.offsetHeight);
-    // Can be used to measure layout or dimensions (use carefully)
   }
 
   ngOnDestroy() {
@@ -459,22 +369,19 @@ export class ChildComponent
 }
 ```
 
-**child.component.html**
+**`child.component.html`**
 
 ```html
 <div #box>Child View Element</div>
 
-<ng-content select="h1"></ng-content>
-<!-- element selector -->
-<ng-content select=".desc"></ng-content>
-<!-- class selector -->
-<ng-content select="#footer"></ng-content>
-<!-- id selector -->
+<ng-content select="h1"></ng-content>      <!-- element selector -->
+<ng-content select=".desc"></ng-content>   <!-- class selector -->
+<ng-content select="#footer"></ng-content> <!-- id selector -->
 
 <p>Input value: {{ value }}</p>
 ```
 
-**parent.component.html**
+**`parent.component.html`**
 
 ```html
 <app-child [value]="count">
@@ -484,278 +391,347 @@ export class ChildComponent
 </app-child>
 ```
 
-> DOM access should be done only in `ngAfterViewInit` because the view and child components are fully initialized at that stage.
-
-![Angular_Lifecycle Image](/src/assets/angular-lifecycle.png)
+> ⚠️ **Important Rules**
+>
+> - Do DOM access only in `ngAfterViewInit` (view is fully initialized)
+> - HTTP calls, dispatch actions in `ngOnInit`
+> - **Always clean up** subscriptions/intervals in `ngOnDestroy`
 
 ---
 
-## Directives
+# 🎯 Part 4 — Directives
 
-### ❓ How do `*ngIf` and `*ngFor` work conceptually in Angular?
+### ❓ How do `*ngIf` and `*ngFor` work conceptually?
 
-<img width="1857" height="475" alt="image" src="https://github.com/user-attachments/assets/254306d8-0b77-4e87-8b29-ffdc975f43c6" />
+### 📝 Answer
 
-**TrackBy**
+Both are **structural directives** — they manipulate the DOM by adding/removing elements.
 
-Without `trackBy`:
-
-- Angular destroys and recreates all DOM nodes
-
-With `trackBy`:
+The `*` is syntactic sugar for `<ng-template>`:
 
 ```html
-<li *ngFor="let user of users; trackBy: trackById"></li>
+<div *ngIf="show">Hello</div>
+
+<!-- desugars to -->
+<ng-template [ngIf]="show">
+  <div>Hello</div>
+</ng-template>
+```
+
+#### Internal mechanism
+
+- They use `TemplateRef` (the template) + `ViewContainerRef` (where to insert)
+- `*ngIf` adds/removes a single view
+- `*ngFor` creates one view per item in the collection
+
+---
+
+#### ↳ Follow-up: Why is `trackBy` important when rendering lists with `*ngFor`?
+
+### 📝 Answer
+
+**Without `trackBy`**, Angular tracks items by **object identity**. When the array reference changes (e.g., after API call), Angular destroys ALL DOM nodes and recreates them.
+
+**With `trackBy`**, Angular uses a **stable identifier** to know which items truly changed and reuses unchanged DOM nodes.
+
+```html
+<li *ngFor="let user of users; trackBy: trackById">
+  {{ user.name }}
+</li>
 ```
 
 ```ts
-trackById(index: number, user: any) {
+trackById(index: number, user: User): number {
   return user.id;
 }
 ```
 
-- Angular reuses DOM nodes
-- Improves performance
+> 💡 **Performance impact**: HUGE for long lists (1000+ items) or frequently-updated data (live feeds, dashboards).
 
 **Comparison Summary**
 
-| Feature          | `*ngIf`                        | `*ngFor`                |
-| ---------------- | ------------------------------ | ----------------------- |
-| Type             | Structural directive           | Structural directive    |
-| DOM behavior     | Add/remove element             | Create multiple views   |
-| Uses             | TemplateRef + ViewContainerRef | Same                    |
-| Lifecycle impact | Destroy & recreate             | Recreate unless trackBy |
-| Change detection | Condition based                | Collection based        |
+| Feature          | `*ngIf`                         | `*ngFor`                |
+| ---------------- | ------------------------------- | ----------------------- |
+| Type             | Structural directive            | Structural directive    |
+| DOM behavior     | Add/remove single view          | Create one view per item |
+| Lifecycle impact | Destroy & recreate              | Recreate unless `trackBy` |
+| Change detection | Condition-based                 | Collection-based         |
 
 ---
 
-### ❓ How do attribute directives work internally in Angular?
+### ❓ How do attribute directives work internally?
 
 ### 📝 Answer
 
-**Internal Logic of an Attribute Directive (Simplified)**
+Attribute directives modify an element's appearance or behavior — they don't change the DOM structure.
+
+```ts
+@Directive({ selector: "[appHighlight]" })
+export class HighlightDirective {
+  @Input("appHighlight") color!: string;
+
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit() {
+    this.renderer.setStyle(this.el.nativeElement, "backgroundColor", this.color);
+  }
+}
+```
 
 ```html
 <p appHighlight="yellow">Highlighted Text</p>
 ```
 
-**highlight.directive.ts**
+> 💡 **Use `Renderer2` over `ElementRef.nativeElement`** for safe, platform-independent DOM access (works in SSR, Web Workers).
+
+---
+
+### ❓ What are the new control flow blocks `@if`, `@for`, `@switch`?
+### 📝 Answer
+
+Angular 17+ introduced **built-in control flow** — replacing `*ngIf`, `*ngFor`, and `*ngSwitch` with cleaner syntax.
+
+```html
+<!-- New @if block -->
+@if (user) {
+  <p>Hello {{ user.name }}</p>
+} @else if (loading) {
+  <p>Loading...</p>
+} @else {
+  <p>Please log in</p>
+}
+
+<!-- New @for block (trackBy is required) -->
+@for (item of items; track item.id) {
+  <li>{{ item.name }}</li>
+} @empty {
+  <li>No items</li>
+}
+
+<!-- New @switch block -->
+@switch (status) {
+  @case ("loading") { <spinner /> }
+  @case ("error")   { <error-msg /> }
+  @default          { <content /> }
+}
+```
+
+✅ **Advantages**
+
+- No need to import `CommonModule`
+- ~30-90% faster runtime than `*ngIf` / `*ngFor`
+- Better type narrowing in templates
+- Built-in `@empty` block for empty collections
+
+---
+
+# 📦 Part 5 — Modules & Standalone APIs
+
+### ❓ How do Standalone Components differ from NgModules?
+
+### 📝 Answer
+
+| Feature              | NgModules                         | Standalone Components            |
+| -------------------- | --------------------------------- | -------------------------------- |
+| Boilerplate          | Module file + declarations array  | Just the component               |
+| Imports              | At module level                   | At component level (per file)    |
+| Lazy loading         | Module-based (`loadChildren`)     | Component-based (`loadComponent`) |
+| Tree-shaking         | OK                                | ✅ Better                        |
+| Default in new apps  | ❌ (since v17)                    | ✅                               |
+
+**Standalone example:**
 
 ```ts
-@Directive({
-  selector: "[appHighlight]",
+@Component({
+  selector: "app-user",
+  standalone: true,
+  imports: [CommonModule, FormsModule, OtherComponent],
+  template: `<input [(ngModel)]="name" />`,
 })
-export class HighlightDirective {
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-  ) {}
-
-  @Input("appHighlight") color!: string;
-
-  ngOnInit() {
-    this.renderer.setStyle(
-      this.el.nativeElement,
-      "backgroundColor",
-      this.color,
-    );
-  }
+export class UserComponent {
+  name = "";
 }
 ```
 
-**`ngClass` (Simplified Logic)**
+> 💡 **Recommendation (2024+)**: use standalone components by default. Use NgModules only for large legacy apps or when grouping is genuinely useful.
+
+---
+
+# 👁️ Part 6 — View & DOM Interaction
+
+### ❓ How does `@ViewChild` work, and when would you use it over other approaches to access child elements?
+
+### 📝 Answer
+
+`@ViewChild` lets a component directly access something in its **own template** — a DOM element, child component, or directive.
+
+> 💡 **Use it only when data binding isn't enough** and you need imperative control (focus, scroll, third-party library integration).
 
 ```ts
-@Directive({ selector: "[ngClass]" })
-class NgClass {
-  @Input() ngClass!: string | string[];
-
-  ngDoCheck() {
-    // Add/remove classes based on value
-  }
-}
-```
-
-**`ngStyle` (Simplified Logic)**
-
-```ts
-@Directive({ selector: "[ngStyle]" })
-class NgStyle {
-  @Input() ngStyle!: Record<string, string>;
-
-  ngDoCheck() {
-    // Apply inline styles dynamically
-  }
-}
-```
-
----
-
-### ❓ Why is `trackBy` important when rendering lists using `*ngFor`?
-
-### 📝 Answer
-
-It helps Angular identify items uniquely, so it reuses DOM elements instead of destroying/recreating them, improving performance on large lists.
-
----
-
-### ❓ What happens internally if you mutate an array used in `*ngFor` without using `trackBy`?
-
-### 📝 Answer
-
-Angular may re-render many list items unnecessarily, causing poor performance.
-
----
-
-## Modules & Standalone APIs
-
-### ❓ How do standalone components differ from NgModules, and when would you choose one over the other?
-
-### 📝 Answer
-
-NgModules group related code (components, directives, pipes, services) into cohesive blocks; components control views and handle UI logic.
-Standalone components can be used without declaring them in an NgModule. They reduce boilerplate and make lazy-loading, code-splitting, and feature isolation easier.
-
----
-
-## View & DOM Interaction
-
-### ❓ What is `@ViewChild`, and in what scenarios would you use it?
-
-### 📝 Answer
-
-In Angular, @ViewChild lets a component directly access something in its own template (DOM element or child component).
-
-👉 Use it when data binding isn’t enough and you need direct control.
-
-Code-Em
-
-```ts
-@ViewChild('emailInput', { static: true })
+@Component({
+  template: `
+    <input #emailInput />
+    <input #nameInput />
+  `,
+})
+export class MyComponent {
+  // static: true → available in ngOnInit (only if not inside @if/@for)
+  @ViewChild("emailInput", { static: true })
   emailInput!: ElementRef<HTMLInputElement>;
 
-@ViewChild('nameInput')
+  // static: false (default) → available in ngAfterViewInit
+  @ViewChild("nameInput")
   nameInput!: ElementRef<HTMLInputElement>;
 
-ngOnInit() {
-  this.nameInput.nativeElement.focus(); //  ❌ nameInput is undefined
-  this.emailInput.nativeElement.focus(); // ✅ Available here
-}
+  ngOnInit() {
+    this.emailInput.nativeElement.focus();    // ✅ Works (static: true)
+    // this.nameInput.nativeElement.focus();   // ❌ undefined
+  }
 
-ngAfterViewInit() {
-  this.nameInput.nativeElement.focus(); // ✅ Available here
-  this.emailInput.nativeElement.focus(); // ✅ works
+  ngAfterViewInit() {
+    this.nameInput.nativeElement.focus();     // ✅ Works
+    this.emailInput.nativeElement.focus();    // ✅ Also works here
+  }
 }
 ```
 
-nativeElement = real browser DOM element. `type`: **ElementRef<HTMLInputElement>**
+> 📌 **Rule**:
+>
+> - `static: true` → resolved before change detection → use in `ngOnInit`
+> - `static: false` → resolved after view init → use in `ngAfterViewInit`
 
 ---
 
-### ❓ Why is direct DOM manipulation using `ElementRef` discouraged, and how does `Renderer2` help?
+### ❓ Why is direct DOM manipulation via `ElementRef` discouraged? Use `Renderer2` instead?
 
 ### 📝 Answer
 
-Directly accessing the DOM through `ElementRef` can expose the application to security risks such as XSS attacks and tightly couples the code to the browser DOM.  
-`Renderer2` provides a safe, abstraction-based, and platform-independent way to manipulate the DOM that works across environments like server-side rendering and Web Workers.
+**Problems with `el.nativeElement.style.color = "red"`:**
 
-**What Renderer2 Is Doing Internally**
+- ❌ Exposes app to XSS attacks
+- ❌ Tightly coupled to browser DOM
+- ❌ Breaks Server-Side Rendering (SSR)
+- ❌ Doesn't work in Web Workers
 
-- Angular does not touch the DOM directly
-- Renderer2 acts as an abstraction layer
-- Angular decides how and where the DOM should be updated
-- This keeps the app secure and platform-independent
+**`Renderer2`** provides a **safe, platform-independent** abstraction.
+
+```ts
+@Directive({ selector: "[appHighlight]" })
+export class HighlightDirective {
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit() {
+    this.renderer.setStyle(this.el.nativeElement, "color", "red");
+    this.renderer.addClass(this.el.nativeElement, "active");
+    this.renderer.listen(this.el.nativeElement, "click", () => { /* ... */ });
+  }
+}
+```
+
+> 💡 Renderer2 is an **abstraction layer** — Angular decides how/where DOM updates happen, keeping the app secure and platform-independent.
 
 ---
 
-## Pipes
+# 🔄 Part 7 — Pipes
 
-### ❓ What are Angular pipes, and what is the difference between pure and impure pipes?
+### ❓ What are Angular pipes? Pure vs Impure?
 
 ### 📝 Answer
 
-Angular pipes transform data in templates without changing the original value.
-A **pure pipe** runs only when the input **reference changes**, while an **impure pipe** runs on **every change detection cycle**, which makes pure pipes faster and safer for performance.
+**Pipes** transform data in templates without changing the original value.
+
+| Type        | When It Runs                                 | Performance |
+| ----------- | -------------------------------------------- | ----------- |
+| **Pure** (default) | Only when input **reference** changes | ✅ Fast     |
+| **Impure**  | On **every** change detection cycle          | ⚠️ Slow     |
+
+**Pure pipe example:**
 
 ```ts
 @Pipe({ name: "double", pure: true })
-export class DoublePipe {
+export class DoublePipe implements PipeTransform {
   transform(value: number) {
     return value * 2;
   }
 }
 ```
 
----
-
-### ❓ Why are pure pipes preferred in most real-world Angular applications?
-
-### 📝 Answer
-
-Pure pipes should be used when data follows **immutable patterns**.
-They are preferred because Angular skips execution unless the input reference changes, reducing unnecessary recalculations.
-Pure pipes are skipped unless Angular detects a reference change.
-
-```ts
-numbers = [1, 2, 3];
-
-// ❌ pipe not triggered
-this.numbers.push(4);
-
-// ✅ pipe triggered
-this.numbers = [...this.numbers, 4];
+```html
+{{ 5 | double }}    <!-- 10 -->
 ```
 
 ---
 
-### ❓ When would you use an impure pipe, and what performance risks does it introduce?
+#### ↳ Follow-up: Why are pure pipes preferred?
 
 ### 📝 Answer
 
-Impure pipes are used when data is **mutated directly** or depends on external values like time or browser storage.
-They introduce performance risk because they execute repeatedly during every UI change.
-Impure pipes are executed during **every change detection cycle**, similar to `ngDoCheck`.
+Pure pipes are **skipped unless Angular detects a reference change** — making them cheap and predictable.
+
+```ts
+numbers = [1, 2, 3];
+
+// ❌ Pipe NOT triggered (mutation, not reference change)
+this.numbers.push(4);
+
+// ✅ Pipe IS triggered (new reference)
+this.numbers = [...this.numbers, 4];
+```
+
+> 💡 Pure pipes work best with **immutable patterns** (spread, `Object.assign`, `Array.from`).
+
+---
+
+#### ↳ Follow-up: When would you use an impure pipe?
+
+### 📝 Answer
+
+Use impure pipes when data is **mutated directly** or depends on external values like time, locale, or storage.
 
 ```ts
 @Pipe({ name: "now", pure: false })
-export class NowPipe {
+export class NowPipe implements PipeTransform {
   transform() {
     return Date.now();
   }
 }
 ```
 
+> ⚠️ **Performance risk**: impure pipes execute on **every** change detection cycle, similar to `ngDoCheck`.
+
 ---
 
-### ❓ How do you create a custom pipe, and how does Angular execute it?
+#### ↳ Follow-up: How do you create a custom pipe?
 
 ### 📝 Answer
 
-Custom pipes are reusable transformation logic created using `@Pipe`.
-By default, all custom pipes are pure unless explicitly marked impure.
-
 ```ts
-@Pipe({ name: "capitalize" })
-export class CapitalizePipe {
-  transform(value: string) {
+@Pipe({ name: "capitalize", standalone: true })
+export class CapitalizePipe implements PipeTransform {
+  transform(value: string): string {
+    if (!value) return "";
     return value[0].toUpperCase() + value.slice(1);
   }
 }
 ```
 
 ```html
-{{ 'angular' | capitalize }}
+{{ 'angular' | capitalize }}    <!-- Angular -->
 ```
+
+> 💡 By default, all custom pipes are **pure** unless explicitly marked `pure: false`.
 
 ---
 
-### ❓ Should pipes perform async operations or API calls, and why?
+#### ↳ Follow-up: Should pipes perform async operations or API calls?
 
 ### 📝 Answer
 
-No.
-Pipes must be synchronous and side-effect free.
-Async logic should be handled in services or Observables using the `async` pipe.
+❌ **No.** Pipes must be **synchronous and side-effect free**.
+
+For async logic:
+- Handle in **services** with Observables
+- Use the **`async` pipe** in templates
 
 ```html
 {{ users$ | async }}
@@ -763,244 +739,340 @@ Async logic should be handled in services or Observables using the `async` pipe.
 
 ---
 
-### ❓ Is the `async` pipe pure or impure, and why is it considered safe?
+#### ↳ Follow-up: Is the `async` pipe pure or impure, and why is it safe?
 
 ### 📝 Answer
 
-**AsyncPipe** is an impure pipe. Angular marks it as pure: false because it must react to Observable or Promise emissions that occur without reference changes.
-
-🧠 Why AsyncPipe MUST be impure (key reasoning)
+**`AsyncPipe` is impure** (`pure: false`) — it must react to Observable/Promise emissions that happen without reference changes.
 
 ```html
 {{ users$ | async }}
 ```
 
 ```ts
-users$ = this.userService.getUsers(); // Observable
+users$ = this.userService.getUsers();   // Observable
 ```
 
-What happens:
+**Why it must be impure:**
 
-- users$ reference never changes
-- Observable emits values over time
-- Angular change detection does not know when the emission happens
+- The `users$` reference never changes
+- The Observable emits values **over time**
+- Angular has no other way to know when emissions happen
 
-If **AsyncPipe** were pure:
-❌ It would run only once
-❌ UI would never update
+If `AsyncPipe` were pure → it would run only once → UI would never update.
 
-So Angular makes it impure so it can:
-
-- Stay subscribed
-- Detect emissions
-- Trigger view updates
+✅ **Safety**: `async` pipe automatically subscribes AND unsubscribes on component destroy → **no memory leaks**.
 
 ---
 
-## Dependency Injection (DI)
+# 🏗️ Part 8 — Dependency Injection (DI)
 
-### ❓ How does Angular’s dependency injection system and hierarchy work?
+### ❓ How does Angular's DI system and hierarchy work?
 
 ### 📝 Answer
 
-Providers can be registered in modules, components, or via `providedIn`. The injector tree mirrors the component/module tree; a child injector falls back to parent injectors when resolving dependencies.
+Providers can be registered:
+
+- At **root level** with `providedIn: 'root'`
+- At **module level** in `NgModule.providers`
+- At **component level** in `@Component({ providers: [...] })`
+
+The **injector tree mirrors the component/module tree**. A child injector falls back to parent injectors when resolving dependencies.
+
+```text
+Root Injector
+   ↓
+Module Injector (lazy module = own injector)
+   ↓
+Component Injector (one per component instance)
+```
 
 ---
 
-### ❓ What is the difference between `providedIn: 'root'` and `providedIn: 'any'`?
+#### ↳ Follow-up: Difference between `providedIn: 'root'` vs `'any'` vs `'platform'`?
 
 ### 📝 Answer
 
-**providedIn: 'root'** - registers the service in the application's main root injector, creating a single, singleton instance shared by all modules (eagerly and lazy loaded) throughout the entire application.
-
-**providedIn: 'any'** - ensures that all eagerly loaded modules share a single instance, but each lazy-loaded module gets its own unique instance of the service.
-
----
-
-### ❓ What is a multi-provider, and when would you use one?
-
-### 📝 Answer
-
-A provider configuration with the multi: true property, telling Angular's Dependency Injection (DI) to collect all providers for a specific token into an array instead of replacing them.  
-When a component requests a dependency using a token (often an `InjectionToken`), Angular checks for providers with multi: true. If found, it injects an array containing all registered values/classes, not just the last one.
+| Scope        | Behavior                                                |
+| ------------ | ------------------------------------------------------- |
+| `'root'`     | **Single instance** shared across the entire app (eager + lazy modules) |
+| `'any'`      | Eager modules share one instance; **each lazy module gets its own** |
+| `'platform'` | Single instance shared across **multiple Angular apps** on the same page |
+| `'self'`     | Provided only in the local component (no inheritance)    |
 
 ```ts
-// 1. Define a token for validators
-import { InjectionToken } from '@angular/core';
-export const MY_VALIDATORS = new InjectionToken<any>('my-validators');
+@Injectable({ providedIn: "root" })
+export class UserService { /* ... */ }
+```
 
-// 2. Register multiple validators with 'multi: true' in a module/component
+---
+
+#### ↳ Follow-up: Can you explain multi-providers in Angular and give a real-world scenario where you'd use one?
+
+### 📝 Answer
+
+A provider with `multi: true` tells Angular's DI to **collect all providers for a token into an array** instead of replacing them.
+
+```ts
+import { InjectionToken } from "@angular/core";
+
+export const VALIDATORS = new InjectionToken<Validator[]>("validators");
+
+// Register multiple validators with multi: true
 providers: [
-  { provide: MY_VALIDATORS, useClass: EmailValidator, multi: true },
-  { provide: MY_VALIDATORS, useClass: PasswordStrengthValidator, multi: true },
-  // ... add more validators
+  { provide: VALIDATORS, useClass: EmailValidator,    multi: true },
+  { provide: VALIDATORS, useClass: PasswordValidator, multi: true },
 ]
 
-// 3. Inject the array in a service or component
-constructor(@Inject(MY_VALIDATORS) private validators: any[]) {
-  // 'validators' will now be an array containing EmailValidator and PasswordStrengthValidator
-  console.log(this.validators);
+// Inject as array
+constructor(@Inject(VALIDATORS) private validators: Validator[]) {
+  console.log(this.validators);   // [EmailValidator, PasswordValidator]
+}
+```
+
+> 💡 **Common use cases**: HTTP_INTERCEPTORS, ROUTES, NG_VALUE_ACCESSOR.
+
+---
+
+#### ↳ Follow-up: What are Injection Tokens, and why are they required?
+
+### 📝 Answer
+
+`InjectionToken` provides a **DI key for non-class dependencies** (config objects, primitives, interfaces).
+
+You can't inject an interface directly because **interfaces don't exist at runtime** (they're erased after compilation).
+
+```ts
+import { InjectionToken } from "@angular/core";
+
+export interface AppConfig {
+  apiUrl: string;
+  timeout: number;
 }
 
+export const APP_CONFIG = new InjectionToken<AppConfig>("APP_CONFIG");
+
+// Provide
+providers: [
+  { provide: APP_CONFIG, useValue: { apiUrl: "https://api.com", timeout: 5000 } },
+]
+
+// Inject
+constructor(@Inject(APP_CONFIG) private config: AppConfig) {}
 ```
 
 ---
 
-### ❓ What are injection tokens, and why are they required in Angular?
+#### ↳ Follow-up: If a service is provided in both root and a lazy-loaded module, how many instances exist?
 
 ### 📝 Answer
 
-`InjectionToken` is used to inject values that don’t have a class type (e.g. config objects, interfaces). It provides a DI key for non-class dependencies.
+👉 **Two instances.**
 
----
+Angular has **hierarchical DI**:
 
-### ❓ If a service is provided in both the root injector and a lazy-loaded module, how many instances are created?
-
-### 📝 Answer
-
-👉 **Two instances** will exist.
-
-Angular has **hierarchical dependency injection**:
-
-- `providedIn: 'root'` → one **application-wide singleton**
+- `providedIn: 'root'` → one application-wide singleton
 - A **lazy-loaded module** has its **own injector**
-- If the same service is also provided in that lazy module, Angular creates **another instance** scoped to that module
+- If the same service is also provided in that lazy module → Angular creates **another instance** scoped to that module
 
-#### ❌ Example: Two instances created
-
-#### `logger.service.ts`
+❌ **Example: Two instances**
 
 ```ts
-@Injectable({
-  providedIn: "root",
-})
-export class LoggerService {
-  id = Math.random();
-}
-```
+@Injectable({ providedIn: "root" })
+export class LoggerService { id = Math.random(); }
 
-#### `lazy.module.ts`
-
-```ts
 @NgModule({
-  providers: [LoggerService], // ❌ creates a new instance
+  providers: [LoggerService],          // ❌ creates a SECOND instance
 })
 export class LazyModule {}
 ```
 
-#### Result
-
-- Components in **AppModule** → instance A
-- Components in **LazyModule** → instance B
-
-#### ✅ Best Practice (Recommended)
-
-#### `lazy.module.ts`
+✅ **Best Practice**: Don't provide root services in lazy modules.
 
 ```ts
 @NgModule({
-  // ❌ no providers array
+  // No providers array — uses the singleton from root
 })
 export class LazyModule {}
 ```
-
-✔️ Now **both modules share the same instance**
 
 ---
 
-## Routing
+# 🚦 Part 9 — Routing
 
 ### ❓ What are the core concepts of Angular routing?
 
 ### 📝 Answer
 
-Routes config, router outlet, routerLink/routerLinkActive, route guards, lazy loading, resolvers, `ActivatedRoute`.
+- **Routes config** — array of route objects
+- **`<router-outlet>`** — placeholder where matched component renders
+- **`routerLink`** / **`routerLinkActive`** — navigation directives
+- **Route guards** — control navigation
+- **Lazy loading** — load modules/components on demand
+- **Resolvers** — pre-fetch data before navigation
+- **`ActivatedRoute`** — access current route info
+
+```ts
+const routes: Routes = [
+  { path: "users",         component: UserListComponent },
+  { path: "users/:id",     component: UserDetailsComponent },
+  { path: "admin", canMatch: [adminGuard],
+    loadComponent: () => import("./admin").then(m => m.AdminComponent) },
+  { path: "",     redirectTo: "users", pathMatch: "full" },
+  { path: "**",   component: NotFoundComponent },
+];
+```
 
 ---
 
-### ❓ What are route guards, and what types does Angular provide?
+#### ↳ Follow-up: What are route guards and what types exist?
 
 ### 📝 Answer
 
-Guards control navigation. Types: `CanActivate`, `CanDeactivate`, `Resolve`, `CanLoad` / `CanMatch`, etc.
+Guards control navigation by returning `boolean | UrlTree | Promise<...> | Observable<...>`.
+
+| Guard           | Purpose                                       |
+| --------------- | --------------------------------------------- |
+| `CanActivate`   | Allow/deny entering a route                   |
+| `CanDeactivate` | Allow/deny leaving a route (unsaved changes)  |
+| `CanActivateChild` | Apply to all child routes                  |
+| `Resolve`       | Pre-fetch data before route activates         |
+| `CanMatch` (replaces `CanLoad`) | Decide if a route's config even matches |
 
 ---
 
-### ❓ What is the difference between `CanActivate`, `CanLoad`, and `CanMatch`?
+#### ↳ Follow-up: Difference between `CanActivate`, `CanLoad`, and `CanMatch`?
 
 ### 📝 Answer
 
-`CanActivate` runs after module is loaded to allow/deny activation. `CanLoad`/`CanMatch` runs before loading, preventing the lazy module bundle from being loaded if not allowed.
+| Guard         | When It Runs                                | Effect on Lazy Module |
+| ------------- | ------------------------------------------- | --------------------- |
+| `CanActivate` | After module loads, before activation       | Module IS loaded      |
+| `CanLoad` (deprecated) | Before lazy module loads          | Module NOT loaded     |
+| `CanMatch` | Before the route is even considered a match | Module NOT loaded; allows alternate route to match |
+
+> 💡 **`CanMatch`** is more powerful — if it returns false, the router moves on to try the **next route** in the config (great for role-based routing).
+
+```ts
+export const adminGuard: CanMatchFn = () => {
+  const auth = inject(AuthService);
+  return auth.isAdmin() ? true : inject(Router).parseUrl("/users");
+};
+```
 
 ---
 
-### ❓ How do you configure lazy-loaded modules or routes in Angular?
+#### ↳ Follow-up: How do you configure lazy-loaded modules or routes?
 
 ### 📝 Answer
 
-Lazy-loaded routes use dynamic imports in route config (e.g. `loadChildren:` or standalone `loadComponent`), so code is loaded on demand.
+**Module-based (older):**
+
+```ts
+{ path: "admin", loadChildren: () => import("./admin/admin.module").then(m => m.AdminModule) }
+```
+
+**Standalone component (modern):**
+
+```ts
+{ path: "admin", loadComponent: () => import("./admin/admin.component").then(c => c.AdminComponent) }
+```
+
+Code is loaded **on demand** when user navigates to that route.
 
 ---
 
-### ❓ How do you access route parameters and query parameters in Angular?
+#### ↳ Follow-up: How do you access route parameters and query parameters?
 
 ### 📝 Answer
 
-Using `ActivatedRoute`: `route.paramMap`, `route.snapshot.paramMap`, `route.queryParamMap`, etc.
+Using `ActivatedRoute`:
+
+```ts
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  // Snapshot (one-time read)
+  const id = this.route.snapshot.paramMap.get("id");
+
+  // Observable (reacts to changes)
+  this.route.paramMap.subscribe(params => {
+    const id = params.get("id");
+  });
+
+  // Query params: ?search=foo
+  this.route.queryParamMap.subscribe(params => {
+    const search = params.get("search");
+  });
+}
+```
+
+> 💡 **Snapshot vs Observable**: Use snapshot when you don't expect the URL params to change while the component is alive. Use Observable when navigating between `/users/1` → `/users/2` reuses the same component instance.
 
 ---
 
-## Angular Forms
+# 📋 Part 10 — Angular Forms
 
-### ❓ Differences between template-driven and reactive forms?
+### ❓ Differences between Template-driven and Reactive forms?
 
 ### 📝 Answer
 
-Template-driven: form logic in template, simpler, uses `ngModel`. Reactive: form model in TypeScript, more explicit, scalable, and testable using `FormGroup`, `FormControl`, `FormArray`.
+| Feature             | Template-driven           | Reactive                    |
+| ------------------- | ------------------------- | --------------------------- |
+| Source of truth     | Template (HTML)           | Component class (TS)        |
+| Setup               | `FormsModule` + `ngModel` | `ReactiveFormsModule` + `FormGroup` |
+| Validation          | Directives in template    | Validators in component     |
+| Async validation    | Awkward                   | First-class                 |
+| Dynamic forms       | Hard                      | Easy                        |
+| Testing             | Hard (DOM-dependent)      | Easy (pure TS)              |
+| Best for            | Simple forms              | Complex/dynamic forms       |
+
+**Reactive form example:**
+
+```ts
+form = new FormGroup({
+  name:  new FormControl("", Validators.required),
+  email: new FormControl("", [Validators.required, Validators.email]),
+});
+
+submit() {
+  if (this.form.invalid) return;
+  this.userService.save(this.form.value);
+}
+```
+
+```html
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <input formControlName="name" />
+  <input formControlName="email" />
+  <button type="submit" [disabled]="form.invalid">Save</button>
+</form>
+```
 
 ---
 
-### ❓ What happens when we use `[(ngModel)]` in Reactive forms?
+### ❓ What happens when you mix `[(ngModel)]` with Reactive Forms?
 
 ### 📝 Answer
 
-It mixes paradigms and can cause confusion and unexpected behavior. You should stick to one approach, usually reactive forms for complex forms.
+❌ **Don't do it.** It mixes paradigms and causes:
+- Confusing data flow (two sources of truth)
+- Unexpected validation behavior
+- Difficult debugging
+
+> 💡 **Stick to one approach** per form. Use Reactive for complex forms.
 
 ---
 
-### ❓ How do you create a custom form control in Angular forms?
+### ❓ How do you create a custom form control in Angular? (`ControlValueAccessor`)
 
 ### 📝 Answer
 
-In Angular, we can implement by using `ControlValueAccessor`
+`ControlValueAccessor (CVA)` is the **bridge** between Angular's Forms API and your custom UI component.
 
-`ControlValueAccessor (CVA)` acts as a **bridge** between:
+**Without CVA**, Angular **cannot read from or write to** your custom component when used with `formControlName`.
 
-- **Angular Forms API** (`FormControl`, `ngModel`, validation, touched/dirty states)
-- **Your custom UI component**
-
-Without CVA, Angular **cannot read from or write to** your custom form component.
-
-Angular forms expect every form control to know how to:
-
-1. **Receive a value from the form**
-2. **Notify the form when the value changes**
-3. **Notify when the control is touched**
-4. **Handle disabled state**
-
-Native inputs already do this.
-**Custom components do not — unless you implement `ControlValueAccessor`.**
-
-When you implement CVA, your component can:
-
-- Work with **Reactive Forms**
-- Work with **Template-driven Forms**
-- Support:
-  - `formControlName`
-  - `formControl`
-  - `ngModel`
-  - Validators
-  - `touched`, `dirty`, `disabled` states
+#### What CVA must implement
 
 | Method                         | Purpose                                   |
 | ------------------------------ | ----------------------------------------- |
@@ -1009,275 +1081,127 @@ When you implement CVA, your component can:
 | `registerOnTouched(fn)`        | Component → Angular (mark as touched)     |
 | `setDisabledState(isDisabled)` | Enable/disable control                    |
 
-Use it **when building custom form components**, such as:
+#### When to use CVA
 
-- Custom dropdowns
-- Date pickers
-- Toggle switches
-- OTP inputs
-- Rich text editors
-- Multi-select components
+When building **custom form components**: dropdowns, date pickers, toggles, OTP inputs, rich text editors, multi-selects.
 
-If the component **accepts user input and should participate in a form**, CVA is the correct solution.
-
-💡 Example
-
-You create a `<custom-toggle>` component.
-
-Without CVA ❌
-
-```html
-<custom-toggle formControlName="status"></custom-toggle>
-```
-
-➡️ Angular throws errors or doesn’t track value/state.
-
-With CVA ✅
-
-```html
-<custom-toggle formControlName="status"></custom-toggle>
-```
-
-➡️ Works exactly like `<input type="checkbox">`
-
-💻 **Code Example**
-
-1. Custom Input Component (with ControlValueAccessor)
+#### 💻 Complete Example
 
 **`custom-input.component.ts`**
 
 ```ts
-import { Component, forwardRef } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-
 @Component({
   selector: "app-custom-input",
+  standalone: true,
   template: `
-    <input [value]="value" (input)="onInput($event)" (blur)="onTouched()" />
+    <input
+      [value]="value"
+      [disabled]="isDisabled"
+      (input)="onInput($event)"
+      (blur)="onTouched()" />
   `,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CustomInputComponent),
-      multi: true,
-    },
-  ],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => CustomInputComponent),
+    multi: true,
+  }],
 })
 export class CustomInputComponent implements ControlValueAccessor {
-  value: string = "";
+  value = "";
+  isDisabled = false;
 
-  // Functions provided by Angular Forms
-  private onChange = (value: any) => {};
-  private onTouched = () => {};
+  private onChange: (value: any) => void = () => {};
+  onTouched: () => void = () => {};
 
-  // Called when form sets a value
+  // Angular calls this when the form sets a value
   writeValue(value: any): void {
-    this.value = value;
+    this.value = value ?? "";
   }
 
-  // Register change callback
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
+  registerOnChange(fn: any): void { this.onChange = fn; }
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
   }
 
-  // Register touched callback
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  // Handle user typing
   onInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.value = value;
-    this.onChange(value);
+    this.value = (event.target as HTMLInputElement).value;
+    this.onChange(this.value);
   }
 }
 ```
 
-2. Use it in a Reactive Form
-
-`app.component.ts`
-
-```ts
-import { Component } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
-
-@Component({
-  selector: "app-root",
-  template: `
-    <form [formGroup]="form">
-      <app-custom-input formControlName="name"></app-custom-input>
-    </form>
-
-    <p>Form Value: {{ form.value | json }}</p>
-  `,
-})
-export class AppComponent {
-  form = new FormGroup({
-    name: new FormControl(""),
-  });
-}
-```
-
-**Core rule (important)**
-
-> **Use `ControlValueAccessor` ONLY when the component _is a form control_.**
-
-1️⃣ Why do we add `NG_VALUE_ACCESSOR`?
-
-When Angular sees this:
+**Usage:**
 
 ```html
-<app-custom-input formControlName="name"></app-custom-input>
+<form [formGroup]="form">
+  <app-custom-input formControlName="name"></app-custom-input>
+</form>
+
+<p>{{ form.value | json }}</p>
 ```
 
-Angular asks internally:
+---
 
-> Does this element know how to behave like a form control?
+#### 🤔 Why each piece of the CVA boilerplate?
 
-It answers this by **looking in the component’s injector** for a provider with the token:
+**1️⃣ Why `NG_VALUE_ACCESSOR`?**
+
+When Angular sees `<app-custom-input formControlName="name">`, it asks:
+> "Does this element know how to behave like a form control?"
+
+It looks for a provider with the token `NG_VALUE_ACCESSOR`. If not found:
+```text
+Error: No value accessor for form control with name 'name'
+```
+
+**2️⃣ Why `useExisting`?**
+
+Tells Angular to use **this component instance itself** as the value accessor — not a new instance, not some other class.
+
+**3️⃣ Why `forwardRef()`?**
+
+At the moment Angular processes `providers`, the class isn't fully defined yet:
 
 ```ts
-NG_VALUE_ACCESSOR;
+useExisting: CustomInputComponent;          // ❌ class not ready yet
+useExisting: forwardRef(() => CustomInputComponent);   // ✅ delayed
 ```
 
-👉 This token represents **a thing that knows how to read/write form values.**
+**4️⃣ Why `multi: true`? (CRITICAL)**
 
-2️⃣ What happens if you don’t provide it?
-
-If you **implement `ControlValueAccessor` but don’t provide `NG_VALUE_ACCESSOR`**:
-
-❌ Angular **will NOT use your component**
-❌ You’ll get errors like:
-
-```
-No value accessor for form control with name 'name'
-```
-
-So:
-
-> **Implementing the interface is not enough — you must register it.**
-
-That’s why we add:
-
-```ts
-providers: [{
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: ...
-}]
-```
-
-3️⃣ Why `useExisting`?
-
-```ts
-useExisting: forwardRef(() => CustomInputComponent);
-```
-
-This tells Angular:
-
-> Use **this component instance itself** as the value accessor.
-
-Not:
-
-- a new instance
-- not some service
-- not a different class
-
-Without `useExisting`, Angular would not know **which object actually implements CVA**.
-
-4️⃣ Why `forwardRef()`?
-
-At the moment Angular processes `providers`, **the class is not fully defined yet**.
-
-This would break:
-
-```ts
-useExisting: CustomInputComponent; // ❌ class not ready yet
-```
-
-✅ Solution
-
-`forwardRef()` delays the reference until runtime:
-
-```ts
-useExisting: forwardRef(() => CustomInputComponent);
-```
-
-Meaning:
-
-> I promise this class will exist later — trust me.
-
-This avoids circular dependency and load-order issues.
-
-5️⃣ Why `multi: true`? (VERY important)
-
-`NG_VALUE_ACCESSOR` is a **multi-provider token**.
-
-That means Angular expects:
-
-```ts
-NG_VALUE_ACCESSOR = [ accessor1, accessor2, accessor3, ... ]
-```
-
-Built-in Angular controls already register themselves:
-
-- `input`
-- `select`
-- `textarea`
-- `checkbox`
-
-6️⃣ What happens if you omit `multi: true`?
-
-If you write:
+`NG_VALUE_ACCESSOR` is a **multi-provider token** — Angular expects an array of accessors (built-in `input`, `select`, `textarea`, plus your custom ones).
 
 ```ts
 {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => CustomInputComponent)
-  // ❌ multi missing
+  useExisting: forwardRef(() => CustomInputComponent),
+  // ❌ multi missing → would OVERWRITE Angular's entire list
 }
 ```
 
-🚨 You will **overwrite Angular’s entire list of value accessors**.
-
-This can:
-
-- Break other form controls
-- Cause unpredictable behavior
-- Create hard-to-debug issues
-
-So `multi: true` means:
-
-> Add my accessor to the list — don’t replace others.
+> 🚨 **Without `multi: true`** → you replace Angular's entire accessor list, breaking other form controls.
 
 ---
 
-### ❓ How would you globally trim leading and trailing spaces from user input fields in Angular?
+### ❓ How would you globally trim leading and trailing spaces from user input?
 
 ### 📝 Answer
 
-There are two approaches:
-
-**Approach 1:**
-
-If the application uses NgRx, sanitize the data inside the effect, before making the HTTP call.
+**Approach 1: Sanitize in NgRx effect (if using NgRx):**
 
 ```ts
 saveUser$ = createEffect(() =>
   this.actions$.pipe(
     ofType(saveUser),
-    map((action) => ({
-      ...action,
-      user: trimStringsDeep(action.user),
-    })),
-    switchMap((action) => this.userService.save(action.user)),
-  ),
+    map(action => ({ ...action, user: trimStringsDeep(action.user) })),
+    switchMap(action => this.userService.save(action.user)),
+  )
 );
 ```
 
-**Approach 2:**
-
-If trimming is a generic requirement for all outgoing data, enforce it globally using an HTTP interceptor.
+**Approach 2: HTTP Interceptor (global, framework-agnostic):**
 
 ```ts
 @Injectable()
@@ -1295,7 +1219,55 @@ export class TrimInterceptor implements HttpInterceptor {
 ```ts
 providers: [
   { provide: HTTP_INTERCEPTORS, useClass: TrimInterceptor, multi: true },
-];
+]
 ```
+
+> 💡 **Approach 3 (Modern)**: Use `inject(HTTP_INTERCEPTORS)` with functional interceptors via `provideHttpClient(withInterceptors([...]))`.
+
+---
+
+### ❓ What are Signals in Angular?
+### 📝 Answer
+
+**Signals** (Angular 16+) are a new reactivity primitive — values that **notify consumers** when they change.
+
+```ts
+import { signal, computed, effect } from "@angular/core";
+
+@Component({
+  template: `
+    <p>Count: {{ count() }}</p>
+    <p>Doubled: {{ doubled() }}</p>
+    <button (click)="increment()">+</button>
+  `,
+})
+export class CounterComponent {
+  count = signal(0);
+
+  // Derived value — auto-updates when count changes
+  doubled = computed(() => this.count() * 2);
+
+  constructor() {
+    // Side effect — runs whenever any signal it reads changes
+    effect(() => {
+      console.log("Count changed to:", this.count());
+    });
+  }
+
+  increment() {
+    this.count.update(v => v + 1);
+    // OR: this.count.set(this.count() + 1);
+  }
+}
+```
+
+✅ **Benefits over RxJS for state**
+
+- Synchronous reads (no subscribe boilerplate)
+- Fine-grained change detection (no full tree traversal)
+- Better TypeScript inference
+- Easier mental model for new developers
+
+> 💡 **Signal vs RxJS**: signals are great for **state**. RxJS still wins for **streams of events** (HTTP, user input over time, WebSocket).
 
 ---

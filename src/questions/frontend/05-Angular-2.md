@@ -1,352 +1,444 @@
-## Change Detection & Zones
+﻿# 🅰️ Angular Interview Prep — Part 2: Change Detection, Build System & Advanced Topics
 
-### ❓ How does Angular’s change detection mechanism work, and how did it evolve from AngularJS?
-
-### 📝 Answer
-
-**Current flow (Default Strategy):**
-
-- zone.js observes async tasks (DOM Events, Timers, Promises, HTTP Calls, WebSocket)
-  - 📝 Angular Does NOT Track the below changes
-    1. Array push - `this.items.push('C');`
-    2. Variable mutation - `this.count++;`
-    3. Object property change - `this.user.name = 'David';`
-    4. Spread operator - `this.items = [...this.items, 'C'];`
-  - 📝 Synchronous Code are triggerd
-    1. Inside an Event - `<button (click)="add()">Add</button>`
-    2. Angular lifecycle
-    3. > ❗ Spread only helps with `OnPush` detecting reference change. It does NOT trigger detection.
-
-- zone.js notifies NgZone. It tells Angular _Something happened. Run change detection._
-- Angular triggers change detection. Begins from the root component and traverses entire component tree.
-- Angular then updates only changed bindings.
-- Updates DOM
-
-**With Signals:**
-
-- Signals reduce the need for full tree traversal.
-- Instead of Traversing the Component Tree
-  - Angular Registers these Signals and builds a Signal Graph
-  - Tracks where this signal is used (template / computed / effect)
-- Updates ONLY those signal and its dependent nodes
 
 ---
 
-## Angular Build System
+# Part 1 — Change Detection & Zones
 
-### ❓ Explain Angular Building Tools?
+### ❓ How does Angular's change detection mechanism work, and how did it evolve from AngularJS?
 
 ### 📝 Answer
 
-1️⃣ Big Picture (one-line)
-
-**Bundler** + **Dev Server** + **Compiler** + **Change Detection** + **Reload strategy** together define how your app is built, served, updated, and rendered during development and production.
-
-2️⃣ Bundlers & Dev Servers
-
-🔹 Webpack
-
-1. **Webpack Bundler** - Takes your JS/TS/CSS/assets and Bundles them into optimized files
-
-2. **Webpack Dev Server** - Runs a local server (Reloads or updates browser)
-
-> 📌 Used heavily by Angular (pre-v17)
-
-🔹 Vite
-
-1. **Vite Dev Server** - Uses native ES modules and Starts instantly (no full bundle on startup)
-
-2. **Vite Bundler** - Vite uses **esbuild** for fast transformations and dependency pre-bundling during development, and uses **Rollup** internally for production builds.
-
-> **esbuild** (primary) + **Rollup** (final optimizations)
-> 📌 Used by Angular v17+
-
-```sql
-Angular 8  → View Engine + Webpack
-Angular 9  → Ivy + Webpack
-Angular 16 → Ivy + esbuild (partial)
-Angular 17+→ Ivy + Vite + esbuild
-Angular 19 → Ivy + Vite + esbuild + Rollup
-```
-
-3️⃣ Angular Rendering Engines (Compilers)
-
-🔹 View Engine (OLD ❌) - Used before Angular 9
-🔹 Ivy Compiler (CURRENT ✅) - Used Angular 9 → present
-
-🔹 JIT (Just-In-Time) - Compilation happens in browser
-🔹 AOT (Ahead-Of-Time) - Compilation happens during build
-
-4️⃣ Comparison: View Engine vs Ivy
-
-| Feature         | View Engine | Ivy          |
-| --------------- | ----------- | ------------ |
-| AOT             | ✅          | ✅           |
-| JIT             | ✅          | ✅           |
-| Tree-shaking    | ❌ Poor     | ✅ Excellent |
-| Build speed     | ❌ Slower   | ✅ Faster    |
-| Bundle size     | ❌ Larger   | ✅ Smaller   |
-| Debugging       | ❌ Hard     | ✅ Easier    |
-| Future features | ❌ No       | ✅ Yes       |
-
-5️⃣ Hot Module Replacement (HMR)
-
-🔹 What is HMR?
-
-- Update code without full page reload
-- Keeps app state (forms, data)
-
-🔹 Who supports it?
-
-| Tool               | HMR               |
-| ------------------ | ----------------- |
-| Webpack Dev Server | Yes               |
-| Vite Dev Server    | Yes (much faster) |
-
-🔹 What happens when you change a file?
-
-- Webpack
-  - Webpack rebuilds the dependency graph
-  - A new bundle or chunk is created
-  - Webpack Dev Server pushes updates via WebSocket
-  - Browser replaces the affected module
-
-- Vite
-  - File is already an ES module
-  - Vite sends only that module
-  - Browser updates without rebundling
-
-6️⃣ How Everything Connects (Simple Flow)
-
-🧠 Old Angular Setup (Before v17)
-
-```arduino
-Code → Ivy Compiler
-     → Webpack Bundler
-     → Webpack Dev Server
-     → Browser
-```
-
-🚀 Modern Angular Setup (v17+)
-
-```arduino
-Code → Ivy Compiler
-     → Vite Dev Server (dev)
-     → Rollup (prod bundling)
-     → Browser
-```
-
-7️⃣ How Compiler and Bundler work together?
-
-- Ivy compiler runs first
-- Ivy converts this into:
-  ✔ Templates compiled
-  ✔ Decorators removed
-  ✔ Angular instructions generated
-  ➡️ Output is pure JavaScript
-- esbuild runs next
-- esbuild now:
-  ✔ Bundles this JS with other JS and TS.
-  ✔ Removes unused code
-  ✔ Splits chunks
-  ✔ Optimizes imports
-  ➡️ Produces final JS files for browser
-
-> 📌 Ivy understands Angular and templates
-> 📌 HTML disappears after Ivy runs
-> 📌 esbuild does not understand Angular decorators
-
-🤔❓ Webpack vs Vite
-Vite is faster because it doesn’t bundle everything upfront.
-
-🤔❓ Ivy vs View Engine
-Ivy is faster, smaller, and more flexible.
-
-🤔❓ AOT vs JIT
-AOT for production, JIT for development.
-
-🤔❓ Dirty checking
-Angular checks bindings on every change detection cycle.
-
-🤔❓ HMR
-Updates modules without reloading the page.
+Angular's change detection is the process by which the framework figures out **what changed in your data** and **updates the DOM accordingly**. The mechanism has evolved significantly — from AngularJS's "dirty checking with digest cycles" to today's **Zone-based detection** and the newer **Signal-based reactivity**.
 
 ---
 
-## Unit Testing
+#### 🔹 Current Default Strategy (Zone-based)
 
-### ❓ Difference between Jasmine and Jest?
+The Angular runtime uses **zone.js** — a library that monkey-patches all asynchronous browser APIs.
 
-### 📝 Answer
+**What zone.js observes:**
 
-**Jasmine** → Test framework (how you write tests)
-**Karma** → Test runner (where & how tests run)
-**Jest** → All-in-one testing tool (framework + runner)
+| Async Source | Examples |
+|--------------|----------|
+| DOM Events | `click`, `input`, `submit` |
+| Timers | `setTimeout`, `setInterval` |
+| Promises | `.then()`, `async/await` |
+| HTTP | `XMLHttpRequest`, `fetch` (when configured) |
+| WebSocket | `onmessage`, `onopen` |
 
-> 👉 Jasmine + Karma = what Jest already gives you
+**The flow looks like this:**
+
+```
+User clicks button
+   ↓
+zone.js intercepts the event
+   ↓
+NgZone is notified — "Something async happened, run CD"
+   ↓
+Angular starts from the root component
+   ↓
+Traverses the entire component tree (top → down)
+   ↓
+Compares current binding values vs previous
+   ↓
+Updates only the bindings that changed
+   ↓
+DOM reflects the changes
+```
+
+> 💡 **Mental model:** Zone.js is like a tap on Angular's shoulder saying _"hey, something might have changed."_ Angular then verifies by walking the tree.
 
 ---
 
-### ❓ What is a spy in unit testing?
+#### ⚠️ What Angular Does **NOT** Auto-Track
 
-### 📝 Answer
-
-A spy tracks calls to functions, arguments, and return values without executing the real implementation.
+Pure mutations to objects/arrays do **not** trigger change detection by themselves — they only get picked up because they happen *inside* a tracked async event:
 
 ```ts
-spyOn(service, "getData").and.returnValue(of([]));
+this.items.push('C');                  // Mutation alone — invisible
+this.count++;                          // Mutation alone — invisible
+this.user.name = 'David';              // Mutation alone — invisible
+this.items = [...this.items, 'C'];     // Spread — still invisible alone
 ```
 
-- `spyOn()` – Spy on existing method
-- `createSpy()` – Standalone spy
-- `createSpyObj()` – Mock object with multiple methods
+> 📌 **Rule of thumb:** Mutations that happen *inside* a click handler, HTTP callback, or `setTimeout` are seen — because the **wrapper** is tracked, not the mutation itself.
 
-### ❓ Can we test private methods in Angular?
-
-### 📝 Answer
-
-Private methods should be tested indirectly through public methods.
-
-```ts
-(component as any).privateMethod();
-```
-
-- **TypeScript** private is **Compile-Time Only**
-- **JavaScript** has **no private keyword**. The method still exists on the object
-
-### ❓ What is Cypress?
-
-### 📝 Answer
-
-Cypress is an end-to-end testing framework that:
-
-- Runs tests in a real browser
-- Simulates real user behavior
-- Is faster and more reliable than Protractor
+> ⚠️ **Common myth:** Spread operator triggers change detection. **Wrong.** It only helps `OnPush` strategy detect a *new reference*, but it doesn't run CD on its own.
 
 ---
 
-### ❓How to Preserve form data on refresh but clear on browser close?
+#### 🚀 Signals (Angular 16+) — The New Reactivity Model
 
-### 📝 Answer
+Signals fundamentally change *how* Angular knows what to update.
 
-Use:
+| Aspect | Zone-based CD | Signal-based |
+|--------|---------------|--------------|
+| Trigger | Any async event | Specific signal mutation |
+| Scope | Whole tree traversed | Only affected nodes |
+| Performance | Coarse-grained | Fine-grained |
+| Tooling | zone.js | Built-in primitives |
 
-### 👉 `sessionStorage`
+**How signals avoid full traversal:**
+
+1. When you create a `signal()`, Angular registers it.
+2. When that signal is read in a template (or in `computed`/`effect`), Angular records the dependency — building a **dependency graph**.
+3. When the signal mutates, Angular knows **exactly which nodes** to refresh — and skips the rest.
 
 ```ts
-sessionStorage.setItem("formData", JSON.stringify(this.form.value));
+const count = signal(0);
+const doubled = computed(() => count() * 2);
+
+count.set(5);   // ✅ Only doubled() and templates that read count() refresh
 ```
 
-On init:
-
-```ts
-this.form.patchValue(JSON.parse(sessionStorage.getItem("formData")));
-```
-
-SessionStorage:
-
-- Survives refresh
-- Cleared on tab/browser close
+> 💡 **Future direction:** Angular is moving toward "zoneless" apps where Signals replace zone.js entirely (`provideExperimentalZonelessChangeDetection`).
 
 ---
 
-### ❓How to Preserve form data on refresh based on Role?
+#### ✅ Key Takeaway
+
+- **Zone.js → tells Angular *when* to check.**
+- **Signals → tell Angular *what* to update.**
+- Default Zone strategy is reliable but coarse; Signals are surgical and faster.
+
+---
+
+# Part 2 — The Angular Build System
+
+### ❓ Explain Angular's building tools and how they have evolved.
 
 ### 📝 Answer
 
-Steps:
+Modern Angular's build pipeline is a coordinated effort of **5 things** working together:
 
-1. On refresh → Check role from JWT
-2. If role === "developer"
-   - Restore from sessionStorage
+> **🧩 Bundler + Dev Server + Compiler + Change Detection + Reload Strategy**
 
-3. Else
-   - Clear sessionStorage
+Together they decide how your app is **built, served, updated, and rendered** — both in development and production.
+
+---
+
+## 🔹 Bundlers & Dev Servers
+
+### Webpack (Pre-v17 Angular default)
+
+| Component | Role |
+|-----------|------|
+| Webpack Bundler | Takes JS/TS/CSS/assets → produces optimized bundles |
+| Webpack Dev Server | Local server that reloads/updates the browser |
+
+> 📌 Used by Angular versions before v17.
+
+---
+
+### Vite (Angular v17+ default)
+
+| Component | Role |
+|-----------|------|
+| Vite Dev Server | Uses **native ES modules** — boots instantly with no upfront bundling |
+| Vite Build Tool | Uses **esbuild** for fast dev transforms; **Rollup** for production builds |
+
+> 💡 **Why Vite is faster:** It serves ES modules directly to the browser during development, so there's no big bundle to compile up front. The browser fetches modules as needed.
+
+---
+
+### 📅 Angular Build Tooling Timeline
+
+```
+Angular 8   →  View Engine  +  Webpack
+Angular 9   →  Ivy          +  Webpack
+Angular 16  →  Ivy          +  esbuild (partial)
+Angular 17+ →  Ivy          +  Vite + esbuild
+Angular 19  →  Ivy          +  Vite + esbuild + Rollup
+```
+
+---
+
+# Part 3 — Compilers: Ivy, View Engine, AOT & JIT
+
+### Rendering Engines
+
+| Engine | Status | Used In |
+|--------|--------|---------|
+| **View Engine** | ❌ Old | Pre-Angular 9 |
+| **Ivy** | ✅ Current | Angular 9 → present |
+
+### Compilation Modes
+
+| Mode | When | Use Case |
+|------|------|----------|
+| **JIT** (Just-In-Time) | Compiles in the browser at runtime | Development |
+| **AOT** (Ahead-Of-Time) | Compiles during build | Production ✅ |
+
+---
+
+### 🆚 View Engine vs Ivy
+
+| Feature | View Engine | Ivy |
+|---------|-------------|-----|
+| AOT support | ✅ | ✅ |
+| JIT support | ✅ | ✅ |
+| Tree-shaking | ❌ Poor | ✅ Excellent |
+| Build speed | ❌ Slower | ✅ Faster |
+| Bundle size | ❌ Larger | ✅ Smaller |
+| Debugging | ❌ Harder | ✅ Easier (locality of code) |
+| Future features | ❌ None planned | ✅ Standalone, Signals, etc. |
+
+> 💡 **Why Ivy matters:** Ivy's "locality" principle means each component compiles independently — enabling better tree-shaking, faster incremental builds, and standalone components.
+
+---
+
+# Part 4 — HMR & Dev Server Internals
+
+### ❓ Can you walk me through how HMR works and how Angular integrates it into the dev server?
+
+### 📝 Answer
+
+**HMR** updates code in the browser **without a full page reload** — preserving app state like form inputs, scroll position, and component state.
+
+| Tool | HMR Support |
+|------|-------------|
+| Webpack Dev Server | ✅ Yes |
+| Vite Dev Server | ✅ Yes (much faster) |
+
+---
+
+### 🔄 What happens when you save a file?
+
+#### Webpack
+
+1. Rebuilds the dependency graph
+2. Creates a new bundle/chunk
+3. Pushes updates via WebSocket to the browser
+4. Browser swaps the affected module
+
+#### Vite
+
+1. The file is already an ES module
+2. Vite sends only that single module
+3. Browser updates instantly — **no rebundling**
+
+> 📌 That's why Vite feels near-instant during development, especially in large apps.
+
+---
+
+#### ↳ Follow-up: How do the Compiler and Bundler work together?
+
+### 📝 Answer
+
+There are **two distinct phases**:
+
+#### 🥇 Phase 1 — Ivy Compiler runs first
+
+- Compiles templates → render functions
+- Removes Angular decorators (`@Component`, `@Injectable`, etc.)
+- Generates Angular instructions (`ɵɵelementStart`, `ɵɵproperty`, etc.)
+- **Output:** pure JavaScript
+
+#### 🥈 Phase 2 — esbuild/Rollup runs next
+
+- Bundles the JS with other modules
+- Removes unused code (tree-shaking)
+- Splits chunks for lazy loading
+- Optimizes imports and minifies
+
+```
+Source (.ts + .html) ──► Ivy Compiler ──► Pure JS ──► esbuild ──► Final bundles
+```
+
+> 📌 **Important:** Ivy understands Angular and templates; esbuild does **not** understand decorators. By the time esbuild runs, the HTML/decorators are gone — replaced by pure JS instructions.
+
+---
+
+### 🎯 Quick Interview Lightning Round
+
+| ❓ Question | 💬 30-Second Answer |
+|------------|---------------------|
+| Webpack vs Vite? | Vite is faster — it doesn't bundle everything upfront. |
+| Ivy vs View Engine? | Ivy is faster, smaller, and more flexible. |
+| AOT vs JIT? | AOT for production, JIT for development. |
+| Dirty checking? | Angular checks bindings on every change detection cycle. |
+| HMR? | Updates modules without reloading the page. |
+
+---
+
+# Part 5 — Form State Persistence
+
+### ❓ How do you preserve form data on refresh but clear it on browser close?
+
+### 📝 Answer
+
+Use **`sessionStorage`** — perfect for this exact behavior.
 
 ```ts
-if (user.role === "developer") {
-  restore();
-} else {
-  sessionStorage.removeItem("formData");
+// On every form value change
+this.form.valueChanges.subscribe(value => {
+  sessionStorage.setItem("formData", JSON.stringify(value));
+});
+
+// On component init
+ngOnInit() {
+  const saved = sessionStorage.getItem("formData");
+  if (saved) {
+    this.form.patchValue(JSON.parse(saved));
+  }
 }
 ```
 
----
+#### 📊 Storage Comparison
 
-### ❓ How to Hide backend endpoints in Network tab?
+| Feature | `sessionStorage` | `localStorage` | `cookies` |
+|---------|------------------|----------------|-----------|
+| Survives refresh | ✅ | ✅ | ✅ |
+| Cleared on tab close | ✅ | ❌ | Configurable |
+| Sent with HTTP requests | ❌ | ❌ | ✅ |
+| Size limit | ~5MB | ~5MB | ~4KB |
 
-### 📝 Answer
-
-🚫 Impossible.
-
-Browser MUST know endpoint to call it.
-
-But you can hide microservices behind:
-
-👉 API Gateway
-
-Instead of:
-
-```
-/user-service/users
-/order-service/orders
-```
-
-Expose:
-
-```
-/api/users
-/api/orders
-```
-
-Angular only calls gateway.
+> 💡 **Pro tip:** Always wrap `JSON.parse` in a `try/catch` — corrupt session data shouldn't crash your form.
 
 ---
 
-### ❓ Can we jump Angular 5 → Angular 19 directly?
+#### ↳ Follow-up: How do you preserve form data on refresh based on user role?
 
 ### 📝 Answer
 
-🚫 Not recommended.
+The pattern is: **decode JWT → check role → restore or clear**.
 
-Too many breaking changes.
+```ts
+ngOnInit() {
+  const user = this.decodeJwt(this.authService.getToken());
 
-Official way:
+  if (user.role === "developer") {
+    // Restore form data
+    const saved = sessionStorage.getItem("formData");
+    if (saved) this.form.patchValue(JSON.parse(saved));
+  } else {
+    // Clear it for everyone else
+    sessionStorage.removeItem("formData");
+  }
+}
+```
 
-Upgrade step-by-step:
+> ⚠️ **Security note:** Never trust the JWT payload for **authorization** decisions on the server. This pattern is fine for *UX*, but the API must independently verify role-based permissions.
 
-5 → 6 → 7 → 8 → ... → 19
+---
 
-Use:
+# Part 6 — Architecture & API Concerns
+
+### ❓ How do you hide backend endpoints from the browser's Network tab?
+
+### 📝 Answer
+
+**🚫 You can't hide them — and that's a fundamental constraint.**
+
+The browser **must** know the endpoint to call it. Anyone with DevTools can see every request URL, header, and payload. There's no way around this.
+
+But what you **can** do is make endpoints look uniform and avoid leaking your **microservice topology**:
+
+#### ✅ Solution: API Gateway
+
+| ❌ Without Gateway (leaks topology) | ✅ With Gateway (clean & uniform) |
+|---|---|
+| `/user-service/users` | `/api/users` |
+| `/order-service/orders` | `/api/orders` |
+| `/payment-service/checkout` | `/api/checkout` |
+
+```
+Angular ──► /api/users ──► API Gateway ──► User Microservice
+                                       ──► Order Microservice
+                                       ──► Payment Microservice
+```
+
+#### Benefits
+
+- Single entry point for the frontend
+- Microservice URLs/ports stay internal
+- Centralized auth, rate limiting, logging
+- Easier to refactor backend without touching the frontend
+
+> 💡 **Related pattern:** A **Backend-for-Frontend (BFF)** goes one step further — it tailors responses for each client (web/mobile/IoT), aggregating multiple microservices into one optimized payload. (See `09-Web_Architecture.md` for the full deep-dive.)
+
+---
+
+# Part 7 — Version Migration & Deprecated Concepts
+
+### ❓ Can we jump from Angular 5 → Angular 19 directly?
+
+### 📝 Answer
+
+**🚫 Not recommended — and almost guaranteed to break things.**
+
+Each major Angular version has breaking changes — especially around RxJS pipeable operators, lazy loading syntax, Ivy migration, and standalone components. Skipping versions means you skip the migration schematics that auto-fix these.
+
+#### ✅ The Official Path
+
+```
+5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19
+```
+
+Use the official tool at every hop:
 
 ```bash
-ng update
+ng update @angular/core@N @angular/cli@N
 ```
+
+Where `N` is the next major version number.
+
+> 💡 **Use the [Angular Update Guide](https://update.angular.io/)** — it generates an exact step-by-step migration checklist tailored to your `from → to` versions.
+
+> 📌 **Pro tip:** Update **one major version at a time**, run all tests, fix any deprecation warnings, then update again.
 
 ---
 
-### ❓ Name some Deprecated concepts Angular 5 → 19
+### ❓ Name some deprecated/removed concepts from Angular 5 → 19.
 
 ### 📝 Answer
 
-Major changes:
+Here's a concise migration cheat-sheet:
 
-- ViewEngine → Ivy
-- Http → HttpClient (deprecated old module)
-- Renderer → Renderer2
-- EntryComponents removed
-- RxJS version changes
-- Module-based apps → Standalone Components
-- Webpack → Vite (latest versions)
-- TSLint → ESLint
-- Angular CLI changes
-- Strict mode enabled
-- Differential loading removed
+| 🗓 Era | What Changed |
+|--------|--------------|
+| Angular 9 | View Engine → **Ivy** |
+| Angular 9+ | `Http` → **`HttpClient`** |
+| Angular 4+ | `Renderer` → **`Renderer2`** |
+| Angular 9 | `entryComponents` removed (Ivy doesn't need them) |
+| Angular 14+ | NgModules → **Standalone components** |
+| Angular 17+ | Webpack → **Vite + esbuild** |
+| Angular 11+ | TSLint → **ESLint** |
+| Angular 12+ | **Strict mode** enabled by default |
+| Angular 13 | Differential loading removed |
+| Angular 6+ | RxJS chained operators → **pipeable operators** (`.pipe(map(), filter())`) |
+| Angular 15+ | Lazy loading syntax: `loadChildren: () => import('./...').then(m => m.X)` |
+| Angular 16+ | **Signals** introduced |
+| Angular 17+ | New control flow: `*ngIf` → `@if`, `*ngFor` → `@for`, `*ngSwitch` → `@switch` |
+| Angular 18+ | **Functional HTTP interceptors** preferred over class-based |
 
-Biggest impact:
+#### 🥇 Biggest practical impacts when upgrading
 
-- RxJS pipeable operators
-- Lazy loading syntax changes
-- Zone optimizations
-- Signals (Angular 16+)
+- **RxJS pipeable operators** — old `.map().filter()` chains break
+- **Lazy loading syntax** — string-based `loadChildren` is gone
+- **Standalone components** — modules become optional
+- **Strict TypeScript checks** — `null`/`undefined` handling tightens
+- **Zone optimizations & Signals** (Angular 16+)
+
+> 💡 **Run `ng update` between every major version** — Angular ships *schematics* that automatically rewrite your code to the new patterns. They're free upgrades you should never skip.
+
+---
+
+## 🎓 Final Cheat Sheet
+
+| Concept | Quick Recall |
+|---------|--------------|
+| Zone.js | Tells Angular *when* to run CD |
+| Signals | Tell Angular *what* to update (granular) |
+| OnPush | Skip CD unless `@Input` reference changes |
+| Ivy | Current compiler; locality + tree-shaking |
+| AOT | Compile at build time (production) |
+| JIT | Compile in browser (dev only) |
+| HMR | Update modules without page reload |
+| `sessionStorage` | Refresh-safe, tab-scoped |
+| API Gateway | Hide microservice topology, single entry |
+
+---
+
+> 🚀 **You've got this!** Master these internals and you'll handle any Angular architecture or performance question with confidence.
